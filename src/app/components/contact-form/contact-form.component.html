@@ -1,0 +1,103 @@
+<div class="contact-form-container" id="contact-form">
+  <h2 class="form-title">Contáctanos</h2>
+  
+  <!-- Mensaje de éxito -->
+  <div *ngIf="formSuccess" class="form-success-message">
+    <div class="success-icon">✓</div>
+    <h3>¡Mensaje enviado!</h3>
+    <p>Gracias por contactarnos. Te responderemos lo antes posible.</p>
+  </div>
+  
+  <!-- Formulario de contacto -->
+  <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form" *ngIf="!formSuccess">
+    <!-- Mensaje de error general -->
+    <div *ngIf="formError" class="form-error-message">
+      <p>{{ formError }}</p>
+    </div>
+    
+    <!-- Campo Nombre -->
+    <div class="form-group">
+      <label for="name">Nombre completo*</label>
+      <input 
+        type="text" 
+        id="name" 
+        formControlName="name"
+        (input)="onInputChange()"
+        placeholder="Tu nombre completo"
+        [class.invalid]="f['name'].touched && f['name'].invalid"
+      >
+      <div class="error-message" *ngIf="f['name'].touched && f['name'].invalid">
+        <span *ngIf="f['name'].errors?.['required']">El nombre es obligatorio</span>
+        <span *ngIf="f['name'].errors?.['minlength']">El nombre debe tener al menos 2 caracteres</span>
+      </div>
+    </div>
+    
+    <!-- Campo Teléfono -->
+    <div class="form-group">
+      <label for="phone">Teléfono*</label>
+      <input 
+        type="tel" 
+        id="phone" 
+        formControlName="phone"
+        (input)="formatPhoneNumber($event); onInputChange()"
+        placeholder="(123) 456-7890"
+        [class.invalid]="f['phone'].touched && f['phone'].invalid"
+      >
+      <div class="error-message" *ngIf="f['phone'].touched && f['phone'].invalid">
+        <span *ngIf="f['phone'].errors?.['required']">El teléfono es obligatorio</span>
+        <span *ngIf="f['phone'].errors?.['pattern']">Formato inválido. Utiliza: (123) 456-7890</span>
+      </div>
+    </div>
+    
+    <!-- Campo Email (opcional) -->
+    <div class="form-group">
+      <label for="email">Email <span class="optional">(opcional)</span></label>
+      <input 
+        type="email" 
+        id="email" 
+        formControlName="email"
+        (input)="onInputChange()"
+        placeholder="tucorreo@ejemplo.com"
+        [class.invalid]="f['email'].touched && f['email'].invalid"
+      >
+      <div class="error-message" *ngIf="f['email'].touched && f['email'].invalid">
+        <span *ngIf="f['email'].errors?.['email']">Formato de email inválido</span>
+      </div>
+    </div>
+    
+    <!-- Campo Mensaje -->
+    <div class="form-group">
+      <label for="message">Mensaje*</label>
+      <textarea 
+        id="message" 
+        formControlName="message"
+        (input)="onInputChange()"
+        placeholder="¿En qué podemos ayudarte? Dinos todos los detalles necesarios."
+        rows="5"
+        [class.invalid]="f['message'].touched && f['message'].invalid"
+      ></textarea>
+      <div class="error-message" *ngIf="f['message'].touched && f['message'].invalid">
+        <span *ngIf="f['message'].errors?.['required']">El mensaje es obligatorio</span>
+        <span *ngIf="f['message'].errors?.['minlength']">El mensaje debe tener al menos 10 caracteres</span>
+      </div>
+    </div>
+    
+    <!-- Botón de envío -->
+    <div class="form-footer">
+      <button 
+        type="submit" 
+        [disabled]="submitting || contactForm.invalid"
+        class="submit-button"
+      >
+        <span *ngIf="!submitting">Enviar mensaje</span>
+        <span *ngIf="submitting" class="loading-spinner">
+          <svg viewBox="0 0 50 50" class="spinner">
+            <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+          </svg>
+          Enviando...
+        </span>
+      </button>
+      <div class="required-fields">* Campos obligatorios</div>
+    </div>
+  </form>
+</div> 

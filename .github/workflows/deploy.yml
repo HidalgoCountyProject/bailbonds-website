@@ -22,7 +22,7 @@ jobs:
         run: npm ci
 
       - name: Build Angular app with prerendering
-        run: npm run build -- --configuration=production
+        run: npm run build:prod
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
