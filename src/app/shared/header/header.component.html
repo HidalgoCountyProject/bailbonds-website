@@ -1,22 +1,56 @@
+<!-- Compact unified header -->
 <header class="header">
-  <div class="container">
-    <div class="header-content">
-      <div class="logo">
-        <a routerLink="/">Hidalgo Bail Bonds</a>
+  <!-- Top bar with secondary navigation -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="secondary-nav">
+        <a href="/payments">{{ 'payments' | translate }}</a>
+        <a href="/missed-court">{{ 'missed_court' | translate }}</a>
+        <a href="/careers">{{ 'careers' | translate }}</a>
+        <a href="/blog">{{ 'blog' | translate }}</a>
+        <a href="#" class="language-toggle" (click)="toggleLanguage($event)">{{ 'language_toggle' | translate }}</a>
       </div>
-      <nav class="nav-menu" [ngClass]="{'open': isMobileMenuOpen}">
-        <ul>
-          <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a></li>
-          <li><a routerLink="/about" routerLinkActive="active">About Us</a></li>
-          <li><a routerLink="/services" routerLinkActive="active">Services</a></li>
-          <li><a routerLink="/contact" routerLinkActive="active">Contact</a></li>
-        </ul>
-      </nav>
-      <button class="mobile-menu-toggle" (click)="toggleMobileMenu()">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
+    </div>
+  </div>
+  
+  <!-- Main header area with logo, navigation and call info -->
+  <div class="main-header">
+    <div class="container main-header-container">
+      <!-- Logo -->
+      <div class="navbar-brand">
+        <a href="/">
+          <h1>Hidalgo Bail Bonds</h1>
+        </a>
+      </div>
+      
+      <!-- Ultra-compact content wrapper -->
+      <div class="header-content">
+        <!-- Navigation menu with call info directly beside it -->
+        <nav class="navbar">
+          <div class="navbar-items">
+            <a href="/" class="navbar-item active">{{ 'home' | translate }}</a>
+            <a href="/#servicios" class="navbar-item">{{ 'services' | translate }}</a>
+            <a href="/#ubicacion" class="navbar-item">{{ 'location' | translate }}</a>
+            <a href="/#testimonios" class="navbar-item">{{ 'testimonials' | translate }}</a>
+            <a href="/#preguntas-frecuentes" class="navbar-item">{{ 'faq' | translate }}</a>
+            <a href="/contact" class="navbar-item">{{ 'contact' | translate }}</a>
+          </div>
+        </nav>
+        
+        <!-- Compact call information -->
+        <div class="phone-button">
+          <div class="phone-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16" fill="currentColor">
+              <path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/>
+            </svg>
+          </div>
+          <div class="phone-content">
+            <span class="call-text">{{ 'call_now' | translate }}</span>
+            <a href="tel:+18001234567" class="phone-number">(800) 123-4567</a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </header>
+

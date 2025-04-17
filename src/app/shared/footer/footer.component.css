@@ -1,102 +1,116 @@
 .footer {
-  background-color: var(--dark-color);
-  color: white;
-  padding: 3rem 0 1rem;
+  background-color: #000000; /* Black (was Dark blue #1c2e4a) */
+  color: #ffffff;
+  padding: 3rem 0 1.5rem;
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .footer-content {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
   margin-bottom: 2rem;
+}
+
+.footer-section {
+  flex: 1;
+  min-width: 250px;
+  margin-bottom: 1.5rem;
+  padding-right: 2rem;
 }
 
 .footer-section h3 {
   font-size: 1.2rem;
-  margin-bottom: 1rem;
-  color: var(--accent-color);
+  margin-bottom: 1.2rem;
+  font-weight: 600;
+  color: #ffffff;
+  position: relative;
+  padding-bottom: 0.5rem;
 }
 
-.footer-section p {
-  margin-bottom: 0.5rem;
+.footer-section h3::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background-color: #ffcc00; /* Yellow accent color */
 }
 
-.contact p {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.contact i {
-  margin-right: 0.5rem;
-  color: var(--accent-color);
-}
-
-.footer-section.links ul {
+.footer-links {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
-.footer-section.links li {
+.footer-links li {
   margin-bottom: 0.5rem;
 }
 
-.footer-section.links a {
-  color: white;
-  transition: color 0.3s;
+.footer-links a {
+  color: #ffffff;
+  text-decoration: none;
+  transition: color 0.3s ease;
 }
 
-.footer-section.links a:hover {
-  color: var(--accent-color);
+.footer-links a:hover {
+  color: #ffcc00; /* Yellow hover effect */
+}
+
+.contact-info p {
+  margin-bottom: 0.5rem;
+}
+
+.contact-info .phone a {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.1rem;
   text-decoration: none;
+}
+
+.contact-info .phone a:hover {
+  color: #ffcc00;
 }
 
 .social-links {
   display: flex;
   gap: 1rem;
-  margin-bottom: 1rem;
 }
 
 .social-links a {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 36px;
-  width: 36px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-  color: white;
-  transition: all 0.3s;
+  color: #ffffff;
+  text-decoration: none;
+  transition: color 0.3s ease;
 }
 
 .social-links a:hover {
-  background-color: var(--accent-color);
-  color: var(--dark-color);
-}
-
-.disclaimer {
-  font-size: 0.9rem;
-  opacity: 0.8;
+  color: #ffcc00;
 }
 
 .footer-bottom {
-  text-align: center;
-  padding-top: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 1.5rem;
+  text-align: center;
   font-size: 0.9rem;
 }
 
+.footer-bottom p {
+  margin: 0.3rem 0;
+}
+
+/* Responsive design */
 @media (max-width: 768px) {
   .footer-content {
-    grid-template-columns: 1fr;
-    text-align: center;
+    flex-direction: column;
   }
-
-  .contact p {
-    justify-content: center;
-  }
-
-  .social-links {
-    justify-content: center;
+  
+  .footer-section {
+    padding-right: 0;
   }
 }
