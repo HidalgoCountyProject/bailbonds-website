@@ -7,7 +7,11 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:affordableSite": "node dist/affordable-site/server/server.mjs"
+    "serve:ssr:affordableSite": "node dist/affordable-site/server/server.mjs",
+    "start:dev": "ng serve",
+    "start:prod": "ng serve --configuration=production",
+    "build:dev": "ng build",
+    "build:prod": "ng build --configuration=production"
   },
   "private": true,
   "dependencies": {
