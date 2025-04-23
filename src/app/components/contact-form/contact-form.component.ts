@@ -22,6 +22,7 @@ export class ContactFormComponent implements OnInit {
   private apiEndpoint = environment.apiUrl;
   private apiKey = environment.apiKey;
 
+
   constructor(private fb: FormBuilder, private http: HttpClient) {}
 
   ngOnInit(): void {
@@ -45,6 +46,8 @@ export class ContactFormComponent implements OnInit {
     // Reset estados previos
     this.formError = null;
     this.formSuccess = false;
+    console.log(this.apiEndpoint);
+    console.log(this.apiKey);
     
     // Marcar todos los campos como tocados para mostrar errores
     Object.keys(this.contactForm.controls).forEach(key => {
