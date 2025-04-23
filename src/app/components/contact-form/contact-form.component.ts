@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { finalize } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
@@ -20,6 +20,7 @@ export class ContactFormComponent implements OnInit {
   
   // Usar la URL de la API desde environment
   private apiEndpoint = environment.apiUrl;
+  private apiKey = environment.apiKey;
 
   constructor(private fb: FormBuilder, private http: HttpClient) {}
 
@@ -58,7 +59,13 @@ export class ContactFormComponent implements OnInit {
     
     this.submitting = true;
     
-    this.http.post(this.apiEndpoint, this.contactForm.value)
+    // Configurar los headers con la API key
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'x-api-key': this.apiKey
+    });
+    
+    this.http.post(this.apiEndpoint, this.contactForm.value, { headers })
       .pipe(
         finalize(() => this.submitting = false)
       )
