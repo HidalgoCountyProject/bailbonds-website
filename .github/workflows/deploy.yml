@@ -3,7 +3,7 @@ name: Deploy to S3 and invalidate CloudFront
 on:
   push:
     branches:
-      - main
+      - dev
 
 jobs:
   deploy:
@@ -36,3 +36,44 @@ jobs:
 
       - name: Invalidate CloudFront
         run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+
+  test_contact_form:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test Contact Form API
+        id: test_api
+        run: |
+          echo "Esperando 30 segundos para propagación..."
+          sleep 30
+          
+          echo '{
+            "name": "CI Test User",
+            "phone": "+19568679269",
+            "email": "test@ci-pipeline.com",
+            "message": "Automated test from CI/CD pipeline"
+          }' > payload.json
+          
+          RESPONSE=$(curl -s -o response.txt -w "%{http_code}" \
+            -X POST "${{ secrets.PROD_API_URL }}" \
+            -H "Content-Type: application/json" \
+            -H "x-api-key: ${{ secrets.API_KEY_PROD }}" \
+            -H "Origin: https://hidalgo-bailbonds.com" \
+            -d @payload.json)
+          
+          echo "Código de respuesta: $RESPONSE"
+          echo "Respuesta completa:"
+          cat response.txt
+          
+          if [ "$RESPONSE" -ne 200 ]; then
+            echo "Error: API devolvió código $RESPONSE - La prueba falló"
+            exit 1
+          else
+            echo "Prueba exitosa: API devolvió código 200"
+            if grep -q '"success": *true' response.txt; then
+              echo "Respuesta válida verificada"
+            else
+              echo "Error: Respuesta no contiene success:true"
+              exit 1
+            fi
+          fi
