@@ -23,6 +23,9 @@ jobs:
 
       - name: Build Angular app with prerendering
         run: npm run build:prod
+        env:
+          API_KEY_PROD: ${{ secrets.API_KEY_PROD }}
+          NODE_ENV: production
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
