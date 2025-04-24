@@ -3,31 +3,31 @@
     <div class="footer-content">
       <!-- Quick Links -->
       <div class="footer-section">
-        <h3>Enlaces Rápidos</h3>
+        <h3>{{ translations['footer.quick_links'] || 'Enlaces Rápidos' }}</h3>
         <ul class="footer-links">
-          <li><a href="/">Inicio</a></li>
-          <li><a href="/process">Liberación Rápida</a></li>
-          <li><a href="/services">Nuestros Servicios</a></li>
-          <li><a href="/faq">Preguntas Frecuentes</a></li>
-          <li><a href="/contact">Contáctenos</a></li>
+          <li><a href="/">{{ translations['home'] || 'Inicio' }}</a></li>
+          <li><a href="/process">{{ translations['footer.process'] || 'Liberación Rápida' }}</a></li>
+          <li><a href="/services">{{ translations['services'] || 'Nuestros Servicios' }}</a></li>
+          <li><a href="/faq">{{ translations['faq'] || 'Preguntas Frecuentes' }}</a></li>
+          <li><a href="/contact">{{ translations['contact'] || 'Contáctenos' }}</a></li>
         </ul>
       </div>
 
       <!-- Contact Information -->
       <div class="footer-section">
-        <h3>Contáctenos</h3>
+        <h3>{{ translations['contact'] || 'Contáctenos' }}</h3>
         <div class="contact-info">
           <p><strong>Hidalgo Bail Bonds</strong></p>
-          <p>123 Main Street</p>
+          <p>{{ translations['contact.info.address'] || '123 Main Street' }}</p>
           <p>Hidalgo, TX 78557</p>
-          <p class="phone"><a href="tel:+18001234567">(800) 123-4567</a></p>
-          <p>Disponible 24/7</p>
+          <p class="phone"><a href="tel:+18001234567">{{ translations['location_phone'] || '(800) 123-4567' }}</a></p>
+          <p>{{ translations['location_hours'] || 'Disponible 24/7' }}</p>
         </div>
       </div>
 
       <!-- Social Links -->
       <div class="footer-section">
-        <h3>Redes Sociales</h3>
+        <h3>{{ translations['footer.social'] || 'Redes Sociales' }}</h3>
         <div class="social-links">
           <a href="#" aria-label="Facebook">Facebook</a>
           <a href="#" aria-label="Twitter">Twitter</a>
@@ -38,8 +38,8 @@
 
     <!-- Bottom copyright bar -->
     <div class="footer-bottom">
-      <p>&copy; 2023 Hidalgo Bail Bonds. Todos los derechos reservados.</p>
-      <p>Licencia #ABC123</p>
+      <p>&copy; {{ currentYear }} Hidalgo Bail Bonds. {{ translations['footer.rights'] || 'Todos los derechos reservados.' }}</p>
+      <p>{{ translations['footer.license'] || 'Licencia' }} #ABC123</p>
     </div>
   </div>
 </footer>

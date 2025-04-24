@@ -1,14 +1,19 @@
 <!-- Compact unified header -->
 <header class="header">
-  <!-- Top bar with secondary navigation -->
+  <!-- Top bar with only language switcher -->
   <div class="top-bar">
     <div class="container">
       <div class="secondary-nav">
-        <a href="/payments">{{ 'payments' | translate }}</a>
-        <a href="/missed-court">{{ 'missed_court' | translate }}</a>
-        <a href="/careers">{{ 'careers' | translate }}</a>
-        <a href="/blog">{{ 'blog' | translate }}</a>
-        <a href="#" class="language-toggle" (click)="toggleLanguage($event)">{{ 'language_toggle' | translate }}</a>
+        <!-- Enhanced language switcher (only item in top bar) -->
+        <div class="language-switcher-container">
+          <span class="language-label" *ngIf="currentLanguage === 'en'">Change your language:</span>
+          <span class="language-label" *ngIf="currentLanguage === 'es'">Cambiar idioma:</span>
+          <button class="language-switcher" (click)="toggleLanguage($event)">
+            <div class="language-flag" [ngClass]="{'active': currentLanguage === 'en'}">EN</div>
+            <div class="language-slider" [ngClass]="{'spanish': currentLanguage === 'es'}"></div>
+            <div class="language-flag" [ngClass]="{'active': currentLanguage === 'es'}">ES</div>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -53,4 +58,20 @@
     </div>
   </div>
 </header>
+
+<!-- First-time visitor language prompt - moved outside header -->
+<div *ngIf="showLanguagePrompt" class="language-prompt">
+  <div class="prompt-content">
+    <p *ngIf="currentLanguage === 'en'">
+      ¿Prefieres ver esta página en español?
+    </p>
+    <p *ngIf="currentLanguage === 'es'">
+      Would you prefer to view this page in English?
+    </p>
+    <button (click)="toggleLanguage($event)" class="prompt-button">
+      {{ currentLanguage === 'en' ? 'Español' : 'English' }}
+    </button>
+    <button (click)="dismissLanguagePrompt()" class="prompt-dismiss">×</button>
+  </div>
+</div>
 

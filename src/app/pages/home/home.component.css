@@ -1,12 +1,15 @@
 /* Base styles */
 :root {
-  --primary-color: #000000; /* Black (was Dark blue #003366) */
-  --secondary-color: #ffcc00; /* Yellow (was Red #cc0000) */
-  --accent-color: #ffcc00; /* Yellow from logo */
-  --background-light: #f5f8fa;
-  --text-dark: #333333;
-  --text-light: #ffffff;
-  --gray-light: #e8e8e8;
+  --primary-color: #003478;
+  --secondary-color: #FFCC00;
+  --secondary-color-rgb: 255, 204, 0;
+  --accent-color: #E74C3C;
+  --background-light: #F8F9FA;
+  --text-light: #FFFFFF;
+  --text-dark: #212529;
+  --text-muted: #6c757d;
+  --gray-light: #dee2e6;
+  --gray-dark: #343a40;
   --gray-medium: #aaaaaa;
 }
 
@@ -478,8 +481,8 @@
   display: flex;
   justify-content: space-between;
   padding: 0 5px;
-  z-index: 10;
   pointer-events: none; /* Fix for arrows not working */
+  z-index: 5; /* Lower z-index to prevent stacking above card content */
 }
 
 .carousel-control {
@@ -495,6 +498,8 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease;
   pointer-events: auto; /* Enable pointer events on controls */
+  position: relative; /* Ensure proper stacking context */
+  z-index: 6; /* Ensure buttons are above the parent container but not too high */
 }
 
 .carousel-control:hover {
@@ -544,13 +549,36 @@
 }
 
 @media (max-width: 992px) {
-  .service-card {
-    flex-basis: calc(50% - 1.5rem);
-    min-height: 300px; 
+  .hero-section, .hero-overlay {
+    min-height: 500px;
+  }
+  
+  .hero-content {
+    max-width: 100%;
+    text-align: center;
+  }
+  
+  .hero-section h1 {
+    font-size: 2.4rem;
+  }
+  
+  .cta-buttons {
+    justify-content: center;
+  }
+  
+  .location-container {
+    flex-direction: column;
+  }
+  
+  .location-info, .map-container {
+    width: 100%;
+  }
+  
+  .map-container {
+    margin-top: 1.5rem;
   }
 }
 
-/* Mobile Specific Styles */
 @media (max-width: 767px) {
   .carousel-container {
     overflow-x: auto; /* Enable horizontal scrolling */
@@ -656,12 +684,13 @@
   
   .carousel-controls {
     pointer-events: none; /* The parent shouldn't block clicks */
+    z-index: 5; /* Set appropriate z-index for container */
   }
   
   .carousel-control {
     pointer-events: auto; /* But the buttons should receive clicks */
     position: absolute; /* Position absolutely to prevent layout issues */
-    z-index: 100; /* Ensure on top */
+    z-index: 6; /* Ensure on top of container but not too high */
   }
   
   .carousel-control.prev {
@@ -716,7 +745,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
-  margin-top: 3rem;
+  margin-top: 2rem;
+  align-items: stretch;
 }
 
 .location-info {
@@ -725,7 +755,7 @@
   background-color: var(--text-light);
   padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
 .location-info h3 {
@@ -739,16 +769,21 @@
 
 .info-item {
   display: flex;
-  margin-bottom: 1rem;
+  margin-bottom: 1.2rem;
+  align-items: flex-start;
 }
 
 .info-icon {
-  font-size: 1.3rem;
   margin-right: 1rem;
   color: var(--secondary-color);
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 36px;
+  height: 36px;
+  background-color: rgba(255, 204, 0, 0.1);
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .info-icon svg {
@@ -757,17 +792,43 @@
   fill: var(--secondary-color);
 }
 
-.info-item p {
-  margin: 0;
+.info-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-label {
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 0.3rem;
+}
+
+.info-text {
+  color: var(--text-dark);
   line-height: 1.5;
 }
 
+.info-item small {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  margin-top: 0.2rem;
+}
+
 .map-container {
-  flex: 2;
+  flex: 1;
   min-width: 300px;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  display: flex;
+}
+
+.map-container iframe {
+  width: 100%;
+  border: none;
+  min-height: 0;
+  height: auto;
+  aspect-ratio: 4/3;
 }
 
 .directions-button {
@@ -789,34 +850,6 @@
 
 .directions-button .button-icon {
   margin-right: 0.5rem;
-}
-
-/* Responsive Styles */
-@media (max-width: 992px) {
-  .hero-section, .hero-overlay {
-    min-height: 500px;
-  }
-  
-  .hero-content {
-    max-width: 100%;
-    text-align: center;
-  }
-  
-  .hero-section h1 {
-    font-size: 2.4rem;
-  }
-  
-  .cta-buttons {
-    justify-content: center;
-  }
-  
-  .location-container {
-    flex-direction: column;
-  }
-  
-  .location-info, .map-container {
-    width: 100%;
-  }
 }
 
 @media (max-width: 768px) {
@@ -862,13 +895,6 @@
   .cta-highlight-item p {
     font-size: 1rem;
   }
-}
-
-/* Add JavaScript to make accordion work */
-/* Just add this to make the demo visually complete */
-.accordion-item:first-child .accordion-content {
-  max-height: 0;
-  padding: 0 1.2rem;
 }
 
 /* Testimonials Section */
@@ -1110,5 +1136,324 @@
   .floating-cta-text {
     margin-right: 0;
     margin-bottom: 1.5rem;
+  }
+}
+
+/* Add JavaScript to make accordion work */
+/* Just add this to make the demo visually complete */
+.accordion-item:first-child .accordion-content {
+  max-height: 0;
+  padding: 0 1.2rem;
+}
+
+/* Enhanced Section Divider Styles */
+.enhanced-section-divider {
+  padding: 1rem 0;
+  width: 100%;
+  background-color: #ffffff;
+}
+
+.divider-line {
+  height: 2px;
+  background: linear-gradient(to right, rgba(255, 204, 0, 0.05), var(--secondary-color), rgba(255, 204, 0, 0.05));
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.divider-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  background-color: var(--secondary-color);
+  border-radius: 50%;
+  color: var(--primary-color);
+  margin: 0 1.5rem;
+  box-shadow: 0 3px 10px rgba(255, 204, 0, 0.4);
+}
+
+.divider-icon svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+  .enhanced-section-divider {
+    padding: 0.75rem 0;
+  }
+  
+  .divider-line {
+    max-width: 120px;
+  }
+  
+  .divider-icon {
+    width: 40px;
+    height: 40px;
+    margin: 0 1rem;
+  }
+}
+
+/* Callback Request Tab and Form Styles */
+.callback-tab {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  padding: 15px;
+  border-radius: 8px 0 0 8px;
+  box-shadow: -3px 3px 10px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 60px;
+  text-align: center;
+}
+
+.callback-tab:hover {
+  background-color: #e6b800;
+  transform: translateY(-50%) translateX(-5px);
+}
+
+.callback-tab.active {
+  transform: translateY(-50%) translateX(100%);
+}
+
+.callback-tab-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.callback-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.callback-icon svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--primary-color);
+}
+
+.callback-label {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.callback-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1001;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.callback-popup.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.callback-popup-content {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+.close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gray-medium);
+  transition: color 0.3s ease;
+}
+
+.close-button:hover {
+  color: var(--primary-color);
+}
+
+.popup-title {
+  font-size: 1.8rem;
+  color: var(--primary-color);
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.popup-subtitle {
+  text-align: center;
+  color: var(--text-muted);
+  margin-bottom: 25px;
+}
+
+.callback-form .form-group {
+  margin-bottom: 20px;
+}
+
+.callback-form label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-dark);
+}
+
+.callback-form input,
+.callback-form textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid var(--gray-light);
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.callback-form input:focus,
+.callback-form textarea:focus {
+  outline: none;
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.1);
+}
+
+.callback-form input.invalid,
+.callback-form textarea.invalid {
+  border-color: var(--accent-color);
+}
+
+.error-message {
+  color: var(--accent-color);
+  font-size: 0.85rem;
+  margin-top: 5px;
+  display: block;
+}
+
+.char-count {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-align: right;
+  display: block;
+  margin-top: 5px;
+}
+
+.captcha-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 15px;
+  font-size: 1.1rem;
+  margin-top: 10px;
+  position: relative;
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s linear infinite;
+  margin-right: 10px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.form-status {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.form-status .success {
+  background-color: rgba(40, 167, 69, 0.1);
+  color: #28a745;
+}
+
+.form-status .error {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+}
+
+/* Responsive styles for callback tab and form */
+@media (max-width: 768px) {
+  .callback-tab {
+    right: 0;
+    top: auto;
+    bottom: 20px;
+    transform: none;
+    padding: 10px 15px;
+    border-radius: 8px 0 0 8px;
+    flex-direction: row;
+    max-width: none;
+    width: auto;
+  }
+
+  .callback-tab:hover {
+    transform: translateX(-5px);
+  }
+
+  .callback-tab.active {
+    transform: translateX(100%);
+  }
+
+  .callback-tab-content {
+    flex-direction: row;
+  }
+
+  .callback-icon {
+    margin-bottom: 0;
+    margin-right: 10px;
+  }
+
+  .callback-label {
+    writing-mode: horizontal-tb;
+    transform: none;
+  }
+
+  .callback-popup-content {
+    width: 95%;
+    padding: 20px;
+  }
+
+  .popup-title {
+    font-size: 1.5rem;
   }
 }

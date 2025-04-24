@@ -3,8 +3,8 @@
   <div class="hero-overlay">
     <div class="container">
       <div class="hero-content">
-        <h1>Libertad inmediata con Hidalgo Bail Bonds</h1>
-        <p class="subtitle">Servicio profesional de fianzas disponible 24/7 para garantizar una liberación rápida de la cárcel</p>
+        <h1>{{ 'hero_title' | translate }}</h1>
+        <p class="subtitle">{{ 'hero_subtitle' | translate }}</p>
         <div class="cta-buttons">
           <a href="tel:+18001234567" class="primary-button">
             <span class="button-icon">
@@ -12,9 +12,9 @@
                 <path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/>
               </svg>
             </span>
-            Llame ahora: (800) 123-4567
+            {{ 'hero_call_button' | translate }}
           </a>
-          <a href="/contact" class="secondary-button">Solicitar información</a>
+          <a href="/contact" class="secondary-button">{{ 'hero_info_button' | translate }}</a>
         </div>
       </div>
     </div>
@@ -26,7 +26,7 @@
   <div class="container">
     <div class="promo-content">
       <span class="promo-icon">🔔</span>
-      <p>Oferta especial: consulta gratuita y descuento en su primera fianza. Llámenos hoy mismo.</p>
+      <p>{{ 'promo_banner' | translate }}</p>
     </div>
   </div>
 </section>
@@ -34,8 +34,8 @@
 <!-- Why Choose Us Section -->
 <section class="features-section">
   <div class="container">
-    <h2 class="section-title">Cuando la libertad es lo más importante, puede confiar en Hidalgo Bail Bonds</h2>
-    <p class="section-subtitle">Obtener una fianza para sus seres queridos puede ser complicado. Conocer los cargos y el tiempo de entrega brinda seguridad. Estamos aquí para ayudarle con sus necesidades.</p>
+    <h2 class="section-title">{{ 'features_title' | translate }}</h2>
+    <p class="section-subtitle">{{ 'features_subtitle' | translate }}</p>
     
     <div class="features-grid">
       <!-- Feature 1 -->
@@ -45,8 +45,8 @@
             <path d="M512 240c0 114.9-114.6 208-256 208c-37.1 0-72.3-6.4-104.1-17.9c-11.9 8.7-31.3 20.6-54.3 30.6C73.6 471.1 44.7 480 16 480c-6.5 0-12.3-3.9-14.8-9.9c-2.5-6-1.1-12.8 3.4-17.4l0 0 0 0 0 0 0 0 .3-.3c.3-.3 .7-.7 1.3-1.4c1.1-1.2 2.8-3.1 4.9-5.7c4.1-5 9.6-12.4 15.2-21.6c10-16.6 19.5-38.4 21.4-62.9C17.7 326.8 0 285.1 0 240C0 125.1 114.6 32 256 32s256 93.1 256 208z"/>
           </svg>
         </div>
-        <h3>Hablamos español</h3>
-        <p>Ofrecemos servicios de traducción al español para ayudarle con cualquier barrera del idioma. Nuestro personal es amable y habla español.</p>
+        <h3>{{ 'feature1_title' | translate }}</h3>
+        <p>{{ 'feature1_text' | translate }}</p>
       </div>
       
       <!-- Feature 2 -->
@@ -56,8 +56,8 @@
             <path d="M256 0a256 256 0 1 1 0 512A256 256 0 1 1 256 0zM232 120V256c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2V120c0-13.3-10.7-24-24-24s-24 10.7-24 24z"/>
           </svg>
         </div>
-        <h3>Servicio 24/7</h3>
-        <p>Estamos disponibles 24 horas al día, 7 días a la semana, y aprobamos todas las fianzas garantizando una liberación rápida de la cárcel, a cualquier hora del día o noche.</p>
+        <h3>{{ 'feature2_title' | translate }}</h3>
+        <p>{{ 'feature2_text' | translate }}</p>
       </div>
 
       <!-- Feature 3 -->
@@ -67,8 +67,8 @@
             <path d="M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 38.4 31 38.3 57.2c-.5 99.2-41.3 280.7-213.6 363.2c-16.7 8-36.1 8-52.8 0C57.3 420.7 16.5 239.2 16 140c-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.8 1 251.4 0 256 0zm0 66.8V444.8C394 378 431.1 230.1 432 141.4L256 66.8l0 0z"/>
           </svg>
         </div>
-        <h3>Experiencia profesional</h3>
-        <p>Somos una empresa de fianzas profesional que proporciona servicios confiables y eficientes a personas en necesidad.</p>
+        <h3>{{ 'feature3_title' | translate }}</h3>
+        <p>{{ 'feature3_text' | translate }}</p>
       </div>
       
       <!-- Feature 4 -->
@@ -78,8 +78,8 @@
             <path d="M64 32C28.7 32 0 60.7 0 96v32H576V96c0-35.3-28.7-64-64-64H64zM576 224H0V416c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V224zM112 352h64c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16zm112 16c0-8.8 7.2-16 16-16H368c8.8 0 16 7.2 16 16s-7.2 16-16 16H240c-8.8 0-16-7.2-16-16V352H112c-8.8 0-16-7.2-16-16V304c0-8.8 7.2-16 16-16h48V240z"/>
           </svg>
         </div>
-        <h3>Planes de pago</h3>
-        <p>Más opciones de pago para fianzas, ofrecemos opciones de pago que se adaptan a sus necesidades.</p>
+        <h3>{{ 'feature4_title' | translate }}</h3>
+        <p>{{ 'feature4_text' | translate }}</p>
       </div>
     </div>
   </div>
@@ -95,11 +95,11 @@
             </svg>
           </div>
           <div class="floating-cta-text">
-            <h3>¿Necesita ayuda inmediata?</h3>
-            <p>Estamos disponibles 24/7 para atenderle</p>
+            <h3>{{ 'float_cta_title' | translate }}</h3>
+            <p>{{ 'float_cta_text' | translate }}</p>
           </div>
           <a href="tel:+18001234567" class="primary-button pulse-button">
-            Llame ahora: (800) 123-4567
+            {{ 'float_cta_button' | translate }}
           </a>
         </div>
       </div>
@@ -110,8 +110,8 @@
 <!-- Services Section - Mejorado con diseño coherente -->
 <section id="servicios" class="services-section">
   <div class="container">
-    <h2 class="section-title">Nuestros Servicios</h2>
-    <p class="section-subtitle">Estos son los servicios que Hidalgo Bail Bonds ofrece y aquí encontrará una breve explicación de cada término.</p>
+    <h2 class="section-title">{{ 'services_title' | translate }}</h2>
+    <p class="section-subtitle">{{ 'services_subtitle' | translate }}</p>
     
     <div class="carousel-container">
       <!-- Carousel Controls moved inside container but before carousel -->
@@ -138,8 +138,8 @@
               <path d="M48 0C21.5 0 0 21.5 0 48V464c0 26.5 21.5 48 48 48h96c26.5 0 48-21.5 48-48V48c0-26.5-21.5-48-48-48H48zM64 240c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V240zm112-96h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H176c-8.8 0-16-7.2-16-16V160c0-8.8 7.2-16 16-16zm80 96c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H272c-8.8 0-16-7.2-16-16V240zM168 392c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H184c-8.8 0-16-7.2-16-16V392z"/>
             </svg>
           </div>
-          <h3>Fianzas de comparecencia</h3>
-          <p>Un tipo de fianza que requiere que un acusado comparezca en la corte en horarios y fechas específicas según lo ordenado por la corte.</p>
+          <h3>{{ 'service_appearance_title' | translate }}</h3>
+          <p>{{ 'service_appearance_text' | translate }}</p>
         </div>
         
         <!-- Service: Federales (Federal) -->
@@ -149,8 +149,8 @@
               <path d="M48 80v48H32c-17.7 0-32 14.3-32 32v48c0 17.7 14.3 32 32 32H48v160c0 17.7 14.3 32 32 32h96c17.7 0 32-14.3 32-32V240h32V160c35.3 0 64-28.7 64-64V80c0-26.5-21.5-48-48-48H96c-26.5 0-48 21.5-48 48zM96 80h64V96H96V80zM352 248.6c0 16.7 1.8 32.2 5.3 46.4H336c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h32.8c13.1 29.8 33.7 53.5 59.2 66.4V479.4l-86.7-23.1c-15.4-4.1-31.4-6.3-47.4-6.3H261.8c-16 0-31.9 2.2-47.4 6.3L128 479.4V239.4c-11.7-6.5-22.3-14.9-31.4-24.7l-10.4 10.4c-6.2 6.2-16.4 6.2-22.6 0l-11.3-11.3c-6.2-6.2-6.2-16.4 0-22.6l62.3-62.3V112c0-8.8 7.2-16 16-16h16c8.8 0 16 7.2 16 16v16.9c4.9-1.9 10.2-2.9 15.6-2.9h40.4c17.7 0 32 14.3 32 32v48c0 17.7-14.3 32-32 32H240v32c0 52.3 25.1 98.8 64 128.3v-4.5c0-30.5 11.9-59.8 33.2-81.6l51.2-52.3c13-13.3 30.9-20.8 49.5-20.8h15.8c-1.3-5.5-1.9-11.1-1.9-16.9c0-41.1 33.4-74.5 74.5-74.5s74.5 33.4 74.5 74.5c0 41.1-33.4 74.5-74.5 74.5c-14.2 0-27.4-3.9-38.7-10.8l-13.6 13.9c-9.8 10-16.9 22.5-20.6 36.1l-3.8 14.1h72.7c15.8 0 30.7 7.8 39.5 20.9l51 74.6c10.4 15.1 16 33.3 16 51.9v17c0 17.7-14.3 32-32 32h-42.8c-35.7 0-68.5-19.4-85.6-50.8l-23.8-43.9c-4.6-8.5-13.6-13.8-23.4-13.8c-8.9 0-17.3 4.5-22.3 11.9l-25.4 38c-8.9 13.4-24 21.5-40 21.5c-17.7 0-32-14.3-32-32V367.8c-14-5.9-26.9-13.4-39-22.3v59.7l86.2 23c12.1 3.2 25.9-3.3 30.9-14.9l18-42c3.5 9.4 8.3 18.2 14.1 26.1l23.8 43.9c23.5 43.5 69 71.5 117.6 71.5H448c28.7 0 53.5-16.3 65.7-40.2c-21.7 12.3-46.8 19.4-74.4 19.4c-82.2 0-149-66.8-149-149.1z"/>
             </svg>
           </div>
-          <h3>Fianzas federales</h3>
-          <p>Fianzas específicas para delitos federales, que suelen ser más complejas y requieren una experiencia especializada en el sistema judicial federal.</p>
+          <h3>{{ 'service_federal_title' | translate }}</h3>
+          <p>{{ 'service_federal_text' | translate }}</p>
         </div>
 
         <!-- Service: Inmigración (Immigration) -->
@@ -160,8 +160,8 @@
               <path d="M219.3 .5c3.1-.6 6.3-.6 9.4 0l200 40C439.9 42.7 448 52.6 448 64s-8.1 21.3-19.3 23.5L352 102.9V160c0 70.7-57.3 128-128 128s-128-57.3-128-128V102.9L48 93.3v65.1l152 30.4v42.4l-152-30.4V288c0 53 43 96 96 96h8c8.8 0 16 7.2 16 16v16c0 8.8-7.2 16-16 16H144c-70.7 0-128-57.3-128-128V93.3l-19.3-3.9C-14.4 87.3-23.3 77.4-23.3 66S-14.4 44.7-3.3 42.5l200-40 19.3 3.9L224 .5l-4.7-.9zM97.8 208.9L224 225.8l126.2-16.9c-14.1-7.3-30-11.5-47.1-11.9H264c-8.8 0-16-7.2-16-16s7.2-16 16-16h39.1c32.1 .5 61.5 13 83.1 33.1c5.8-9.7 9.2-21 9.7-33.1H264c-8.8 0-16-7.2-16-16s7.2-16 16-16h39.1c-4.9-26.4-25.8-47.3-52.1-52.1c0 0 0-.1 0-.1V141.3c-7.8 2.2-15.3 5.3-22.4 9.2c-4 2.2-8.2 3.5-12.6 4V144c0-26.5-21.5-48-48-48s-48 21.5-48 48v10.5c-4.4-.5-8.6-1.8-12.6-4c-7.1-3.9-14.6-7-22.4-9.2V64.3C96.7 64.2 96.8 64.1 97 64l-51-10.2L64 59.4v35.2c15.5 7.1 28.1 19.2 35.8 34.4c5.7 11.1 8.2 23.2 8.2 35.5c0 17.6-5.8 33.8-15.5 46.9l5.2 1.4zm25-54.9C118.4 146.7 112 138.1 112 128s6.4-18.7 15.8-25.8c0 0-.1 0-.1 0h0c9.3-7.1 15.8-15.7 15.8-25.8s-6.4-18.7-15.8-25.8L102.9 63.3C109 65 114.7 67.8 120 71.3c18.7 12.5 30 33.2 30 55.6c0 7.7-1.3 15.1-3.8 22c-6.9 19.8-23.4 35.1-43.4 40.9l-3.6 1c8.1-11.8 12.8-26.1 12.8-41.6c0-1.5 0-3-.1-4.5c.9-1.2 1.9-2.4 2.9-3.5c2-2.3 5.1-3.5 8-3.3z"/>
             </svg>
           </div>
-          <h3>Fianzas de inmigración</h3>
-          <p>Fianzas especializadas para casos relacionados con la inmigración y deportación, ayudando a las personas detenidas por ICE.</p>
+          <h3>{{ 'service_immigration_title' | translate }}</h3>
+          <p>{{ 'service_immigration_text' | translate }}</p>
         </div>
 
         <!-- Service: Apelación (Appeal) -->
@@ -171,8 +171,8 @@
               <path d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM160 240c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v48h48c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H224v48c0 8.8-7.2 16-16 16H176c-8.8 0-16-7.2-16-16V352H112c-8.8 0-16-7.2-16-16V304c0-8.8 7.2-16 16-16h48V240z"/>
             </svg>
           </div>
-          <h3>Fianzas de apelación</h3>
-          <p>Un tipo de fianza que permite a un acusado ser liberado de la custodia mientras apela una condena o sentencia.</p>
+          <h3>{{ 'service_appeal_title' | translate }}</h3>
+          <p>{{ 'service_appeal_text' | translate }}</p>
         </div>
         
         <!-- Service: Licencias (License) -->
@@ -180,8 +180,8 @@
           <div class="service-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="48" height="48" fill="currentColor"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h16v416h-16c-17.7 0-32 14.3-32 32s14.3 32 32 32h48c17.7 0 32-14.3 32-32s-14.3-32-32-32h-16V32h16c17.7 0 32-14.3 32-32s-14.3-32-32-32H320zM64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H192c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zm96 64c0-17.7-14.3-32-32-32s-32 14.3-32 32v32c0 17.7 14.3 32 32 32s32-14.3 32-32V96zM80 352c-17.7 0-32 14.3-32 32s14.3 32 32 32h80c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
           </div>
-          <h3>Fianzas para Licencias</h3>
-          <p>Asegure el cumplimiento de las regulaciones estatales y locales con nuestras fianzas para licencias de contratistas y otros profesionales.</p>
+          <h3>{{ 'service_license_title' | translate }}</h3>
+          <p>{{ 'service_license_text' | translate }}</p>
         </div>
         
         <!-- Service: Utilidad (Utility) -->
@@ -189,17 +189,17 @@
           <div class="service-icon">
              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="48" height="48" fill="currentColor"><path d="M0 80V224H192V80H0zm0 224V432H192V304H0zM256 80V224H448V80H256zM256 304V432H448V304H256zM64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64z"/></svg>
           </div>
-          <h3>Fianzas de Utilidad</h3>
-          <p>Garantías requeridas por compañías de servicios públicos para asegurar el pago de futuras facturas.</p>
+          <h3>{{ 'service_utility_title' | translate }}</h3>
+          <p>{{ 'service_utility_text' | translate }}</p>
         </div>
 
         <!-- Service: Notario (Notary) -->
         <div class="service-card">
           <div class="service-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="48" height="48" fill="currentColor"><path d="M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 38.4 31 38.3 57.2c-.5 99.2-41.3 280.7-213.7 363.2c-16.7 8-36.1 8-52.8 0C57.3 420.7 16.5 239.2 16 140c-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.8 1 251.4 0 256 0zM224 144v192c0 17.7 14.3 32 32 32s32-14.3 32-32V144c0-17.7-14.3-32-32-32s-32 14.3-32 32z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="48" height="48" fill="currentColor"><path d="M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 38.4 31 38.3 57.2c-.5 99.2-41.3 280.7-213.6 363.2c-16.7 8-36.1 8-52.8 0C57.3 420.7 16.5 239.2 16 140c-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.8 1 251.4 0 256 0zM224 144v192c0 17.7 14.3 32 32 32s32-14.3 32-32V144c0-17.7-14.3-32-32-32s-32 14.3-32 32z"/></svg>
           </div>
-          <h3>Fianzas de Notario</h3>
-          <p>Ofrecemos fianzas para notarios públicos en Hidalgo, garantizando la protección contra errores u omisiones.</p>
+          <h3>{{ 'service_notary_title' | translate }}</h3>
+          <p>{{ 'service_notary_text' | translate }}</p>
         </div>
         
         <!-- Service: Testamentarias (Probate) -->
@@ -207,8 +207,19 @@
           <div class="service-icon">
              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="48" height="48" fill="currentColor"><path d="M128 0c17.7 0 32 14.3 32 32V64H288V32c0-17.7 14.3-32 32-32s32 14.3 32 32V64h48c26.5 0 48 21.5 48 48v48H0V112C0 85.5 21.5 64 48 64H96V32c0-17.7 14.3-32 32-32zM0 192H448V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V192zm80 64c-8.8 0-16 7.2-16 16v96c0 8.8 7.2 16 16 16h96c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H80z"/></svg>
           </div>
-          <h3>Fianzas Testamentarias</h3>
-          <p>Aseguramos la gestión adecuada de un patrimonio durante el proceso testamentario (fianzas de albacea).</p>
+          <h3>{{ 'service_probate_title' | translate }}</h3>
+          <p>{{ 'service_probate_text' | translate }}</p>
+        </div>
+
+        <!-- Service: More Bond Types -->
+        <div class="service-card">
+          <div class="service-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width="48" height="48" fill="currentColor">
+              <path d="M541.2 448c-20.8 0-40.3-5.8-56.8-16c-16.5 10.2-36 16-56.8 16c-20.8 0-40.3-5.8-56.8-16c-16.5 10.2-36 16-56.8 16c-20.8 0-40.3-5.8-56.8-16c-16.5 10.2-36 16-56.8 16c-35.3 0-64-28.7-64-64c0-64 32-128 32-128h448c0 0 32 64 32 128c0 35.3-28.7 64-64 64zM616 160h-448c-22.1 0-40-17.9-40-40s17.9-40 40-40h448c22.1 0 40 17.9 40 40s-17.9 40-40 40z"/>
+            </svg>
+          </div>
+          <h3>{{ 'service_more_title' | translate }}</h3>
+          <p>{{ 'service_more_text' | translate }}</p>
         </div>
 
       </div>
@@ -218,18 +229,6 @@
         <!-- Dots will be generated by JS -->
       </div>
     </div>
-    
-    <!-- Botón de acción para servicios -->
-    <div class="services-cta">
-      <a href="/process" class="primary-button">
-        Ver todos nuestros servicios
-        <span class="button-icon-right">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="16" height="16" fill="currentColor">
-            <path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/>
-          </svg>
-        </span>
-      </a>
-    </div>
   </div>
 </section>
 
@@ -237,7 +236,7 @@
 <section class="cta-section">
   <div class="container">
     <div class="cta-content">
-      <h2>¡Libertad inmediata para sus seres queridos!</h2>
+      <h2>{{ 'cta_title' | translate }}</h2>
       
       <div class="cta-highlights">
         <div class="cta-highlight-item">
@@ -246,7 +245,7 @@
               <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/>
             </svg>
           </div>
-          <p>Cotización gratuita y sin compromiso</p>
+          <p>{{ 'cta_highlight1' | translate }}</p>
         </div>
         
         <div class="cta-highlight-item">
@@ -255,7 +254,7 @@
               <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/>
             </svg>
           </div>
-          <p>Fiadores profesionales con años de experiencia</p>
+          <p>{{ 'cta_highlight2' | translate }}</p>
         </div>
         
         <div class="cta-highlight-item">
@@ -264,12 +263,12 @@
               <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/>
             </svg>
           </div>
-          <p>Ayuda inmediata en momentos difíciles</p>
+          <p>{{ 'cta_highlight3' | translate }}</p>
         </div>
       </div>
       
       <div class="cta-message">
-        <p>Nadie proporciona un servicio más rápido y confiable para ayudar a sus seres queridos en este momento crítico.</p>
+        <p>{{ 'cta_message' | translate }}</p>
       </div>
       
       <a href="tel:+18001234567" class="primary-button large">
@@ -278,7 +277,7 @@
             <path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/>
           </svg>
         </span>
-        LLAME AHORA: (800) 123-4567
+        {{ 'cta_button' | translate }}
       </a>
     </div>
   </div>
@@ -287,46 +286,46 @@
 <!-- FAQ Section -->
 <section id="preguntas-frecuentes" class="faq-section">
   <div class="container">
-    <h2 class="section-title">Preguntas Frecuentes</h2>
+    <h2 class="section-title">{{ 'faq_title' | translate }}</h2>
     
     <div class="accordion">
       <div class="accordion-item">
         <div class="accordion-header">
-          <h3>¿Qué necesito para sacar a alguien de la cárcel?</h3>
+          <h3>{{ 'faq_q1' | translate }}</h3>
           <span class="accordion-icon">+</span>
         </div>
         <div class="accordion-content">
-          <p>Contenido de la respuesta irá aquí.</p>
+          <p>{{ 'faq_a1' | translate }}</p>
         </div>
       </div>
       
       <div class="accordion-item">
         <div class="accordion-header">
-          <h3>¿Qué determina el costo de la fianza?</h3>
+          <h3>{{ 'faq_q2' | translate }}</h3>
           <span class="accordion-icon">+</span>
         </div>
         <div class="accordion-content">
-          <p>Contenido de la respuesta irá aquí.</p>
+          <p>{{ 'faq_a2' | translate }}</p>
         </div>
       </div>
       
       <div class="accordion-item">
         <div class="accordion-header">
-          <h3>¿Qué formas de pago aceptan?</h3>
+          <h3>{{ 'faq_q3' | translate }}</h3>
           <span class="accordion-icon">+</span>
         </div>
         <div class="accordion-content">
-          <p>Contenido de la respuesta irá aquí.</p>
+          <p>{{ 'faq_a3' | translate }}</p>
         </div>
       </div>
       
       <div class="accordion-item">
         <div class="accordion-header">
-          <h3>¿Cuánto tiempo toma el proceso?</h3>
+          <h3>{{ 'faq_q4' | translate }}</h3>
           <span class="accordion-icon">+</span>
         </div>
         <div class="accordion-content">
-          <p>Contenido de la respuesta irá aquí.</p>
+          <p>{{ 'faq_a4' | translate }}</p>
         </div>
       </div>
     </div>
@@ -336,162 +335,190 @@
 <!-- Testimonios Section -->
 <section id="testimonios" class="testimonials-section">
   <div class="container">
-    <h2 class="section-title">Lo que dicen nuestros clientes</h2>
-    <p class="section-subtitle">Miles de personas han confiado en nosotros en sus momentos más difíciles</p>
-    
-    <div class="testimonials-grid">
-      <!-- Testimonio 1 -->
-      <div class="testimonial-card">
-        <div class="testimonial-rating">
-          <span class="star-icon">★</span>
-          <span class="star-icon">★</span>
-          <span class="star-icon">★</span>
-          <span class="star-icon">★</span>
-          <span class="star-icon">★</span>
-        </div>
-        <div class="testimonial-content">
-          <p>"Hidalgo Bail Bonds respondió inmediatamente cuando mi hermano fue arrestado. Fueron profesionales y comprensivos durante todo el proceso, explicando cada paso con paciencia. Gracias a ellos, mi hermano fue liberado rápidamente."</p>
-        </div>
-        <div class="testimonial-author">
-          <div class="author-avatar">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="32" height="32" fill="#ddd">
-              <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"/>
-            </svg>
-          </div>
-          <div class="author-info">
-            <h4>Carlos Rodríguez</h4>
-            <p>McAllen, TX</p>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Testimonio 2 -->
-      <div class="testimonial-card">
-        <div class="testimonial-rating">
-          <span class="star-icon">★</span>
-          <span class="star-icon">★</span>
-          <span class="star-icon">★</span>
-          <span class="star-icon">★</span>
-          <span class="star-icon">★</span>
-        </div>
-        <div class="testimonial-content">
-          <p>"No sabía qué hacer cuando mi hijo fue detenido. Llamé a Hidalgo Bail Bonds y me atendieron de inmediato, incluso a las 2 de la madrugada. Su servicio en español fue excelente y me guiaron a través de todo el proceso. Muy recomendable."</p>
-        </div>
-        <div class="testimonial-author">
-          <div class="author-avatar">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="32" height="32" fill="#ddd">
-              <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"/>
-            </svg>
-          </div>
-          <div class="author-info">
-            <h4>Alejandra Méndez</h4>
-            <p>Edinburg, TX</p>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Testimonio 3 -->
-      <div class="testimonial-card">
-        <div class="testimonial-rating">
-          <span class="star-icon">★</span>
-          <span class="star-icon">★</span>
-          <span class="star-icon">★</span>
-          <span class="star-icon">★</span>
-          <span class="star-icon">★</span>
-        </div>
-        <div class="testimonial-content">
-          <p>"Servicio rápido y eficiente. Las opciones de pago flexibles me ayudaron mucho en un momento difícil. El agente de fianzas fue muy profesional y me mantuvo informado durante todo el proceso. Lo recomendaría sin dudarlo."</p>
-        </div>
-        <div class="testimonial-author">
-          <div class="author-avatar">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="32" height="32" fill="#ddd">
-              <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"/>
-            </svg>
-          </div>
-          <div class="author-info">
-            <h4>Miguel Ángel Torres</h4>
-            <p>Pharr, TX</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Botón de Google Reviews -->
-    <div class="testimonials-cta">
-      <a href="#" class="secondary-button testimonials-button">
-        <span class="button-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512" width="18" height="18" fill="currentColor">
-            <path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"/>
-          </svg>
-        </span>
-        Ver más reseñas en Google
-      </a>
-    </div>
+    <app-google-reviews></app-google-reviews>
   </div>
 </section>
+
+<!-- Simple Section Divider -->
+<div class="enhanced-section-divider">
+  <div class="container">
+    <div class="divider-line"></div>
+  </div>
+</div>
 
 <!-- Location Section with Map -->
 <section id="ubicacion" class="location-section">
   <div class="container">
-    <h2 class="section-title">Nuestra Ubicación</h2>
-    <p class="section-subtitle">Encuéntrenos fácilmente para una consulta personalizada sobre su caso</p>
+    <h2 class="section-title">{{ 'location_title' | translate }}</h2>
+    <p class="section-subtitle">{{ 'location_subtitle' | translate }}</p>
     
     <div class="location-container">
       <div class="location-info">
-        <h3>AFFORDABLE BAIL BONDS</h3>
-        <p class="service-description">Servicio de fianzas</p>
-        <div class="info-item">
-          <span class="info-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="24" height="24" fill="currentColor">
-              <path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/>
-            </svg>
-          </span>
-          <p><strong>Dirección:</strong> 1506 Pecan Blvd, McAllen, TX 78501, Estados Unidos</p>
+        <div class="company-details">
+          <h3>{{ 'location_company' | translate }}</h3>
+          <p class="company-type">{{ 'location_description' | translate }}</p>
+          
+          <div class="info-item">
+            <div class="info-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="20" height="20" fill="currentColor">
+                <path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/>
+              </svg>
+            </div>
+            <div class="info-content">
+              <span class="info-label">{{ 'location_address_label' | translate }}</span>
+              <span class="info-text">{{ 'location_address' | translate }}</span>
+            </div>
+          </div>
+          
+          <div class="info-item">
+            <div class="info-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20" height="20" fill="currentColor">
+                <path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/>
+              </svg>
+            </div>
+            <div class="info-content">
+              <span class="info-label">{{ 'location_phone_label' | translate }}</span>
+              <span class="info-text">{{ 'location_phone' | translate }}</span>
+              <small>{{ 'location_phone_note' | translate }}</small>
+            </div>
+          </div>
+          
+          <div class="info-item">
+            <div class="info-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20" height="20" fill="currentColor">
+                <path d="M256 0a256 256 0 1 1 0 512A256 256 0 1 1 256 0zM232 120V256c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2V120c0-13.3-10.7-24-24-24s-24 10.7-24 24z"/>
+              </svg>
+            </div>
+            <div class="info-content">
+              <span class="info-label">{{ 'location_hours_label' | translate }}</span>
+              <span class="info-text">{{ 'location_hours' | translate }}</span>
+            </div>
+          </div>
+          
+          <div class="info-item">
+            <div class="info-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20" height="20" fill="currentColor">
+                <path d="M243.4 2.6l-224 96c-14 6-21.8 21-18.7 35.8S16.8 160 32 160v8c0 13.3 10.7 24 24 24H456c13.3 0 24-10.7 24-24v-8c15.2 0 28.3-10.7 31.3-25.6s-4.8-29.9-18.7-35.8l-224-96c-8.1-3.4-17.2-3.4-25.2 0zM128 224H64V420.3c-.6 .3-1.2 .7-1.8 1.1l-24 16c-5.7 3.8-8.1 11-6.1 17.4S41.8 464 48 464H464c6.2 0 11.6-3.9 13.6-10.1s-.4-13.6-6.1-17.4l-24-16c-.6-.4-1.2-.7-1.8-1.1V224H384V384H128V224zm208-96c0 17.7-14.3 32-32 32s-32-14.3-32-32s14.3-32 32-32s32 14.3 32 32z"/>
+              </svg>
+            </div>
+            <div class="info-content">
+              <span class="info-label">{{ 'location_nearby_label' | translate }}</span>
+              <span class="info-text">{{ 'location_nearby' | translate }}</span>
+            </div>
+          </div>
+          
+          <a href="https://www.google.com/maps/place/AFFORDABLE+BAIL+BONDS/@26.2189725,-98.2336207,17z/data=!3m1!4b1!4m6!3m5!1s0x8665a7420ff3ce79:0xf433073e611a1f0f!8m2!3d26.2189725!4d-98.2336207!16s%2Fg%2F11jcmdf9vc?entry=ttu&g_ep=EgoyMDI1MDQyMC4wIKXMDSoASAFQAw%3D%3D" class="primary-button directions-button" target="_blank">
+            <span class="button-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="18" height="18" fill="currentColor">
+                <path d="M502.6 278.6l-128 128c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L402.7 288H32c-17.7 0-32-14.3-32-32s14.3-32 32-32h370.7l-73.4-73.4c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l128 128c12.5 12.5 12.5 32.8 0 45.3z"/>
+              </svg>
+            </span>
+            {{ 'location_directions' | translate }}
+          </a>
         </div>
-        <div class="info-item">
-          <span class="info-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="24" height="24" fill="currentColor">
-              <path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/>
-            </svg>
-          </span>
-          <p><strong>Teléfono:</strong> (800) 123-4567 <small>(Disponible 24/7)</small></p>
-        </div>
-        <div class="info-item">
-          <span class="info-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="24" height="24" fill="currentColor">
-              <path d="M256 0a256 256 0 1 1 0 512A256 256 0 1 1 256 0zM232 120V256c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2V120c0-13.3-10.7-24-24-24s-24 10.7-24 24z"/>
-            </svg>
-          </span>
-          <p><strong>Horario de oficina:</strong> Lunes a Domingo, 24 horas</p>
-        </div>
-        <div class="info-item">
-          <span class="info-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="24" height="24" fill="currentColor">
-              <path d="M96 0C43 0 0 43 0 96V416c0 53 43 96 96 96H384h32c17.7 0 32-14.3 32-32s-14.3-32-32-32V384c17.7 0 32-14.3 32-32s14.3-32 32-32H288V153.3c-23.5-10.3-41.2-31.6-46.4-57.3H128c-17.7 0-32-14.3-32-32s14.3-32 32-32H256c14.6-19.4 37.8-32 64-32s49.4 12.6 64 32zm55.6 288H584.4L512 195.8 439.6 320zM512 416c-62.9 0-115.2-34-126-78.9c-2.6-11 1-22.3 10.4-29.8l76.3-61c6.6-5.3 16-5.3 22.6 0l76.3 61c9.4 7.5 13 18.8 10.4 29.8c-10.8 44.9-63.1 78.9-126 78.9zM111.1 270.7c7.6-6.1 17.8-8.5 27.3-6.5l83 16.6c11.9 2.4 20.6 12.9 20.6 25.2c0 7.6-3.4 14.8-9.2 19.6l-23.4 19.5c-6.2 5.2-10 12.7-10.4 20.7c0 .1 0 .3 0 .4l0 .2c0 .8 .1 1.6 .2 2.4c3.2 51.2 44.8 92.2 96.1 94.6c.5 0 1 0 1.5 0s1 0 1.5 0c52.8-2.5 95.1-45.7 96.9-98.6c0-.2 0-.4 0-.6c0-.3 0-.7 0-1c-.4-8.1-4.3-15.5-10.4-20.7l-23.4-19.5c-5.9-4.9-9.2-12-9.2-19.6c0-12.2 8.7-22.8 20.6-25.2l83-16.6c9.5-1.9 19.7 .4 27.3 6.5c71.7 57.6 62.2 187-22.9 250.9c-39.2 29.4-92.8 38.5-140.6 24.8c-47.6-13.7-88.3-48.1-107.8-93.7c-19.5-45.6-15.4-98.6 10.9-140.9z"/>
-            </svg>
-          </span>
-          <p><strong>Cerca de:</strong> Juzgado del Condado de Hidalgo, Centro de Detención</p>
-        </div>
-        <a href="https://maps.google.com/?q=1506+Pecan+Blvd,+McAllen,+TX+78501" target="_blank" class="directions-button">
-          <span class="button-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="18" height="18" fill="currentColor">
-              <path d="M135.2 117.4L109.1 192H402.9l-26.1-74.6C372.3 104.6 360.2 96 346.6 96H165.4c-13.6 0-25.7 8.6-30.2 21.4zM39.6 196.8L74.8 96.3C88.3 57.8 124.6 32 165.4 32H346.6c40.8 0 77.1 25.8 90.6 64.3l35.2 100.5c23.2 9.6 39.6 32.5 39.6 59.2V400v48c0 17.7-14.3 32-32 32H448c-17.7 0-32-14.3-32-32V400H96v48c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V400 256c0-26.7 16.4-49.6 39.6-59.2zM128 288a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm288 32a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/>
-            </svg>
-          </span>
-          Obtener Direcciones
-        </a>
       </div>
+      
+      <!-- Map Container -->
       <div class="map-container">
-        <iframe 
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3580.962478359753!2d-98.23345962332328!3d26.203214883446965!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8665a78e9463cf47%3A0x9c34c11765b0c41a!2s1506%20W%20Pecan%20Blvd%2C%20McAllen%2C%20TX%2078501%2C%20EE.%20UU.!5e0!3m2!1ses!2smx!4v1716341752332!5m2!1ses!2smx" 
-          width="100%" 
-          height="450" 
-          style="border:0; border-radius:8px;" 
-          allowfullscreen="" 
-          loading="lazy" 
-          referrerpolicy="no-referrer-when-downgrade">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3580.8983199539183!2d-98.21701128497344!3d26.17881658345387!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8665a229d1f8a6bf%3A0x96c6ba6b5acd34f8!2sPecan%20Blvd%2C%20McAllen%2C%20TX%2078501%2C%20EE.%20UU.!5e0!3m2!1ses-419!2sar!4v1684162563196!5m2!1ses-419!2sar" 
+                style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
         </iframe>
       </div>
     </div>
   </div>
 </section>
+
+<!-- Callback Request Tab -->
+<div class="callback-tab" [class.active]="isCallbackOpen" (click)="toggleCallback()">
+  <div class="callback-tab-content">
+    <span class="callback-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20" height="20" fill="currentColor">
+        <path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/>
+      </svg>
+    </span>
+    <span class="callback-label">{{ 'callback.tab_title' | translate }}</span>
+  </div>
+</div>
+
+<!-- Callback Request Form Popup -->
+<div class="callback-popup" [class.active]="isCallbackOpen">
+  <div class="callback-popup-content">
+    <button type="button" class="close-button" (click)="toggleCallback()">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" width="16" height="16" fill="currentColor">
+        <path d="M310.6 361.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L160 301.3 54.6 406.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L114.7 256 9.4 150.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 210.7 265.4 105.4c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3L205.3 256 310.6 361.4z"/>
+      </svg>
+    </button>
+    
+    <h3 class="popup-title">{{ 'callback.form_title' | translate }}</h3>
+    <p class="popup-subtitle">{{ 'callback.form_subtitle' | translate }}</p>
+    
+    <form [formGroup]="callbackForm" (ngSubmit)="submitCallbackForm()" class="callback-form">
+      <div class="form-group">
+        <label for="fullName">{{ 'callback.full_name' | translate }} *</label>
+        <input 
+          type="text" 
+          id="fullName" 
+          formControlName="fullName" 
+          [class.invalid]="hasError('fullName')"
+        >
+        <span class="error-message" *ngIf="hasError('fullName')">
+          {{ 'callback.required' | translate }}
+        </span>
+      </div>
+      
+      <div class="form-group">
+        <label for="dob">{{ 'callback.dob' | translate }} *</label>
+        <input 
+          type="date" 
+          id="dob" 
+          formControlName="dob" 
+          [class.invalid]="hasError('dob')"
+        >
+        <span class="error-message" *ngIf="hasError('dob')">
+          {{ 'callback.required' | translate }}
+        </span>
+      </div>
+      
+      <div class="form-group">
+        <label for="phone">{{ 'callback.phone' | translate }} *</label>
+        <input 
+          type="tel" 
+          id="phone" 
+          formControlName="phone" 
+          [class.invalid]="hasError('phone')"
+        >
+        <span class="error-message" *ngIf="hasError('phone')">
+          {{ 'callback.required' | translate }}
+        </span>
+      </div>
+      
+      <div class="form-group">
+        <label for="message">{{ 'callback.message' | translate }}</label>
+        <textarea 
+          id="message" 
+          formControlName="message" 
+          maxlength="200"
+          rows="3"
+          placeholder="{{ 'callback.message_placeholder' | translate }}"
+        ></textarea>
+        <small class="char-count">{{ messageCharsLeft }}/200</small>
+      </div>
+      
+      <div class="form-group captcha-container">
+        <div class="recaptcha" id="recaptcha"></div>
+        <span class="error-message" *ngIf="!isCaptchaVerified && isFormSubmitted">
+          {{ 'callback.required' | translate }}
+        </span>
+      </div>
+      
+      <button type="submit" class="primary-button submit-button" [disabled]="isSubmitting">
+        <span *ngIf="isSubmitting" class="loading-spinner"></span>
+        {{ 'callback.submit' | translate }}
+      </button>
+      
+      <div class="form-status" *ngIf="formStatus">
+        <div [class]="formStatus.type">{{ formStatus.message | translate }}</div>
+      </div>
+    </form>
+  </div>
+</div>

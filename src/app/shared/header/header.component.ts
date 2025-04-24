@@ -5,16 +5,29 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgClass } from '@angular/common';
 import { LanguageService, Language } from '../services/language.service';
 import { TranslatePipe } from '../pipes/translate.pipe';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-header',
   standalone: true,
   imports: [CommonModule, RouterModule, RouterLink, RouterLinkActive, NgClass, TranslatePipe],
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+  styleUrls: ['./header.component.css'],
+  animations: [
+    trigger('fadeInOut', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(-20px)' }),
+        animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+      ]),
+      transition(':leave', [
+        animate('300ms ease-in', style({ opacity: 0, transform: 'translateY(-20px)' }))
+      ])
+    ])
+  ]
 })
 export class HeaderComponent implements OnInit, AfterViewInit {
   isMobileMenuOpen = false;
+  showLanguagePrompt = false;
   private lastScrollTop = 0;
   private headerHidden = false;
   private scrollThreshold = 100; // Minimum scroll before header can hide
@@ -37,6 +50,14 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     this.languageService.currentLanguage$.subscribe(lang => {
       this.currentLanguage = lang;
     });
+    
+    // Always show the language prompt initially
+    if (this.isBrowser) {
+      // Slight delay to ensure page has loaded
+      setTimeout(() => {
+        this.displayLanguagePrompt();
+      }, 1500);
+    }
   }
 
   ngAfterViewInit(): void {
@@ -51,9 +72,26 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     }
   }
 
+  displayLanguagePrompt(): void {
+    console.log('Showing language prompt');
+    this.showLanguagePrompt = true;
+    
+    // Auto-dismiss after 12 seconds if not interacted with
+    setTimeout(() => {
+      if (this.showLanguagePrompt) {
+        this.dismissLanguagePrompt();
+      }
+    }, 12000);
+  }
+
   toggleLanguage(event: Event): void {
     event.preventDefault();
     this.languageService.toggleLanguage();
+    this.dismissLanguagePrompt();
+  }
+  
+  dismissLanguagePrompt(): void {
+    this.showLanguagePrompt = false;
   }
 
   private updateHeaderHeight(): void {

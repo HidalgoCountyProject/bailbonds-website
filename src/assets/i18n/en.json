@@ -1,0 +1,63 @@
+{
+  "navbar": {
+    "services": "Services",
+    "testimonials": "Testimonials",
+    "about": "About Us",
+    "contact": "Contact",
+    "call_now": "Call Now"
+  },
+  "hero": {
+    "title": "Fast and Reliable Bail Bonds in McAllen",
+    "subtitle": "Available 24/7 for immediate assistance",
+    "button": "Contact Us Now"
+  },
+  "services": {
+    "title": "Our Services",
+    "subtitle": "Comprehensive bail bond solutions to meet your needs",
+    "card1_title": "Bail Bonds",
+    "card1_content": "We provide fast and reliable bail bond services for various cases.",
+    "card1_button": "Learn More",
+    "card2_title": "24/7 Service",
+    "card2_content": "Our team is available around the clock to assist you whenever you need help.",
+    "card2_button": "Contact Us",
+    "card3_title": "Free Consultation",
+    "card3_content": "Get a free consultation to understand your options and the bail process.",
+    "card3_button": "Get Started"
+  },
+  "testimonials": {
+    "title": "Testimonials",
+    "subtitle": "See what our clients have to say about our services"
+  },
+  "testimonio1_texto": "They were incredibly helpful during a stressful time. The process was quick and they explained everything clearly.",
+  "testimonio1_autor": "John Smith",
+  "testimonio1_ubicacion": "McAllen, TX",
+  "testimonio1_accion": "Contact now",
+  "testimonio2_texto": "Professional service and fast response. They guided me through the entire process and were available whenever I needed assistance.",
+  "testimonio2_autor": "Sarah Johnson",
+  "testimonio2_ubicacion": "Edinburg, TX",
+  "testimonio2_accion": "Contact now",
+  "testimonio3_texto": "Excellent service from start to finish. They made a difficult situation much easier to handle with their expertise and support.",
+  "testimonio3_autor": "Miguel Rodriguez",
+  "testimonio3_ubicacion": "McAllen, TX",
+  "testimonio3_accion": "Contact now",
+  
+  "location_title": "Our Location",
+  "location_subtitle": "Find us easily for a personalized consultation about your case",
+  "location_company": "AFFORDABLE BAIL BONDS",
+  "location_description": "Bail bonds service",
+  "location_address_label": "Address:",
+  "location_address": "1506 Pecan Blvd, McAllen, TX 78501, United States",
+  "location_phone_label": "Phone:",
+  "location_phone": "(800) 123-4567",
+  "location_phone_note": "(Available 24/7)",
+  "location_hours_label": "Office Hours:",
+  "location_hours": "Monday to Sunday, 24 hours",
+  "location_nearby_label": "Nearby:",
+  "location_nearby": "Hidalgo County Courthouse, Detention Center",
+  "location_directions": "Get Directions",
+
+  "google_reviews_title": "Our Google Reviews",
+  "based_on": "Based on",
+  "reviews": "reviews",
+  "view_all_reviews": "See All Reviews on Google"
+} 

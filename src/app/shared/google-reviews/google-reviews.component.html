@@ -1,0 +1,86 @@
+<div class="google-reviews-container">
+  <div class="reviews-header">
+    <div class="reviews-title">
+      <h2>AFFORDABLE BAIL BONDS</h2>
+      <div class="google-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512" width="24" height="24">
+          <path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" fill="#4285F4"/>
+        </svg>
+        <span>Google</span>
+      </div>
+    </div>
+    <div class="rating-summary">
+      <div class="average-rating">4.9</div>
+      <div class="stars">
+        <span class="star-icon">★</span>
+        <span class="star-icon">★</span>
+        <span class="star-icon">★</span>
+        <span class="star-icon">★</span>
+        <span class="star-icon">★</span>
+      </div>
+      <div class="total-reviews">(154)</div>
+    </div>
+  </div>
+
+  <div class="reviews-carousel-container">
+    <button class="carousel-control prev" (click)="prevReview()">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" width="16" height="16">
+        <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z" fill="currentColor"/>
+      </svg>
+    </button>
+    
+    <div class="reviews-carousel" #reviewsCarousel>
+      <div *ngFor="let review of shuffledReviews" class="review-card">
+        <div class="review-header">
+          <div class="reviewer-avatar" [attr.data-initial]="review.photo">
+            <!-- Initial character is displayed via CSS using data-initial attribute -->
+          </div>
+          <div class="reviewer-info">
+            <h4 class="reviewer-name">{{review.name}}</h4>
+            <div class="review-meta">
+              <span class="review-opinions">{{review.opinions}}</span>
+            </div>
+          </div>
+          <div class="review-actions">
+            <button class="more-options" aria-label="More options">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 512" width="12" height="24">
+                <path d="M64 360a56 56 0 1 0 0 112 56 56 0 1 0 0-112zm0-160a56 56 0 1 0 0 112 56 56 0 1 0 0-112zm0-160a56 56 0 1 0 0 112 56 56 0 1 0 0-112z" fill="#5f6368"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="review-rating">
+          <div class="stars">
+            <span class="star-icon" *ngFor="let star of [1,2,3,4,5]">★</span>
+          </div>
+        </div>
+
+        <div class="review-content">
+          <p>{{review.text}}</p>
+        </div>
+
+        <div class="review-footer">
+          <div class="review-actions-secondary">
+            <button class="action-button like" aria-label="Like">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16">
+                <path d="M323.8 34.8c-38.2-10.9-78.1 11.2-89 49.4l-5.7 20c-3.7 13-10.4 25-19.5 35l-51.3 56.4c-8.9 9.8-8.2 25 1.6 33.9s25 8.2 33.9-1.6l51.3-56.4c14.1-15.5 24.4-34 30.1-54.1l5.7-20c3.6-12.7 16.9-20.1 29.7-16.5s20.1 16.9 16.5 29.7l-5.7 20c-5.7 19.9-14.7 38.7-26.6 55.5c-5.2 7.3-5.8 16.9-1.7 24.9s12.3 13 21.3 13L448 224c8.8 0 16 7.2 16 16c0 6.8-4.3 12.7-10.4 15c-7.4 2.8-13 9-14.9 16.7s.1 15.8 5.3 21.7c2.5 2.8 4 6.5 4 10.6c0 7.8-5.6 14.3-13 15.7c-8.2 1.6-15.1 7.3-18 15.1s-1.6 16.7 3.6 23.3c2.1 2.7 3.4 6.1 3.4 9.9c0 6.7-4.2 12.6-10.2 14.9c-11.5 4.5-17.7 16.9-14.4 28.8c.4 1.3 .6 2.8 .6 4.3c0 8.8-7.2 16-16 16H286.5c-12.6 0-25-3.7-35.5-10.7l-61.7-41.1c-11-7.4-25.9-4.4-33.3 6.7s-4.4 25.9 6.7 33.3l61.7 41.1c18.4 12.3 40 18.8 62.1 18.8H384c34.7 0 62.9-27.6 64-62c14.6-11.7 24-29.7 24-50c0-4.5-.5-8.8-1.3-13c15.4-11.7 25.3-30.2 25.3-51c0-6.5-1-12.8-2.8-18.7C504.8 273.7 512 257.7 512 240c0-35.3-28.6-64-64-64l-92.3 0c4.7-10.4 8.7-21.2 11.8-32.2l5.7-20c10.9-38.2-11.2-78.1-49.4-89zM32 192c-17.7 0-32 14.3-32 32V448c0 17.7 14.3 32 32 32H96c17.7 0 32-14.3 32-32V224c0-17.7-14.3-32-32-32H32z" fill="#5f6368"/>
+              </svg>
+            </button>
+            <button class="action-button share" aria-label="Share">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16">
+                <path d="M307 34.8c-11.5 5.1-19 16.6-19 29.2v64H176C78.8 128 0 206.8 0 304C0 417.3 81.5 467.9 100.2 478.1c2.5 1.4 5.3 1.9 8.1 1.9c10.9 0 19.7-8.9 19.7-19.7c0-7.5-4.3-14.4-9.8-19.5C108.8 431.9 96 414.4 96 384c0-53 43-96 96-96h96v64c0 12.6 7.4 24.1 19 29.2s25 3 34.4-5.4l160-144c6.7-6.1 10.6-14.7 10.6-23.8s-3.8-17.7-10.6-23.8l-160-144c-9.4-8.5-22.9-10.6-34.4-5.4z" fill="#5f6368"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <button class="carousel-control next" (click)="nextReview()">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" width="16" height="16">
+        <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" fill="currentColor"/>
+      </svg>
+    </button>
+  </div>
+</div> 

@@ -1,0 +1,25 @@
+{
+  "testimonio3_autor": "Miguel Rodríguez",
+  "testimonio3_ubicacion": "McAllen, TX",
+  "testimonio3_accion": "Contactar ahora",
+  
+  "location_title": "Nuestra Ubicación",
+  "location_subtitle": "Encuéntrenos fácilmente para una consulta personalizada sobre su caso",
+  "location_company": "AFFORDABLE BAIL BONDS",
+  "location_description": "Servicio de fianzas",
+  "location_address_label": "Dirección:",
+  "location_address": "1506 Pecan Blvd, McAllen, TX 78501, Estados Unidos",
+  "location_phone_label": "Teléfono:",
+  "location_phone": "(800) 123-4567",
+  "location_phone_note": "(Disponible 24/7)",
+  "location_hours_label": "Horario de oficina:",
+  "location_hours": "Lunes a Domingo, 24 horas",
+  "location_nearby_label": "Cerca de:",
+  "location_nearby": "Juzgado del Condado de Hidalgo, Centro de Detención",
+  "location_directions": "Obtener Direcciones",
+
+  "google_reviews_title": "Nuestras Reseñas de Google",
+  "based_on": "Basado en",
+  "reviews": "reseñas",
+  "view_all_reviews": "Ver Todas las Reseñas en Google"
+} 

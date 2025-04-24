@@ -1,1 +1,115 @@
-<p>contact works!</p>
+<!-- Contact Page Banner -->
+<section class="contact-banner">
+  <div class="contact-overlay">
+    <div class="container">
+      <div class="contact-banner-content">
+        <h1>{{ 'contact_title' | translate }}</h1>
+        <p>{{ 'contact_subtitle' | translate }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Content Section -->
+<section class="contact-section">
+  <div class="container mx-auto px-4 py-16">
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-primary mb-2">{{ 'contact.title' | translate }}</h1>
+      <p class="text-xl text-gray-600">{{ 'contact.subtitle' | translate }}</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+      <!-- Contact Form -->
+      <div class="bg-white rounded-lg shadow-lg p-8">
+        <h2 class="text-2xl font-semibold mb-6 text-primary">{{ 'contact.form.title' | translate }}</h2>
+        <form>
+          <div class="mb-4">
+            <label class="block text-gray-700 mb-2" for="name">{{ 'contact.form.name' | translate }}</label>
+            <input class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" 
+                  type="text" id="name" name="name">
+          </div>
+          <div class="mb-4">
+            <label class="block text-gray-700 mb-2" for="email">{{ 'contact.form.email' | translate }}</label>
+            <input class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" 
+                  type="email" id="email" name="email">
+          </div>
+          <div class="mb-4">
+            <label class="block text-gray-700 mb-2" for="phone">{{ 'contact.form.phone' | translate }}</label>
+            <input class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" 
+                  type="tel" id="phone" name="phone">
+          </div>
+          <div class="mb-6">
+            <label class="block text-gray-700 mb-2" for="message">{{ 'contact.form.message' | translate }}</label>
+            <textarea class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" 
+                      id="message" name="message" rows="4"></textarea>
+          </div>
+          <button class="w-full bg-primary text-white py-3 px-6 rounded-lg hover:bg-primary-dark transition duration-300">
+            {{ 'contact.form.submit' | translate }}
+          </button>
+        </form>
+      </div>
+
+      <!-- Contact Information -->
+      <div class="bg-primary text-white rounded-lg shadow-lg p-8">
+        <h2 class="text-2xl font-semibold mb-6">{{ 'contact.info.title' | translate }}</h2>
+        <div class="space-y-6">
+          <div class="flex items-start">
+            <svg class="w-6 h-6 mr-4 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+            <p>{{ 'contact.info.address' | translate }}</p>
+          </div>
+          <div class="flex items-start">
+            <svg class="w-6 h-6 mr-4 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+            </svg>
+            <p>{{ 'contact.info.phone' | translate }}</p>
+          </div>
+          <div class="flex items-start">
+            <svg class="w-6 h-6 mr-4 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+            </svg>
+            <p>{{ 'contact.info.email' | translate }}</p>
+          </div>
+          <div class="flex items-start">
+            <svg class="w-6 h-6 mr-4 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <p>{{ 'contact.info.hours' | translate }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Map Section -->
+<section class="map-section">
+  <div class="container">
+    <h2>{{ 'contact_map_title' | translate }}</h2>
+    <div class="map-container">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3580.8983199539183!2d-98.21701128497344!3d26.17881658345387!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8665a229d1f8a6bf%3A0x96c6ba6b5acd34f8!2sPecan%20Blvd%2C%20McAllen%2C%20TX%2078501%2C%20EE.%20UU.!5e0!3m2!1ses-419!2sar!4v1684162563196!5m2!1ses-419!2sar" 
+              width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- Contact CTA Section -->
+<section class="contact-cta-section">
+  <div class="container">
+    <div class="cta-content">
+      <h2>{{ 'contact_cta_title' | translate }}</h2>
+      <p>{{ 'contact_cta_text' | translate }}</p>
+      <a href="tel:+18001234567" class="primary-button large">
+        <span class="button-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="24" height="24" fill="currentColor">
+            <path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/>
+          </svg>
+        </span>
+        {{ 'cta_button' | translate }}
+      </a>
+    </div>
+  </div>
+</section>
