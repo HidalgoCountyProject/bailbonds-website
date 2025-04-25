@@ -31,11 +31,14 @@ export const translations: Record<Language, TranslationSet> = {
     'callback.tab_title': 'We\'ll Call You Back',
     'callback.form_title': 'Request a Callback',
     'callback.form_subtitle': 'Fill out this form and we\'ll contact you shortly',
-    'callback.full_name': 'Full Name',
-    'callback.dob': 'Date of Birth',
-    'callback.phone': 'Phone Number',
+    'callback.full_name': 'Guarantor/Your Full Name',
+    'callback.dob': 'Arrested Person\'s Date of Birth (optional)',
+    'callback.phone': 'Guarantor/Your Phone Number',
     'callback.message': 'Message (optional)',
     'callback.message_placeholder': 'Briefly tell us about your case (max 200 characters)',
+    'callback.fullName.placeholder': 'John Smith',
+    'callback.arrestedPerson.placeholder': 'Michael Johnson',
+    'callback.phone.placeholder': '+XX (123) 456-7890',
     'callback.required': 'Required field',
     'callback.submit': 'Request Callback',
     'callback.success': 'Thank you! We will call you back soon.',
@@ -178,6 +181,38 @@ export const translations: Record<Language, TranslationSet> = {
     'contact.info.phone': '(714) 555-1234',
     'contact.info.email': 'info@hidalgobailbonds.com',
     'contact.info.hours': 'Open 24/7 - Available anytime you need us',
+    
+    // Contact Banner 
+    'contact_title': 'Contact Hidalgo Bail Bonds',
+    'contact_subtitle': 'Get immediate help for your bail bond needs',
+    
+    // Contact Form Fields
+    'contact.form.arrestedPersonName': 'Arrested Person\'s Full Name',
+    'contact.form.arrestedPersonDob': 'Arrested Person\'s Date of Birth',
+    'contact.form.contactPersonName': 'Arrested Person\'s Name (optional)',
+    'contact.form.contactPersonPhone': 'Your Phone Number',
+    
+    // Form Validation Messages
+    'contact.form.error.required': 'This field is required',
+    'contact.form.error.nameMinLength': 'Name must be at least 3 characters',
+    'contact.form.error.phoneFormat': 'Please enter a valid phone number',
+    'contact.form.error.messageMinLength': 'Message must be at least 10 characters',
+    
+    // Contact Form Placeholders
+    'contact.form.name.placeholder': 'John Smith',
+    'contact.form.arrestedPerson.placeholder': 'Michael Johnson',
+    'contact.form.email.placeholder': 'your.email@example.com',
+    'contact.form.phone.placeholder': '+XX (123) 456-7890',
+    'contact.form.message.placeholder': 'Please provide details about your case...',
+    
+    // Form Submission Status
+    'contact.form.submitting': 'Submitting...',
+    'contact.form.success': 'Thank you! Your message has been sent successfully. We\'ll contact you shortly.',
+    
+    // Map and CTA Sections
+    'contact_map_title': 'Find Us on the Map',
+    'contact_cta_title': 'Need Immediate Assistance?',
+    'contact_cta_text': 'Our bail bond agents are available 24/7 to help you get your loved one out of jail',
   },
   es: {
     // Header
@@ -205,11 +240,14 @@ export const translations: Record<Language, TranslationSet> = {
     'callback.tab_title': 'Te Devolvemos La Llamada',
     'callback.form_title': 'Solicitar una Llamada',
     'callback.form_subtitle': 'Complete este formulario y nos pondremos en contacto con usted',
-    'callback.full_name': 'Nombre Completo',
-    'callback.dob': 'Fecha de Nacimiento',
-    'callback.phone': 'Número de Teléfono',
+    'callback.full_name': 'Fiador/Su Nombre Completo',
+    'callback.dob': 'Fecha de nacimiento de la persona arrestada (opcional)',
+    'callback.phone': 'Fiador/Su Número de Teléfono',
     'callback.message': 'Mensaje (opcional)',
     'callback.message_placeholder': 'Cuéntenos brevemente sobre su caso (máximo 200 caracteres)',
+    'callback.fullName.placeholder': 'Juan Pérez',
+    'callback.arrestedPerson.placeholder': 'Miguel González',
+    'callback.phone.placeholder': '+XX (123) 456-7890',
     'callback.required': 'Campo obligatorio',
     'callback.submit': 'Solicitar Llamada',
     'callback.success': 'Gracias! Le llamaremos pronto.',
@@ -352,5 +390,37 @@ export const translations: Record<Language, TranslationSet> = {
     'contact.info.phone': '(714) 555-1234',
     'contact.info.email': 'info@hidalgobailbonds.com',
     'contact.info.hours': 'Abierto 24/7 - Disponible cuando nos necesite',
+    
+    // Contact Banner 
+    'contact_title': 'Contacte a Hidalgo Bail Bonds',
+    'contact_subtitle': 'Obtenga ayuda inmediata para sus necesidades de fianza',
+    
+    // Contact Form Fields
+    'contact.form.arrestedPersonName': 'Nombre completo de la persona detenida',
+    'contact.form.arrestedPersonDob': 'Fecha de nacimiento de la persona detenida',
+    'contact.form.contactPersonName': 'Nombre de la persona arrestada (opcional)',
+    'contact.form.contactPersonPhone': 'Su número de teléfono',
+    
+    // Form Validation Messages
+    'contact.form.error.required': 'Este campo es obligatorio',
+    'contact.form.error.nameMinLength': 'El nombre debe tener al menos 3 caracteres',
+    'contact.form.error.phoneFormat': 'Por favor ingrese un número de teléfono válido',
+    'contact.form.error.messageMinLength': 'El mensaje debe tener al menos 10 caracteres',
+    
+    // Contact Form Placeholders
+    'contact.form.name.placeholder': 'Juan Pérez',
+    'contact.form.arrestedPerson.placeholder': 'Miguel González',
+    'contact.form.email.placeholder': 'su.email@ejemplo.com',
+    'contact.form.phone.placeholder': '+XX (123) 456-7890',
+    'contact.form.message.placeholder': 'Por favor proporcione detalles sobre su caso...',
+    
+    // Form Submission Status
+    'contact.form.submitting': 'Enviando...',
+    'contact.form.success': 'Gracias! Su mensaje ha sido enviado con éxito. Nos pondremos en contacto con usted en breve.',
+    
+    // Map and CTA Sections
+    'contact_map_title': 'Encuéntrenos en el Mapa',
+    'contact_cta_title': '¿Necesita Asistencia Inmediata?',
+    'contact_cta_text': 'Nuestros agentes de fianzas están disponibles 24/7 para ayudarle a liberar a su ser querido',
   }
 }; 

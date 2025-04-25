@@ -3,7 +3,7 @@ name: Deploy to S3 and invalidate CloudFront
 on:
   push:
     branches:
-      - dev
+      - main
 
 jobs:
   deploy:
@@ -51,9 +51,10 @@ jobs:
           sleep 30
           
           echo '{
-            "name": "CI Test User",
+            "fullName": "CI Test User",
+            "arrestedPerson": "CI Test Subject",
+            "dob": "1990-01-01",
             "phone": "+19568679269",
-            "email": "test@ci-pipeline.com",
             "message": "Automated test from CI/CD pipeline"
           }' > payload.json
           

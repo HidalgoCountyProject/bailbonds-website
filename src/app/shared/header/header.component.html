@@ -1,30 +1,32 @@
 <!-- Compact unified header -->
-<header class="header">
+<header class="header" [ngClass]="{'header--scrolled': isScrolled}">
   <!-- Top bar with only language switcher -->
-  <div class="top-bar">
+  <div class="header__top-bar">
     <div class="container">
       <div class="secondary-nav">
         <!-- Enhanced language switcher (only item in top bar) -->
-        <div class="language-switcher-container">
-          <span class="language-label" *ngIf="currentLanguage === 'en'">Change your language:</span>
-          <span class="language-label" *ngIf="currentLanguage === 'es'">Cambiar idioma:</span>
-          <button class="language-switcher" (click)="toggleLanguage($event)">
-            <div class="language-flag" [ngClass]="{'active': currentLanguage === 'en'}">EN</div>
-            <div class="language-slider" [ngClass]="{'spanish': currentLanguage === 'es'}"></div>
-            <div class="language-flag" [ngClass]="{'active': currentLanguage === 'es'}">ES</div>
-          </button>
+        <div class="header__language-switcher">
+          <div class="language-switcher">
+            <button class="language-switcher__label" [ngClass]="{'is-active': currentLanguage === 'en'}" (click)="languageService.setLanguage('en')">
+              EN
+            </button>
+            <span class="language-switcher__divider">|</span>
+            <button class="language-switcher__label" [ngClass]="{'is-active': currentLanguage === 'es'}" (click)="languageService.setLanguage('es')">
+              ES
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
   
   <!-- Main header area with logo, navigation and call info -->
-  <div class="main-header">
+  <div class="header__main">
     <div class="container main-header-container">
       <!-- Logo -->
       <div class="navbar-brand">
         <a href="/">
-          <h1>Hidalgo Bail Bonds</h1>
+          <img src="assets/images/logo.png" alt="Hidalgo Bail Bonds">
         </a>
       </div>
       
@@ -38,7 +40,7 @@
             <a href="/#ubicacion" class="navbar-item">{{ 'location' | translate }}</a>
             <a href="/#testimonios" class="navbar-item">{{ 'testimonials' | translate }}</a>
             <a href="/#preguntas-frecuentes" class="navbar-item">{{ 'faq' | translate }}</a>
-            <a href="/contact" class="navbar-item">{{ 'contact' | translate }}</a>
+            <a (click)="openCallbackForm($event)" class="navbar-item pointer">{{ 'contact' | translate }}</a>
           </div>
         </nav>
         
@@ -60,18 +62,17 @@
 </header>
 
 <!-- First-time visitor language prompt - moved outside header -->
-<div *ngIf="showLanguagePrompt" class="language-prompt">
-  <div class="prompt-content">
-    <p *ngIf="currentLanguage === 'en'">
-      ¿Prefieres ver esta página en español?
-    </p>
-    <p *ngIf="currentLanguage === 'es'">
-      Would you prefer to view this page in English?
-    </p>
-    <button (click)="toggleLanguage($event)" class="prompt-button">
-      {{ currentLanguage === 'en' ? 'Español' : 'English' }}
-    </button>
-    <button (click)="dismissLanguagePrompt()" class="prompt-dismiss">×</button>
+<div *ngIf="showLanguagePrompt" class="language-prompt" [@fadeInOut]>
+  <div class="language-prompt__content">
+    <p>{{ 'language_prompt' | translate }}</p>
+    <div class="language-prompt__actions">
+      <button (click)="toggleLanguage($event)" class="language-prompt__button">
+        {{ currentLanguage === 'en' ? 'Español' : 'English' }}
+      </button>
+      <button (click)="dismissLanguagePrompt()" class="language-prompt__dismiss">
+        {{ 'dismiss' | translate }}
+      </button>
+    </div>
   </div>
 </div>
 

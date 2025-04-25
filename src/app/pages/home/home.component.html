@@ -460,6 +460,7 @@
           id="fullName" 
           formControlName="fullName" 
           [class.invalid]="hasError('fullName')"
+          placeholder="{{ 'callback.fullName.placeholder' | translate }}"
         >
         <span class="error-message" *ngIf="hasError('fullName')">
           {{ 'callback.required' | translate }}
@@ -467,7 +468,17 @@
       </div>
       
       <div class="form-group">
-        <label for="dob">{{ 'callback.dob' | translate }} *</label>
+        <label for="arrestedPerson">{{ 'contact.form.contactPersonName' | translate }}</label>
+        <input 
+          type="text" 
+          id="arrestedPerson" 
+          formControlName="arrestedPerson"
+          placeholder="{{ 'callback.arrestedPerson.placeholder' | translate }}"
+        >
+      </div>
+      
+      <div class="form-group">
+        <label for="dob">{{ 'callback.dob' | translate }}</label>
         <input 
           type="date" 
           id="dob" 
@@ -486,6 +497,7 @@
           id="phone" 
           formControlName="phone" 
           [class.invalid]="hasError('phone')"
+          placeholder="{{ 'callback.phone.placeholder' | translate }}"
         >
         <span class="error-message" *ngIf="hasError('phone')">
           {{ 'callback.required' | translate }}
@@ -502,13 +514,6 @@
           placeholder="{{ 'callback.message_placeholder' | translate }}"
         ></textarea>
         <small class="char-count">{{ messageCharsLeft }}/200</small>
-      </div>
-      
-      <div class="form-group captcha-container">
-        <div class="recaptcha" id="recaptcha"></div>
-        <span class="error-message" *ngIf="!isCaptchaVerified && isFormSubmitted">
-          {{ 'callback.required' | translate }}
-        </span>
       </div>
       
       <button type="submit" class="primary-button submit-button" [disabled]="isSubmitting">
