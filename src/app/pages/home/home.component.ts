@@ -1,14 +1,13 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, PLATFORM_ID, Inject, Renderer2, ElementRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Subject, fromEvent } from 'rxjs';
+import { Subject, fromEvent, Subscription } from 'rxjs';
 import { takeUntil, debounceTime } from 'rxjs/operators';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { GoogleReviewsComponent } from '../../shared/google-reviews/google-reviews.component';
 import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
-import { CallbackFormService } from '../../shared/services/callback-form.service';
+import { ApiService, PopupService } from '../../services';
 
 interface FormStatus {
   type: 'success' | 'error';
@@ -48,13 +47,16 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   formStatus: FormStatus | null = null;
   messageCharsLeft: number = 200;
   
+  private popupSubscription: Subscription;
+  
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object, 
     private renderer: Renderer2, 
     private el: ElementRef,
     private fb: FormBuilder,
     private http: HttpClient,
-    private callbackFormService: CallbackFormService
+    private apiService: ApiService,
+    private popupService: PopupService
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
     
@@ -72,24 +74,20 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       const text = val || '';
       this.messageCharsLeft = 200 - text.length;
     });
+
+    // Inicializar la suscripción
+    this.popupSubscription = new Subscription();
   }
 
   ngOnInit(): void {
     if (this.isBrowser) {
       setTimeout(() => this.initAccordion(), 0);
-      
-      // Subscribe to callback form state
-      this.callbackFormService.callbackOpen$.subscribe(isOpen => {
-        this.isCallbackOpen = isOpen;
-        
-        if (isOpen && this.isBrowser) {
-          // Reset form when opening
-          this.callbackForm.reset();
-          this.formStatus = null;
-          this.isFormSubmitted = false;
-        }
-      });
     }
+    
+    // Suscribirse al servicio de popup
+    this.popupSubscription = this.popupService.callbackPopup$.subscribe(isOpen => {
+      this.isCallbackOpen = isOpen;
+    });
   }
 
   ngAfterViewInit(): void {
@@ -118,6 +116,11 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     if (this.resumeTimeoutId) {
       clearTimeout(this.resumeTimeoutId);
+    }
+    
+    // Limpiar suscripciones
+    if (this.popupSubscription) {
+      this.popupSubscription.unsubscribe();
     }
   }
 
@@ -393,7 +396,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Callback Form Functions
   toggleCallback(): void {
-    this.callbackFormService.toggleCallbackForm();
+    this.popupService.toggleCallbackPopup();
   }
   
   hasError(field: string): boolean {
@@ -415,14 +418,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       ...this.callbackForm.value
     };
     
-    // Use the API URL and key from environment
-    const headers = {
-      'Content-Type': 'application/json',
-      'x-api-key': environment.apiKey
-    };
-    
-    this.http.post(environment.apiUrl, formData, { headers }).subscribe({
-      next: (response) => {
+    this.apiService.sendContactForm(formData).subscribe({
+      next: (response: {success: boolean}) => {
         this.formStatus = {
           type: 'success',
           message: 'callback.success'
@@ -434,7 +431,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
           this.toggleCallback();
         }, 3000);
       },
-      error: (error) => {
+      error: (error: any) => {
         this.formStatus = {
           type: 'error',
           message: 'callback.error'

@@ -1,12 +1,12 @@
 import { Component, OnInit, HostListener, Renderer2, ElementRef, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgClass } from '@angular/common';
 import { LanguageService, Language } from '../services/language.service';
 import { TranslatePipe } from '../pipes/translate.pipe';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { CallbackFormService } from '../services/callback-form.service';
+import { PopupService } from '../../services/popup.service';
 
 @Component({
   selector: 'app-header',
@@ -36,15 +36,13 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   private minScrollDistance = 150; // Minimum continuous scroll distance to hide header
   private isBrowser: boolean;
   currentLanguage: Language = 'en';
-  isScrolled: boolean = false;
 
   constructor(
     private renderer: Renderer2, 
     private el: ElementRef,
     @Inject(PLATFORM_ID) private platformId: Object,
     private languageService: LanguageService,
-    private router: Router,
-    private callbackFormService: CallbackFormService
+    private popupService: PopupService
   ) { 
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
@@ -93,7 +91,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     this.languageService.toggleLanguage();
     this.dismissLanguagePrompt();
   }
-  
+
   dismissLanguagePrompt(): void {
     this.showLanguagePrompt = false;
   }
@@ -164,24 +162,8 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     this.lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // For Mobile or negative scrolling
   }
 
-  @HostListener('window:scroll', ['$event'])
-  checkScroll() {
-    this.isScrolled = window.scrollY > 30;
-  }
-
-  openCallbackForm(event: Event): void {
-    event.preventDefault();
-    
-    // Si estamos en la página de inicio, simplemente abrimos el formulario
-    if (this.router.url === '/' || this.router.url === '') {
-      this.callbackFormService.openCallbackForm();
-    } else {
-      // Si no estamos en la página de inicio, navegamos a ella y luego abrimos el formulario
-      this.router.navigateByUrl('/').then(() => {
-        setTimeout(() => {
-          this.callbackFormService.openCallbackForm();
-        }, 100); // Pequeño retraso para asegurar que el componente home esté cargado
-      });
-    }
+  // Método para abrir el popup de callback
+  openCallbackPopup(): void {
+    this.popupService.openCallbackPopup();
   }
 }
