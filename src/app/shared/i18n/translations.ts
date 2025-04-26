@@ -46,8 +46,8 @@ export const translations: Record<Language, TranslationSet> = {
     'callback.error': 'There was an error submitting your request. Please try again.',
     
     // Hero Section
-    'hero_title': 'Immediate Freedom with Hidalgo Bail Bonds',
-    'hero_subtitle': 'Your trusted local partners with over 30 years of expertise in the Hidalgo County legal system. When time matters most, we deliver results you can count on.',
+    'hero_title': 'Immediate Freedom with Affordable Bail Bonds in Hidalgo County',
+    'hero_subtitle': 'Your trusted bondsman with over 30 years of combined experience in the Hidalgo County legal system. When time matters most, we guarantee the fastest release process possible.',
     'hero_call_button': 'Call Now: +1 956-867-9269',
     'hero_info_button': 'Request Information',
     
@@ -56,17 +56,17 @@ export const translations: Record<Language, TranslationSet> = {
     
     // Service Areas Section
     'service_areas_title': 'Serving All of Hidalgo County',
-    'service_areas_across_jail': 'Across from Hidalgo County Jail',
+    'service_areas_across_jail': 'Near Hidalgo County Jail on Cibolo Road',
     'service_areas_licensed': 'Licensed in Hidalgo County #800107',
     'service_areas_cities': 'Alamo • Alton • Donna • Edcouch • Edinburg • Elsa • La Joya • La Villa • McAllen • Mercedes • Mission • Palmhurst • Penitas • Pharr • Progresso • San Juan • Sullivan • Weslaco, among other cities in Texas',
     
     // Features Section
-    'features_title': 'When freedom matters most, you can trust Hidalgo Bail Bonds',
+    'features_title': 'When freedom matters most, you can trust Affordable Bail Bonds in Hidalgo County',
     'features_subtitle': 'We\'ve helped thousands of families navigate the bail process with confidence and discretion. Our experienced team provides personalized solutions tailored to your unique situation with the respect and urgency you deserve.',
     
     // Feature 1
-    'feature1_title': 'We speak Spanish',
-    'feature1_text': 'We offer Spanish translation services to help you with any language barrier. Our staff is friendly and Spanish-speaking.',
+    'feature1_title': 'We speak Spanish & English',
+    'feature1_text': 'Our bilingual staff offers assistance in both Spanish and English to help you with any language barrier. We ensure clear communication throughout the entire process.',
     
     // Feature 2
     'feature2_title': '24/7 Service',
@@ -87,7 +87,7 @@ export const translations: Record<Language, TranslationSet> = {
     
     // Services Section
     'services_title': 'Our Services',
-    'services_subtitle': 'These are the services that Hidalgo Bail Bonds offers with a brief explanation of each term.',
+    'services_subtitle': 'These are the services that Affordable Bail Bonds in Hidalgo County offers with a brief explanation of each term.',
     'services_cta': 'View all our services',
     
     // First three service cards
@@ -154,12 +154,12 @@ export const translations: Record<Language, TranslationSet> = {
     'testimonials_subtitle': 'Thousands of people have trusted us in their most difficult moments',
     
     // Testimonial 1
-    'testimonial1_text': '"Hidalgo Bail Bonds responded immediately when my brother was arrested. They were professional and understanding throughout the process, explaining each step patiently. Thanks to them, my brother was released quickly."',
+    'testimonial1_text': '"Affordable Bail Bonds in Hidalgo County responded immediately when my brother was arrested. They were professional and understanding throughout the process, explaining each step patiently. Thanks to them, my brother was released quickly."',
     'testimonial1_author': 'Carlos Rodríguez',
     'testimonial1_location': 'McAllen, TX',
     
     // Testimonial 2
-    'testimonial2_text': '"I didn\'t know what to do when my son was arrested. I called Hidalgo Bail Bonds and they helped me immediately, even at 2 AM. Their Spanish service was excellent and they guided me through the entire process. Highly recommended."',
+    'testimonial2_text': '"I didn\'t know what to do when my son was arrested. I called Affordable Bail Bonds in Hidalgo County and they helped me immediately, even at 2 AM. Their Spanish service was excellent and they guided me through the entire process. Highly recommended."',
     'testimonial2_author': 'Alejandra Méndez',
     'testimonial2_location': 'Edinburg, TX',
     
@@ -183,7 +183,7 @@ export const translations: Record<Language, TranslationSet> = {
     'location_hours_label': 'Office Hours:',
     'location_hours': 'Monday to Sunday, 24 hours',
     'location_nearby_label': 'Near:',
-    'location_nearby': 'Hidalgo County Courthouse, Detention Center',
+    'location_nearby': 'Hidalgo County Jail on Cibolo Road',
     'location_directions': 'Get Directions',
     
     // Contact
@@ -198,11 +198,11 @@ export const translations: Record<Language, TranslationSet> = {
     'contact.info.title': 'Contact Information',
     'contact.info.address': '123 Main Street, Santa Ana, CA 92705',
     'contact.info.phone': '(714) 555-1234',
-    'contact.info.email': 'info@hidalgobailbonds.com',
+    'contact.info.email': 'info@affordablebailbonds.com',
     'contact.info.hours': 'Open 24/7 - Available anytime you need us',
     
     // Contact Banner 
-    'contact_title': 'Contact Hidalgo Bail Bonds',
+    'contact_title': 'Contact Affordable Bail Bonds in Hidalgo County',
     'contact_subtitle': 'Get immediate help for your bail bond needs',
     
     // Contact Form Fields
@@ -274,8 +274,8 @@ export const translations: Record<Language, TranslationSet> = {
     'callback.error': 'Hubo un error al enviar su solicitud. Por favor, intente de nuevo.',
     
     // Hero Section
-    'hero_title': 'Libertad inmediata con Hidalgo Bail Bonds',
-    'hero_subtitle': 'Sus socios locales de confianza con más de 30 años de experiencia en el sistema legal del Condado de Hidalgo. Cuando el tiempo es crucial, ofrecemos resultados con los que puede contar.',
+    'hero_title': 'Libertad inmediata con Affordable Bail Bonds en el Condado de Hidalgo',
+    'hero_subtitle': 'Su fiador de confianza con más de 30 años de experiencia combinada en el sistema legal del Condado de Hidalgo. Cuando el tiempo es crucial, garantizamos el proceso de liberación más rápido posible.',
     'hero_call_button': 'Llame ahora: +1 956-867-9269',
     'hero_info_button': 'Solicitar información',
     
@@ -284,17 +284,17 @@ export const translations: Record<Language, TranslationSet> = {
     
     // Service Areas Section
     'service_areas_title': 'Sirviendo a todo el Condado de Hidalgo',
-    'service_areas_across_jail': 'Frente a la Cárcel del Condado de Hidalgo',
+    'service_areas_across_jail': 'Cerca de la Cárcel del Condado de Hidalgo en Cibolo Road',
     'service_areas_licensed': 'Licencia en el Condado de Hidalgo #800107',
     'service_areas_cities': 'Alamo • Alton • Donna • Edcouch • Edinburg • Elsa • La Joya • La Villa • McAllen • Mercedes • Mission • Palmhurst • Penitas • Pharr • Progresso • San Juan • Sullivan • Weslaco, entre otras ciudades de Texas',
     
     // Features Section
-    'features_title': 'Cuando la libertad es lo más importante, puede confiar en Hidalgo Bail Bonds',
+    'features_title': 'Cuando la libertad es lo más importante, puede confiar en Affordable Bail Bonds en el Condado de Hidalgo',
     'features_subtitle': 'Hemos ayudado a miles de familias a navegar el proceso de fianza con confianza y discreción. Nuestro equipo experimentado proporciona soluciones personalizadas adaptadas a su situación única con el respeto y la urgencia que merece.',
     
     // Feature 1
-    'feature1_title': 'Hablamos español',
-    'feature1_text': 'Ofrecemos servicios de traducción al español para ayudarle con cualquier barrera del idioma. Nuestro personal es amable y habla español.',
+    'feature1_title': 'Hablamos español e inglés',
+    'feature1_text': 'Nuestro personal bilingüe ofrece asistencia tanto en español como en inglés para ayudarle con cualquier barrera del idioma. Garantizamos una comunicación clara durante todo el proceso.',
     
     // Feature 2
     'feature2_title': 'Servicio 24/7',
@@ -315,7 +315,7 @@ export const translations: Record<Language, TranslationSet> = {
     
     // Services Section
     'services_title': 'Nuestros Servicios',
-    'services_subtitle': 'Estos son los servicios que Hidalgo Bail Bonds ofrece y aquí encontrará una breve explicación de cada término.',
+    'services_subtitle': 'Estos son los servicios que Affordable Bail Bonds en el Condado de Hidalgo ofrece y aquí encontrará una breve explicación de cada término.',
     'services_cta': 'Ver todos nuestros servicios',
     
     // First three service cards
@@ -382,12 +382,12 @@ export const translations: Record<Language, TranslationSet> = {
     'testimonials_subtitle': 'Miles de personas han confiado en nosotros en sus momentos más difíciles',
     
     // Testimonial 1
-    'testimonial1_text': '"Hidalgo Bail Bonds respondió inmediatamente cuando mi hermano fue arrestado. Fueron profesionales y comprensivos durante todo el proceso, explicando cada paso con paciencia. Gracias a ellos, mi hermano fue liberado rápidamente."',
+    'testimonial1_text': '"Affordable Bail Bonds en el Condado de Hidalgo respondió inmediatamente cuando mi hermano fue arrestado. Fueron profesionales y comprensivos durante todo el proceso, explicando cada paso con paciencia. Gracias a ellos, mi hermano fue liberado rápidamente."',
     'testimonial1_author': 'Carlos Rodríguez',
     'testimonial1_location': 'McAllen, TX',
     
     // Testimonial 2
-    'testimonial2_text': '"No sabía qué hacer cuando mi hijo fue detenido. Llamé a Hidalgo Bail Bonds y me atendieron de inmediato, incluso a las 2 de la madrugada. Su servicio en español fue excelente y me guiaron a través de todo el proceso. Muy recomendable."',
+    'testimonial2_text': '"No sabía qué hacer cuando mi hijo fue detenido. Llamé a Affordable Bail Bonds en el Condado de Hidalgo y me atendieron de inmediato, incluso a las 2 de la madrugada. Su servicio en español fue excelente y me guiaron a través de todo el proceso. Muy recomendable."',
     'testimonial2_author': 'Alejandra Méndez',
     'testimonial2_location': 'Edinburg, TX',
     
@@ -411,7 +411,7 @@ export const translations: Record<Language, TranslationSet> = {
     'location_hours_label': 'Horario de oficina:',
     'location_hours': 'Lunes a Domingo, 24 horas',
     'location_nearby_label': 'Cerca de:',
-    'location_nearby': 'Juzgado del Condado de Hidalgo, Centro de Detención',
+    'location_nearby': 'Cárcel del Condado de Hidalgo en Cibolo Road',
     'location_directions': 'Obtener Direcciones',
     
     // Contact
@@ -426,11 +426,11 @@ export const translations: Record<Language, TranslationSet> = {
     'contact.info.title': 'Información de Contacto',
     'contact.info.address': '123 Main Street, Santa Ana, CA 92705',
     'contact.info.phone': '(714) 555-1234',
-    'contact.info.email': 'info@hidalgobailbonds.com',
+    'contact.info.email': 'info@affordablebailbonds.com',
     'contact.info.hours': 'Abierto 24/7 - Disponible cuando nos necesite',
     
     // Contact Banner 
-    'contact_title': 'Contacte a Hidalgo Bail Bonds',
+    'contact_title': 'Contacte a Affordable Bail Bonds en el Condado de Hidalgo',
     'contact_subtitle': 'Obtenga ayuda inmediata para sus necesidades de fianza',
     
     // Contact Form Fields

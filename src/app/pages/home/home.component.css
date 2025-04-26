@@ -18,7 +18,7 @@
   position: relative;
   background-image: url('../../../assets/images/home_image.png');
   background-size: cover;
-  background-position: center;
+  background-position: 45.7% 70%;
   background-repeat: no-repeat;
   min-height: 600px;
   width: 100%;
@@ -30,7 +30,7 @@
 .hero-overlay {
   width: 100%;
   min-height: 600px;
-  background-color: rgba(0, 0, 0, 0.65); /* Aumentado de 0.5 a 0.7 para oscurecer más */
+  background-color: rgba(0, 0, 0, 0.75); /* Increased darkness for better text contrast */
   display: flex;
   align-items: center;
   padding: 5rem 0;
@@ -58,16 +58,18 @@
 .hero-section h1 {
   font-size: 2.8rem;
   font-weight: 700;
-  color: var(--text-light); /* Changed to white for better contrast on dark background */
+  color: var(--text-light);
   margin-bottom: 1.5rem;
   line-height: 1.2;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.75), 0 0 2px rgba(0, 0, 0, 0.5); /* Added subtle text shadow */
 }
 
 .subtitle {
   font-size: 1.25rem;
-  color: var(--text-light); /* Changed to white for better contrast */
+  color: var(--text-light);
   margin-bottom: 2rem;
   line-height: 1.5;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6), 0 0 1px rgba(0, 0, 0, 0.4); /* Added subtle text shadow */
 }
 
 .cta-buttons {
