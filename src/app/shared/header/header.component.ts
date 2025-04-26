@@ -6,6 +6,7 @@ import { NgClass } from '@angular/common';
 import { LanguageService, Language } from '../services/language.service';
 import { TranslatePipe } from '../pipes/translate.pipe';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { PopupService } from '../../services/popup.service';
 
 @Component({
   selector: 'app-header',
@@ -40,7 +41,8 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     private renderer: Renderer2, 
     private el: ElementRef,
     @Inject(PLATFORM_ID) private platformId: Object,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private popupService: PopupService
   ) { 
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
@@ -89,7 +91,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     this.languageService.toggleLanguage();
     this.dismissLanguagePrompt();
   }
-  
+
   dismissLanguagePrompt(): void {
     this.showLanguagePrompt = false;
   }
@@ -158,5 +160,10 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     }
     
     this.lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // For Mobile or negative scrolling
+  }
+
+  // Método para abrir el popup de callback
+  openCallbackPopup(): void {
+    this.popupService.openCallbackPopup();
   }
 }

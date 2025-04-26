@@ -1,20 +1,13 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, PLATFORM_ID, Inject, Renderer2, ElementRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Subject, fromEvent } from 'rxjs';
+import { Subject, fromEvent, Subscription } from 'rxjs';
 import { takeUntil, debounceTime } from 'rxjs/operators';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { GoogleReviewsComponent } from '../../shared/google-reviews/google-reviews.component';
 import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-
-declare global {
-  interface Window {
-    grecaptcha: any;
-    onCaptchaLoad: () => void;
-    onCaptchaVerified: (token: string) => void;
-  }
-}
+import { ApiService, PopupService } from '../../services';
 
 interface FormStatus {
   type: 'success' | 'error';
@@ -51,24 +44,27 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   callbackForm: FormGroup;
   isSubmitting: boolean = false;
   isFormSubmitted: boolean = false;
-  isCaptchaVerified: boolean = false;
-  captchaToken: string = '';
   formStatus: FormStatus | null = null;
   messageCharsLeft: number = 200;
+  
+  private popupSubscription: Subscription;
   
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object, 
     private renderer: Renderer2, 
     private el: ElementRef,
     private fb: FormBuilder,
-    private http: HttpClient
+    private http: HttpClient,
+    private apiService: ApiService,
+    private popupService: PopupService
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
     
     // Initialize the form
     this.callbackForm = this.fb.group({
       fullName: ['', Validators.required],
-      dob: ['', Validators.required],
+      arrestedPerson: [''],
+      dob: [''],
       phone: ['', Validators.required],
       message: ['']
     });
@@ -78,13 +74,20 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       const text = val || '';
       this.messageCharsLeft = 200 - text.length;
     });
+
+    // Inicializar la suscripción
+    this.popupSubscription = new Subscription();
   }
 
   ngOnInit(): void {
     if (this.isBrowser) {
       setTimeout(() => this.initAccordion(), 0);
-      this.loadCaptcha();
     }
+    
+    // Suscribirse al servicio de popup
+    this.popupSubscription = this.popupService.callbackPopup$.subscribe(isOpen => {
+      this.isCallbackOpen = isOpen;
+    });
   }
 
   ngAfterViewInit(): void {
@@ -113,6 +116,11 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     if (this.resumeTimeoutId) {
       clearTimeout(this.resumeTimeoutId);
+    }
+    
+    // Limpiar suscripciones
+    if (this.popupSubscription) {
+      this.popupSubscription.unsubscribe();
     }
   }
 
@@ -427,49 +435,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Callback Form Functions
   toggleCallback(): void {
-    this.isCallbackOpen = !this.isCallbackOpen;
-    
-    if (this.isCallbackOpen && this.isBrowser) {
-      // Reset form when opening
-      this.callbackForm.reset();
-      this.formStatus = null;
-      this.isFormSubmitted = false;
-      this.isCaptchaVerified = false;
-      
-      // Need to re-render captcha if it exists
-      if (window.grecaptcha) {
-        setTimeout(() => {
-          window.grecaptcha.render('recaptcha', {
-            'sitekey': '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI', // Replace with your actual reCAPTCHA site key
-            'callback': 'onCaptchaVerified'
-          });
-        }, 100);
-      }
-    }
-  }
-  
-  loadCaptcha(): void {
-    if (!this.isBrowser) return;
-    
-    // Only load if not already loaded
-    if (typeof window !== 'undefined' && !window.grecaptcha) {
-      // Define callback functions in window scope
-      window.onCaptchaLoad = () => {
-        console.log('reCAPTCHA loaded');
-      };
-      
-      window.onCaptchaVerified = (token: string) => {
-        this.captchaToken = token;
-        this.isCaptchaVerified = true;
-      };
-      
-      // Add reCAPTCHA script
-      const script = this.renderer.createElement('script');
-      script.src = 'https://www.google.com/recaptcha/api.js?onload=onCaptchaLoad&render=explicit';
-      script.async = true;
-      script.defer = true;
-      this.renderer.appendChild(document.body, script);
-    }
+    this.popupService.toggleCallbackPopup();
   }
   
   hasError(field: string): boolean {
@@ -480,7 +446,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   submitCallbackForm(): void {
     this.isFormSubmitted = true;
     
-    if (this.callbackForm.invalid || !this.isCaptchaVerified) {
+    if (this.callbackForm.invalid) {
       return;
     }
     
@@ -488,46 +454,29 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     
     // Prepare the data to send
     const formData = {
-      ...this.callbackForm.value,
-      captchaToken: this.captchaToken
+      ...this.callbackForm.value
     };
     
-    // This is where you would integrate with the Amazon API
-    // For now, we'll simulate the API call with a timeout
-    setTimeout(() => {
-      // Simulating success for demonstration
-      this.formStatus = {
-        type: 'success',
-        message: 'callback.success'
-      };
-      
-      this.isSubmitting = false;
-      
-      // Auto-close the form after success
-      setTimeout(() => {
-        this.toggleCallback();
-      }, 3000);
-      
-      // In a real implementation, you would call the API like this:
-      /*
-      this.http.post('YOUR_AMAZON_API_ENDPOINT', formData).subscribe({
-        next: (response) => {
-          this.formStatus = {
-            type: 'success',
-            message: 'callback.success'
-          };
-          this.isSubmitting = false;
-          setTimeout(() => this.toggleCallback(), 3000);
-        },
-        error: (error) => {
-          this.formStatus = {
-            type: 'error',
-            message: 'callback.error'
-          };
-          this.isSubmitting = false;
-        }
-      });
-      */
-    }, 1500);
+    this.apiService.sendContactForm(formData).subscribe({
+      next: (response: {success: boolean}) => {
+        this.formStatus = {
+          type: 'success',
+          message: 'callback.success'
+        };
+        this.isSubmitting = false;
+        
+        // Auto-close the form after success
+        setTimeout(() => {
+          this.toggleCallback();
+        }, 3000);
+      },
+      error: (error: any) => {
+        this.formStatus = {
+          type: 'error',
+          message: 'callback.error'
+        };
+        this.isSubmitting = false;
+      }
+    });
   }
 }
