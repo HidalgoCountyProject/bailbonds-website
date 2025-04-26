@@ -6,8 +6,12 @@
       <div class="secondary-nav">
         <!-- Enhanced language switcher (only item in top bar) -->
         <div class="language-switcher-container">
-          <span class="language-label" *ngIf="currentLanguage === 'en'">Change your language:</span>
-          <span class="language-label" *ngIf="currentLanguage === 'es'">Cambiar idioma:</span>
+          <ng-container *ngIf="currentLanguage === 'en'; else spanishLabel">
+            <span class="language-label">Change your language:</span>
+          </ng-container>
+          <ng-template #spanishLabel>
+            <span class="language-label">Cambiar idioma:</span>
+          </ng-template>
           <button class="language-switcher" (click)="toggleLanguage($event)">
             <div class="language-flag" [ngClass]="{'active': currentLanguage === 'en'}">EN</div>
             <div class="language-slider" [ngClass]="{'spanish': currentLanguage === 'es'}"></div>
@@ -24,7 +28,7 @@
       <!-- Logo -->
       <div class="navbar-brand">
         <a href="/">
-          <h1>Hidalgo Bail Bonds</h1>
+          <h1>Affordable Bail Bonds</h1>
         </a>
       </div>
       
@@ -51,7 +55,7 @@
           </div>
           <div class="phone-content">
             <span class="call-text">{{ 'call_now' | translate }}</span>
-            <a href="tel:+18001234567" class="phone-number">(800) 123-4567</a>
+            <a href="tel:+19568679269" class="phone-number">+1 956-867-9269</a>
           </div>
         </div>
       </div>

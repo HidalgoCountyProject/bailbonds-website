@@ -137,6 +137,45 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       });
     });
+    
+    // Initialize FAQ show more/less toggle
+    this.initFaqToggle();
+  }
+  
+  initFaqToggle(): void {
+    const showMoreBtn = this.el.nativeElement.querySelector('.show-more-btn');
+    const showLessBtn = this.el.nativeElement.querySelector('.show-less-btn');
+    const hiddenFaqs = this.el.nativeElement.querySelectorAll('.hidden-faq');
+    
+    if (!showMoreBtn || !showLessBtn) return;
+    
+    this.renderer.listen(showMoreBtn, 'click', () => {
+      hiddenFaqs.forEach((faq: HTMLElement) => {
+        this.renderer.removeClass(faq, 'hidden-faq');
+        this.renderer.addClass(faq, 'visible-faq');
+      });
+      this.renderer.setStyle(showMoreBtn, 'display', 'none');
+      this.renderer.setStyle(showLessBtn, 'display', 'flex');
+    });
+    
+    this.renderer.listen(showLessBtn, 'click', () => {
+      hiddenFaqs.forEach((faq: HTMLElement) => {
+        this.renderer.removeClass(faq, 'visible-faq');
+        this.renderer.addClass(faq, 'hidden-faq');
+        // Also remove active state when hiding
+        if (faq.classList.contains('active')) {
+          faq.classList.remove('active');
+        }
+      });
+      this.renderer.setStyle(showLessBtn, 'display', 'none');
+      this.renderer.setStyle(showMoreBtn, 'display', 'flex');
+      
+      // Scroll back to the top of the FAQ section to see the visible questions
+      this.el.nativeElement.querySelector('#preguntas-frecuentes').scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    });
   }
 
   private initializeCarousel(): void {

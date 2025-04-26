@@ -26,6 +26,7 @@ export const translations: Record<Language, TranslationSet> = {
     'footer.social': 'Social Networks',
     'footer.rights': 'All rights reserved.',
     'footer.license': 'License',
+    'footer.coming_soon': 'Coming soon',
     
     // Callback Request Tab
     'callback.tab_title': 'We\'ll Call You Back',
@@ -43,16 +44,22 @@ export const translations: Record<Language, TranslationSet> = {
     
     // Hero Section
     'hero_title': 'Immediate Freedom with Hidalgo Bail Bonds',
-    'hero_subtitle': 'Professional bail bond service available 24/7 to ensure quick release from jail',
-    'hero_call_button': 'Call Now: (800) 123-4567',
+    'hero_subtitle': 'Your trusted local partners with over 30 years of expertise in the Hidalgo County legal system. When time matters most, we deliver results you can count on.',
+    'hero_call_button': 'Call Now: +1 956-867-9269',
     'hero_info_button': 'Request Information',
     
     // Promo Banner
     'promo_banner': 'Special offer: Free consultation and discount on your first bail bond. Call us today.',
     
+    // Service Areas Section
+    'service_areas_title': 'Serving All of Hidalgo County',
+    'service_areas_across_jail': 'Across from Hidalgo County Jail',
+    'service_areas_licensed': 'Licensed in Hidalgo County #800107',
+    'service_areas_cities': 'Alamo • Alton • Donna • Edcouch • Edinburg • Elsa • La Joya • La Villa • McAllen • Mercedes • Mission • Palmhurst • Penitas • Pharr • Progresso • San Juan • Sullivan • Weslaco, among other cities in Texas',
+    
     // Features Section
     'features_title': 'When freedom matters most, you can trust Hidalgo Bail Bonds',
-    'features_subtitle': 'Getting a bail bond for your loved ones can be complicated. Understanding the charges and processing time provides peace of mind. We are here to help with your needs.',
+    'features_subtitle': 'We\'ve helped thousands of families navigate the bail process with confidence and discretion. Our experienced team provides personalized solutions tailored to your unique situation with the respect and urgency you deserve.',
     
     // Feature 1
     'feature1_title': 'We speak Spanish',
@@ -68,45 +75,31 @@ export const translations: Record<Language, TranslationSet> = {
     
     // Feature 4
     'feature4_title': 'Payment Plans',
-    'feature4_text': 'More payment options for bail bonds, we offer payment options that fit your needs.',
+    'feature4_text': 'We accept multiple payment methods: Cash, Cash App, Zelle, Venmo, Square (credit card), Money Orders, Cashier\'s Checks. Contact us for more payment options that fit your needs.',
     
     // Floating CTA
     'float_cta_title': 'Need immediate help?',
     'float_cta_text': 'We are available 24/7 to assist you',
-    'float_cta_button': 'Call Now: (800) 123-4567',
+    'float_cta_button': 'Call Now: +1 956-867-9269',
     
     // Services Section
     'services_title': 'Our Services',
     'services_subtitle': 'These are the services that Hidalgo Bail Bonds offers with a brief explanation of each term.',
     'services_cta': 'View all our services',
     
+    // First three service cards
+    'service_local_title': 'Local Bail Bonds',
+    'service_local_text': 'Fast, reliable bail bonds service throughout Hidalgo County, Texas. We understand the local courts and can expedite the release process.',
+    
     // Service Types
     'service_appearance_title': 'Appearance Bonds',
     'service_appearance_text': 'A type of bail bond that requires a defendant to appear in court at specific times and dates as ordered by the court.',
     
-    'service_federal_title': 'Federal Bonds',
-    'service_federal_text': 'Specific bonds for federal crimes, which are typically more complex and require specialized expertise in the federal judicial system.',
-    
-    'service_immigration_title': 'Immigration Bonds',
-    'service_immigration_text': 'Specialized bonds for immigration and deportation cases, helping individuals detained by ICE.',
-    
     'service_appeal_title': 'Appeal Bonds',
     'service_appeal_text': 'A type of bond that allows a defendant to be released from custody while appealing a conviction or sentence.',
     
-    'service_license_title': 'License Bonds',
-    'service_license_text': 'Ensure compliance with state and local regulations with our license bonds for contractors and other professionals.',
-    
-    'service_utility_title': 'Utility Bonds',
-    'service_utility_text': 'Guarantees required by utility companies to ensure payment of future bills.',
-    
-    'service_notary_title': 'Notary Bonds',
-    'service_notary_text': 'We offer bonds for notaries public in Hidalgo, guaranteeing protection against errors or omissions.',
-    
-    'service_probate_title': 'Probate Bonds',
-    'service_probate_text': 'We ensure proper management of an estate during the probate process (executor bonds).',
-    
     'service_more_title': 'More Bond Types',
-    'service_more_text': 'We offer many more bond types. Call us at (800) 123-4567 for information about our complete range of services.',
+    'service_more_text': 'We offer many more bond types. Call us at +1 956-867-9269 for information about our complete range of services.',
     
     // CTA Section
     'cta_title': 'Immediate freedom for your loved ones!',
@@ -114,18 +107,44 @@ export const translations: Record<Language, TranslationSet> = {
     'cta_highlight2': 'Professional bail bondsmen with years of experience',
     'cta_highlight3': 'Immediate help in difficult times',
     'cta_message': 'No one provides faster and more reliable service to help your loved ones in this critical moment.',
-    'cta_button': 'CALL NOW: (800) 123-4567',
+    'cta_button': 'CALL NOW: +1 956-867-9269',
+    
+    // Value Propositions
+    'value_prop1_title': 'FREE CONSULTATION',
+    'value_prop1_text': 'Get all the information you need about the bail process without any obligation.',
+    'value_prop2_title': 'QUICK RELEASE',
+    'value_prop2_text': 'We work efficiently to secure the fastest possible release for your loved ones.',
+    'value_prop3_title': 'TRANSPARENCY & INTEGRITY',
+    'value_prop3_text': 'Count on honest, straightforward guidance every step of the way.',
     
     // FAQ Section
     'faq_title': 'Frequently Asked Questions',
-    'faq_q1': 'What do I need to get someone out of jail?',
-    'faq_a1': 'Answer content will go here.',
-    'faq_q2': 'What determines the cost of bail?',
-    'faq_a2': 'Answer content will go here.',
-    'faq_q3': 'What payment methods do you accept?',
-    'faq_a3': 'Answer content will go here.',
-    'faq_q4': 'How long does the process take?',
-    'faq_a4': 'Answer content will go here.',
+    'faq_q1': 'What factors determine your bail bond fees?',
+    'faq_a1': 'The cost of our bail bond services varies on a case-by-case basis. We determine the fee based on four key factors: the defendant\'s citizenship status, their criminal history (such as DUI arrests or assaults), the type of charge they face, and the bail amount set by the courts.',
+    
+    'faq_inmate_q': 'How can I locate a Hidalgo County inmate?',
+    'faq_inmate_a': 'The best way to find an inmate is to either call an Affordable Bail Bonds agent or you can visit https://pa.co.hidalgo.tx.us/default.aspx. Each bail bond has different circumstances. Our Agents are available 24 hours a day, 7 days a week. Please call to find out about your bail bond: 956-867-9269',
+    
+    'faq_q2': 'How quickly can you complete the bail process?',
+    'faq_a2': 'Our bail process typically takes between 8-12 hours to complete. The exact timing depends on several factors, including how many other individuals are being processed for release at the same time.',
+    'faq_q3': 'What role does an indemnitor play in the bail process?',
+    'faq_a3': 'An indemnitor is the person who takes financial responsibility by signing the necessary paperwork for posting bail. By signing, they guarantee that the released person will appear at all court hearings. The indemnitor must also ensure the defendant follows all regulations and required check-ins throughout the legal process.',
+    'faq_q4': 'What are the requirements to become an indemnitor?',
+    'faq_a4': 'To qualify as an indemnitor (signature for a bail bond), you must: be a U.S. citizen, have a valid social security number, possess a current driver\'s license, be employed, and live in Hidalgo County.',
+    'faq_q5': 'What payment options do you offer if I can\'t afford the full bond fee?',
+    'faq_a5': 'We understand that bail bond fees can create financial strain. That\'s why we offer flexible payment plans tailored to your budget. Our team works with clients to create manageable payment schedules, allowing you to secure your loved one\'s release without having to pay the entire fee upfront.',
+    'faq_q6': 'How long does it take to get someone released from jail?',
+    'faq_a6': 'Release times vary depending on the detention facility and other circumstances. However, our agency prides itself on efficiency. Thanks to our proximity to Harris County Jail and our 24/7 availability, we can often secure a release within just a few hours after completing the bail bond paperwork.',
+    'faq_q7': 'What happens if the defendant misses their court date?',
+    'faq_a7': 'If a defendant fails to appear in court, serious consequences follow. The court will issue a bench warrant for their arrest, and our bail bond company becomes liable for the full bail amount. In such cases, we will actively work to locate the defendant and return them to custody to fulfill their legal obligations.',
+    'faq_q8': 'How long will someone remain in jail if they can\'t pay bail?',
+    'faq_a8': 'If a person cannot pay their bail, they will unfortunately remain incarcerated until their court date. The bail system requires payment for pre-trial release, and without it, detention continues regardless of a bondsman\'s abilities.',
+    'faq_q9': 'After paying bail, how long before someone is released?',
+    'faq_a9': 'Once bail is paid, release processing begins immediately. The time can range from minutes to several hours depending on three main factors: the number of people being processed simultaneously, the amount of paperwork required, and the number of jail staff available to handle releases.',
+    'faq_q10': 'When can someone be released on bail?',
+    'faq_a10': 'In most cases, releasing someone on bail takes between a few hours to several days, depending on various factors. For bail to be set, the accused must first appear before a judge. If this occurs on weekends or outside normal business hours, the accused may need to wait until the next morning or several days before bail can be established.',
+    'faq_show_more': 'Show more questions',
+    'faq_show_less': 'Show fewer questions',
     
     // Testimonials Section
     'testimonials_title': 'What our clients say',
@@ -156,7 +175,7 @@ export const translations: Record<Language, TranslationSet> = {
     'location_address_label': 'Address:',
     'location_address': '1506 Pecan Blvd, McAllen, TX 78501, United States',
     'location_phone_label': 'Phone:',
-    'location_phone': '(800) 123-4567',
+    'location_phone': '+1 956-867-9269',
     'location_phone_note': '(Available 24/7)',
     'location_hours_label': 'Office Hours:',
     'location_hours': 'Monday to Sunday, 24 hours',
@@ -200,6 +219,7 @@ export const translations: Record<Language, TranslationSet> = {
     'footer.social': 'Redes Sociales',
     'footer.rights': 'Todos los derechos reservados.',
     'footer.license': 'Licencia',
+    'footer.coming_soon': 'Proximamente',
     
     // Callback Request Tab
     'callback.tab_title': 'Te Devolvemos La Llamada',
@@ -217,16 +237,22 @@ export const translations: Record<Language, TranslationSet> = {
     
     // Hero Section
     'hero_title': 'Libertad inmediata con Hidalgo Bail Bonds',
-    'hero_subtitle': 'Servicio profesional de fianzas (Bail Bonds) disponible 24/7 para garantizar una liberación rápida de la cárcel',
-    'hero_call_button': 'Llame ahora: (800) 123-4567',
+    'hero_subtitle': 'Sus socios locales de confianza con más de 30 años de experiencia en el sistema legal del Condado de Hidalgo. Cuando el tiempo es crucial, ofrecemos resultados con los que puede contar.',
+    'hero_call_button': 'Llame ahora: +1 956-867-9269',
     'hero_info_button': 'Solicitar información',
     
     // Promo Banner
     'promo_banner': 'Oferta especial: consulta gratuita y descuento en su primera fianza (Bail Bond). Llámenos hoy mismo.',
     
+    // Service Areas Section
+    'service_areas_title': 'Sirviendo a todo el Condado de Hidalgo',
+    'service_areas_across_jail': 'Frente a la Cárcel del Condado de Hidalgo',
+    'service_areas_licensed': 'Licencia en el Condado de Hidalgo #800107',
+    'service_areas_cities': 'Alamo • Alton • Donna • Edcouch • Edinburg • Elsa • La Joya • La Villa • McAllen • Mercedes • Mission • Palmhurst • Penitas • Pharr • Progresso • San Juan • Sullivan • Weslaco, entre otras ciudades de Texas',
+    
     // Features Section
     'features_title': 'Cuando la libertad es lo más importante, puede confiar en Hidalgo Bail Bonds',
-    'features_subtitle': 'Obtener una fianza (Bail Bond) para sus seres queridos puede ser complicado. Conocer los cargos y el tiempo de entrega brinda seguridad. Estamos aquí para ayudarle con sus necesidades.',
+    'features_subtitle': 'Hemos ayudado a miles de familias a navegar el proceso de fianza con confianza y discreción. Nuestro equipo experimentado proporciona soluciones personalizadas adaptadas a su situación única con el respeto y la urgencia que merece.',
     
     // Feature 1
     'feature1_title': 'Hablamos español',
@@ -242,45 +268,31 @@ export const translations: Record<Language, TranslationSet> = {
     
     // Feature 4
     'feature4_title': 'Planes de pago',
-    'feature4_text': 'Más opciones de pago para fianzas (Bail Bonds), ofrecemos opciones de pago que se adaptan a sus necesidades.',
+    'feature4_text': 'Aceptamos múltiples métodos de pago: Efectivo, Cash App, Zelle, Venmo, Square (tarjeta de crédito), Giros Postales, Cheques de Caja. Contáctenos para más opciones de pago que se adapten a sus necesidades.',
     
     // Floating CTA
     'float_cta_title': '¿Necesita ayuda inmediata?',
     'float_cta_text': 'Estamos disponibles 24/7 para atenderle',
-    'float_cta_button': 'Llame ahora: (800) 123-4567',
+    'float_cta_button': 'Llame ahora: +1 956-867-9269',
     
     // Services Section
     'services_title': 'Nuestros Servicios',
     'services_subtitle': 'Estos son los servicios que Hidalgo Bail Bonds ofrece y aquí encontrará una breve explicación de cada término.',
     'services_cta': 'Ver todos nuestros servicios',
     
+    // First three service cards
+    'service_local_title': 'Fianzas Locales',
+    'service_local_text': 'Servicio de fianzas rápido y confiable en todo el Condado de Hidalgo, Texas. Entendemos los tribunales locales y podemos acelerar el proceso de liberación.',
+    
     // Service Types
     'service_appearance_title': 'Fianzas de comparecencia (Appearance Bonds)',
     'service_appearance_text': 'Un tipo de fianza que requiere que un acusado comparezca en la corte en horarios y fechas específicas según lo ordenado por la corte.',
     
-    'service_federal_title': 'Fianzas federales (Federal Bonds)',
-    'service_federal_text': 'Fianzas específicas para delitos federales, que suelen ser más complejas y requieren una experiencia especializada en el sistema judicial federal.',
-    
-    'service_immigration_title': 'Fianzas de inmigración (Immigration Bonds)',
-    'service_immigration_text': 'Fianzas especializadas para casos relacionados con la inmigración y deportación, ayudando a las personas detenidas por ICE.',
-    
     'service_appeal_title': 'Fianzas de apelación (Appeal Bonds)',
     'service_appeal_text': 'Un tipo de fianza que permite a un acusado ser liberado de la custodia mientras apela una condena o sentencia.',
     
-    'service_license_title': 'Fianzas para Licencias (License Bonds)',
-    'service_license_text': 'Asegure el cumplimiento de las regulaciones estatales y locales con nuestras fianzas para licencias de contratistas y otros profesionales.',
-    
-    'service_utility_title': 'Fianzas de Utilidad (Utility Bonds)',
-    'service_utility_text': 'Garantías requeridas por compañías de servicios públicos para asegurar el pago de futuras facturas.',
-    
-    'service_notary_title': 'Fianzas de Notario (Notary Bonds)',
-    'service_notary_text': 'Ofrecemos fianzas para notarios públicos en Hidalgo, garantizando la protección contra errores u omisiones.',
-    
-    'service_probate_title': 'Fianzas Testamentarias (Probate Bonds)',
-    'service_probate_text': 'Aseguramos la gestión adecuada de un patrimonio durante el proceso testamentario (fianzas de albacea).',
-    
     'service_more_title': 'Más Tipos de Fianzas',
-    'service_more_text': 'Ofrecemos muchos más tipos de fianzas. Llámenos al (800) 123-4567 para información sobre nuestra gama completa de servicios.',
+    'service_more_text': 'Ofrecemos muchos más tipos de fianzas. Llámenos al +1 956-867-9269 para información sobre nuestra gama completa de servicios.',
     
     // CTA Section
     'cta_title': '¡Libertad inmediata para sus seres queridos!',
@@ -288,18 +300,44 @@ export const translations: Record<Language, TranslationSet> = {
     'cta_highlight2': 'Fiadores profesionales (Bail Bondsmen) con años de experiencia',
     'cta_highlight3': 'Ayuda inmediata en momentos difíciles',
     'cta_message': 'Nadie proporciona un servicio más rápido y confiable para ayudar a sus seres queridos en este momento crítico.',
-    'cta_button': 'LLAME AHORA: (800) 123-4567',
+    'cta_button': 'LLAME AHORA: +1 956-867-9269',
+    
+    // Value Propositions
+    'value_prop1_title': 'CONSULTA GRATUITA',
+    'value_prop1_text': 'Obtenga toda la información que necesita sobre el proceso de fianza sin ninguna obligación.',
+    'value_prop2_title': 'LIBERACIÓN RÁPIDA',
+    'value_prop2_text': 'Trabajamos eficientemente para asegurar la liberación más rápida posible para sus seres queridos.',
+    'value_prop3_title': 'TRANSPARENCIA E INTEGRIDAD',
+    'value_prop3_text': 'Cuente con una orientación honesta y directa en cada paso del proceso.',
     
     // FAQ Section
     'faq_title': 'Preguntas Frecuentes',
-    'faq_q1': '¿Qué necesito para sacar a alguien de la cárcel?',
-    'faq_a1': 'Contenido de la respuesta irá aquí.',
-    'faq_q2': '¿Qué determina el costo de la fianza (Bail Bond)?',
-    'faq_a2': 'Contenido de la respuesta irá aquí.',
-    'faq_q3': '¿Qué formas de pago aceptan?',
-    'faq_a3': 'Contenido de la respuesta irá aquí.',
-    'faq_q4': '¿Cuánto tiempo toma el proceso?',
-    'faq_a4': 'Contenido de la respuesta irá aquí.',
+    'faq_q1': '¿Qué factores determinan las tarifas de sus fianzas?',
+    'faq_a1': 'El costo de nuestros servicios de fianza varía caso por caso. Determinamos la tarifa basándonos en cuatro factores clave: la ciudadanía del acusado, su historial criminal (como arrestos por DUI o asaltos), el tipo de cargo que enfrenta, y el monto de la fianza establecido por los tribunales.',
+    
+    'faq_inmate_q': '¿Cómo puedo localizar a un recluso del Condado de Hidalgo?',
+    'faq_inmate_a': 'La mejor manera de encontrar a un recluso es llamar a un agente de Affordable Bail Bonds o puede visitar https://pa.co.hidalgo.tx.us/default.aspx. Cada fianza tiene diferentes circunstancias. Nuestros agentes están disponibles 24 horas al día, 7 días a la semana. Por favor llame para informarse sobre su fianza: 956-867-9269',
+    
+    'faq_q2': '¿Cuánto tiempo tarda en completarse el proceso de fianza?',
+    'faq_a2': 'Nuestro proceso de fianza generalmente toma entre 8 y 12 horas. El tiempo exacto depende de varios factores, incluyendo cuántas otras personas están siendo procesadas para su liberación al mismo tiempo.',
+    'faq_q3': '¿Qué papel desempeña un indemnizador en el proceso de fianza?',
+    'faq_a3': 'Un indemnizador es la persona que asume la responsabilidad financiera al firmar la documentación necesaria para la fianza. Al firmar, garantiza que la persona liberada comparecerá a todas las audiencias judiciales. El indemnizador también debe asegurarse de que el acusado cumpla con todas las regulaciones y registros requeridos durante el proceso legal.',
+    'faq_q4': '¿Cuáles son los requisitos para convertirse en indemnizador?',
+    'faq_a4': 'Para calificar como indemnizador (firma para una fianza), debe: ser ciudadano estadounidense, tener un número de seguro social válido, poseer una licencia de conducir vigente, estar empleado y vivir en el Condado de Hidalgo.',
+    'faq_q5': '¿Qué opciones de pago ofrecen si no puedo pagar la tarifa completa de la fianza?',
+    'faq_a5': 'Entendemos que las tarifas de fianza pueden crear tensión financiera. Por eso ofrecemos planes de pago flexibles adaptados a su presupuesto. Nuestro equipo trabaja con los clientes para crear calendarios de pago manejables, permitiéndole asegurar la liberación de su ser querido sin tener que pagar la tarifa completa por adelantado.',
+    'faq_q6': '¿Cuánto tiempo toma liberar a alguien de la cárcel?',
+    'faq_a6': 'Los tiempos de liberación varían según la instalación de detención y otras circunstancias. Sin embargo, nuestra agencia se enorgullece de su eficiencia. Gracias a nuestra proximidad a la Cárcel del Condado de Harris y nuestra disponibilidad 24/7, a menudo podemos asegurar una liberación en solo unas horas después de completar el papeleo de la fianza.',
+    'faq_q7': '¿Qué sucede si el acusado no se presenta a su cita con la corte?',
+    'faq_a7': 'Si un acusado no se presenta en la corte, siguen consecuencias graves. La corte emitirá una orden de arresto, y nuestra compañía de fianzas se hace responsable del monto total de la fianza. En tales casos, trabajaremos activamente para localizar al acusado y devolverlo a custodia para cumplir con sus obligaciones legales.',
+    'faq_q8': '¿Cuánto tiempo permanecerá alguien en la cárcel si no puede pagar la fianza?',
+    'faq_a8': 'Si una persona no puede pagar su fianza, desafortunadamente permanecerá encarcelada hasta la fecha de su juicio. El sistema de fianzas requiere pago para la liberación previa al juicio, y sin él, la detención continúa independientemente de las habilidades de un fiador.',
+    'faq_q9': 'Después de pagar la fianza, ¿cuánto tiempo antes de que alguien sea liberado?',
+    'faq_a9': 'Una vez que se paga la fianza, el procesamiento de liberación comienza inmediatamente. El tiempo puede variar desde minutos hasta varias horas dependiendo de tres factores principales: el número de personas siendo procesadas simultáneamente, la cantidad de papeleo requerido, y el número de personal carcelario disponible para manejar las liberaciones.',
+    'faq_q10': '¿Cuándo puede ser liberada una persona bajo fianza?',
+    'faq_a10': 'En la mayoría de los casos, liberar a alguien bajo fianza toma entre unas horas y varios días, dependiendo de varios factores. Para que se establezca la fianza, el acusado primero debe comparecer ante un juez. Si esto ocurre en fines de semana o fuera del horario comercial normal, el acusado puede necesitar esperar hasta la mañana siguiente o varios días antes de que se pueda establecer la fianza.',
+    'faq_show_more': 'Mostrar más preguntas',
+    'faq_show_less': 'Mostrar menos preguntas',
     
     // Testimonials Section
     'testimonials_title': 'Lo que dicen nuestros clientes',
@@ -330,7 +368,7 @@ export const translations: Record<Language, TranslationSet> = {
     'location_address_label': 'Dirección:',
     'location_address': '1506 Pecan Blvd, McAllen, TX 78501, Estados Unidos',
     'location_phone_label': 'Teléfono:',
-    'location_phone': '(800) 123-4567',
+    'location_phone': '+1 956-867-9269',
     'location_phone_note': '(Disponible 24/7)',
     'location_hours_label': 'Horario de oficina:',
     'location_hours': 'Lunes a Domingo, 24 horas',

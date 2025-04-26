@@ -6,10 +6,10 @@
         <h3>{{ translations['footer.quick_links'] || 'Enlaces Rápidos' }}</h3>
         <ul class="footer-links">
           <li><a href="/">{{ translations['home'] || 'Inicio' }}</a></li>
-          <li><a href="/process">{{ translations['footer.process'] || 'Liberación Rápida' }}</a></li>
           <li><a href="/services">{{ translations['services'] || 'Nuestros Servicios' }}</a></li>
-          <li><a href="/faq">{{ translations['faq'] || 'Preguntas Frecuentes' }}</a></li>
-          <li><a href="/contact">{{ translations['contact'] || 'Contáctenos' }}</a></li>
+          <li><a href="#preguntas-frecuentes">{{ translations['faq'] || 'Preguntas Frecuentes' }}</a></li>
+          <li><a href="#ubicacion">{{ translations['location'] || 'Ubicación' }}</a></li>
+          <li><a href="#testimonios">{{ translations['testimonials'] || 'Testimonios' }}</a></li>
         </ul>
       </div>
 
@@ -17,10 +17,9 @@
       <div class="footer-section">
         <h3>{{ translations['contact'] || 'Contáctenos' }}</h3>
         <div class="contact-info">
-          <p><strong>Hidalgo Bail Bonds</strong></p>
-          <p>{{ translations['contact.info.address'] || '123 Main Street' }}</p>
-          <p>Hidalgo, TX 78557</p>
-          <p class="phone"><a href="tel:+18001234567">{{ translations['location_phone'] || '(800) 123-4567' }}</a></p>
+          <p><strong>Affordable Bail Bonds</strong></p>
+          <p>1506 Pecan Blvd, McAllen, TX 78501, United States</p>
+          <p class="phone"><a href="tel:+19568679269">+1 956-867-9269</a></p>
           <p>{{ translations['location_hours'] || 'Disponible 24/7' }}</p>
         </div>
       </div>
@@ -29,17 +28,15 @@
       <div class="footer-section">
         <h3>{{ translations['footer.social'] || 'Redes Sociales' }}</h3>
         <div class="social-links">
-          <a href="#" aria-label="Facebook">Facebook</a>
-          <a href="#" aria-label="Twitter">Twitter</a>
-          <a href="#" aria-label="Instagram">Instagram</a>
+          <p>{{ translations['footer.coming_soon'] || 'Proximamente' }}</p>
         </div>
       </div>
     </div>
 
     <!-- Bottom copyright bar -->
     <div class="footer-bottom">
-      <p>&copy; {{ currentYear }} Hidalgo Bail Bonds. {{ translations['footer.rights'] || 'Todos los derechos reservados.' }}</p>
-      <p>{{ translations['footer.license'] || 'Licencia' }} #ABC123</p>
+      <p>&copy; {{ currentYear }} Affordable Bail Bonds. {{ translations['footer.rights'] || 'Todos los derechos reservados.' }}</p>
+      <p>{{ translations['footer.license'] || 'Licencia' }} #800107</p>
     </div>
   </div>
 </footer>
