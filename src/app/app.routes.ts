@@ -5,9 +5,6 @@ import { ServicesComponent } from './pages/services/services.component';
 import { ContactComponent } from './pages/contact/contact.component';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent, title: 'Home | Hidalgo Bail Bonds' },
-  { path: 'about', component: AboutComponent, title: 'About Us | Hidalgo Bail Bonds' },
-  { path: 'services', component: ServicesComponent, title: 'Our Services | Hidalgo Bail Bonds' },
-  { path: 'contact', component: ContactComponent, title: 'Contact Us | Hidalgo Bail Bonds' },
+  { path: '', component: HomeComponent, title: 'Affordable Bail Bonds' },
   { path: '**', redirectTo: '', pathMatch: 'full' } // Redirección para rutas no encontradas
 ];
