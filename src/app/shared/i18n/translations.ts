@@ -48,7 +48,7 @@ export const translations: Record<Language, TranslationSet> = {
     // Hero Section
     'hero_title': 'Immediate Freedom with Affordable Bail Bonds in Hidalgo County',
     'hero_subtitle': 'Your trusted bondsman with over 30 years of combined experience in the bail bond process system. When time matters most, we guarantee the fastest release process possible.',
-    'hero_call_button': 'Call Now: +1 956-867-9269',
+    'hero_call_button': 'Call Now: 956-867-9269',
     'hero_info_button': 'Request Information',
     
     // Promo Banner
@@ -56,7 +56,7 @@ export const translations: Record<Language, TranslationSet> = {
     
     // Service Areas Section
     'service_areas_title': 'Serving All of Hidalgo County',
-    'service_areas_across_jail': 'Just minutes away from Hidalgo County Jail (Cibolo Road)',
+    'service_areas_across_jail': 'Just minutes from Hidalgo County Jail on El Cibolo Road',
     'service_areas_licensed': 'Licensed in Hidalgo County #800107',
     'service_areas_cities': 'Alamo • Alton • Donna • Edcouch • Edinburg • Elsa • La Joya • La Villa • McAllen • Mercedes • Mission • Palmhurst • Penitas • Pharr • Progresso • San Juan • Sullivan • Weslaco, among other cities in Texas',
     
@@ -83,7 +83,7 @@ export const translations: Record<Language, TranslationSet> = {
     // Floating CTA
     'float_cta_title': 'Need immediate help?',
     'float_cta_text': 'We are available 24/7 to assist you',
-    'float_cta_button': 'Call Now: +1 956-867-9269',
+    'float_cta_button': 'Call Now: 956-867-9269',
     
     // Services Section
     'services_title': 'Our Services',
@@ -102,7 +102,7 @@ export const translations: Record<Language, TranslationSet> = {
     'service_appeal_text': 'A type of bond that allows a defendant to be released from custody while appealing a conviction or sentence.',
     
     'service_more_title': 'More Bond Types',
-    'service_more_text': 'We offer many more bond types. Call us at +1 956-867-9269 for information about our complete range of services.',
+    'service_more_text': 'We offer many more bond types. Call us at 956-867-9269 for information about our complete range of services.',
     
     // CTA Section
     'cta_title': 'Immediate freedom for your loved ones!',
@@ -110,7 +110,7 @@ export const translations: Record<Language, TranslationSet> = {
     'cta_highlight2': 'Professional bail bondsmen with years of experience',
     'cta_highlight3': 'Immediate help in difficult times',
     'cta_message': 'No one provides faster and more reliable service to help your loved ones in this critical moment.',
-    'cta_button': 'CALL NOW: +1 956-867-9269',
+    'cta_button': 'CALL NOW: 956-867-9269',
     
     // Value Propositions
     'value_prop1_title': 'FREE CONSULTATION',
@@ -178,12 +178,12 @@ export const translations: Record<Language, TranslationSet> = {
     'location_address_label': 'Address:',
     'location_address': '1506 Pecan Blvd, McAllen, TX 78501, United States',
     'location_phone_label': 'Phone:',
-    'location_phone': '+1 956-867-9269',
+    'location_phone': '956-867-9269',
     'location_phone_note': '(Available 24/7)',
     'location_hours_label': 'Office Hours:',
     'location_hours': 'Monday to Sunday, 24 hours',
     'location_nearby_label': 'Reference:',
-    'location_nearby': 'Just minutes from Hidalgo County Jail (Cibolo Road)',
+    'location_nearby': 'Just minutes from Hidalgo County Jail on El Cibolo Road',
     'location_directions': 'Get Directions',
     
     // Contact
@@ -276,7 +276,7 @@ export const translations: Record<Language, TranslationSet> = {
     // Hero Section
     'hero_title': 'Libertad inmediata con Affordable Bail Bonds en el Condado de Hidalgo',
     'hero_subtitle': 'Su fiador de confianza con más de 30 años de experiencia combinada en el sistema de proceso de fianzas. Cuando el tiempo es crucial, garantizamos el proceso de liberación más rápido posible.',
-    'hero_call_button': 'Llame ahora: +1 956-867-9269',
+    'hero_call_button': 'Llame ahora: 956-867-9269',
     'hero_info_button': 'Solicitar información',
     
     // Promo Banner
@@ -284,7 +284,7 @@ export const translations: Record<Language, TranslationSet> = {
     
     // Service Areas Section
     'service_areas_title': 'Sirviendo a todo el Condado de Hidalgo',
-    'service_areas_across_jail': 'A solo minutos de la Cárcel del Condado de Hidalgo (Cibolo Road)',
+    'service_areas_across_jail': 'A solo minutos de la Cárcel del Condado de Hidalgo en El Cibolo Road',
     'service_areas_licensed': 'Licencia en el Condado de Hidalgo #800107',
     'service_areas_cities': 'Alamo • Alton • Donna • Edcouch • Edinburg • Elsa • La Joya • La Villa • McAllen • Mercedes • Mission • Palmhurst • Penitas • Pharr • Progresso • San Juan • Sullivan • Weslaco, entre otras ciudades de Texas',
     
@@ -311,7 +311,7 @@ export const translations: Record<Language, TranslationSet> = {
     // Floating CTA
     'float_cta_title': '¿Necesita ayuda inmediata?',
     'float_cta_text': 'Estamos disponibles 24/7 para atenderle',
-    'float_cta_button': 'Llame ahora: +1 956-867-9269',
+    'float_cta_button': 'Llame ahora: 956-867-9269',
     
     // Services Section
     'services_title': 'Nuestros Servicios',
@@ -330,7 +330,7 @@ export const translations: Record<Language, TranslationSet> = {
     'service_appeal_text': 'Un tipo de fianza que permite a un acusado ser liberado de la custodia mientras apela una condena o sentencia.',
     
     'service_more_title': 'Más Tipos de Fianzas',
-    'service_more_text': 'Ofrecemos muchos más tipos de fianzas. Llámenos al +1 956-867-9269 para información sobre nuestra gama completa de servicios.',
+    'service_more_text': 'Ofrecemos muchos más tipos de fianzas. Llámenos al 956-867-9269 para información sobre nuestra gama completa de servicios.',
     
     // CTA Section
     'cta_title': '¡Libertad inmediata para sus seres queridos!',
@@ -338,7 +338,7 @@ export const translations: Record<Language, TranslationSet> = {
     'cta_highlight2': 'Fiadores profesionales (Bail Bondsmen) con años de experiencia',
     'cta_highlight3': 'Ayuda inmediata en momentos difíciles',
     'cta_message': 'Nadie proporciona un servicio más rápido y confiable para ayudar a sus seres queridos en este momento crítico.',
-    'cta_button': 'LLAME AHORA: +1 956-867-9269',
+    'cta_button': 'LLAME AHORA: 956-867-9269',
     
     // Value Propositions
     'value_prop1_title': 'CONSULTA GRATUITA',
@@ -406,12 +406,12 @@ export const translations: Record<Language, TranslationSet> = {
     'location_address_label': 'Dirección:',
     'location_address': '1506 Pecan Blvd, McAllen, TX 78501, Estados Unidos',
     'location_phone_label': 'Teléfono:',
-    'location_phone': '+1 956-867-9269',
+    'location_phone': '956-867-9269',
     'location_phone_note': '(Disponible 24/7)',
     'location_hours_label': 'Horario de oficina:',
     'location_hours': 'Lunes a Domingo, 24 horas',
     'location_nearby_label': 'Referencia:',
-    'location_nearby': 'A solo minutos de la Cárcel del Condado de Hidalgo (Cibolo Road)',
+    'location_nearby': 'A solo minutos de la Cárcel del Condado de Hidalgo en El Cibolo Road',
     'location_directions': 'Obtener Direcciones',
     
     // Contact
