@@ -1592,10 +1592,12 @@
 .service-areas-grid {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   gap: 1.5rem;
   flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .service-area-card {
@@ -1624,9 +1626,11 @@
   padding: 0.6rem 1rem;
   border-radius: 6px;
   border-left: 3px solid #ffda44;
-  display: inline-block;
+  display: inline-flex;
+  flex-direction: column;
   flex: 0 0 auto;
   min-width: 280px;
+  max-width: 100%;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -1635,9 +1639,13 @@
   font-weight: 600;
   font-size: 0.9rem;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.5rem;
   color: #f0f4fa;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  line-height: 1.4;
 }
 
 .service-area-license svg {
@@ -1734,6 +1742,18 @@
 @media (max-width: 768px) {
   .service-areas-section {
     padding: 1.5rem 0;
+  }
+  
+  .service-areas-grid {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .service-area-card,
+  .service-area-license {
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
   }
   
   .service-area-card p {
