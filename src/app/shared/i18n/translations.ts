@@ -47,7 +47,7 @@ export const translations: Record<Language, TranslationSet> = {
     
     // Hero Section
     'hero_title': 'Immediate Freedom with Affordable Bail Bonds in Hidalgo County',
-    'hero_subtitle': 'Your trusted bondsman with over 30 years of combined experience in the Hidalgo County legal system. When time matters most, we guarantee the fastest release process possible.',
+    'hero_subtitle': 'Your trusted bondsman with over 30 years of combined experience in the bail bond process system. When time matters most, we guarantee the fastest release process possible.',
     'hero_call_button': 'Call Now: +1 956-867-9269',
     'hero_info_button': 'Request Information',
     
@@ -56,7 +56,7 @@ export const translations: Record<Language, TranslationSet> = {
     
     // Service Areas Section
     'service_areas_title': 'Serving All of Hidalgo County',
-    'service_areas_across_jail': 'Near Hidalgo County Jail on Cibolo Road',
+    'service_areas_across_jail': 'Just minutes away from Hidalgo County Jail (Cibolo Road)',
     'service_areas_licensed': 'Licensed in Hidalgo County #800107',
     'service_areas_cities': 'Alamo • Alton • Donna • Edcouch • Edinburg • Elsa • La Joya • La Villa • McAllen • Mercedes • Mission • Palmhurst • Penitas • Pharr • Progresso • San Juan • Sullivan • Weslaco, among other cities in Texas',
     
@@ -182,8 +182,8 @@ export const translations: Record<Language, TranslationSet> = {
     'location_phone_note': '(Available 24/7)',
     'location_hours_label': 'Office Hours:',
     'location_hours': 'Monday to Sunday, 24 hours',
-    'location_nearby_label': 'Near:',
-    'location_nearby': 'Hidalgo County Jail on Cibolo Road',
+    'location_nearby_label': 'Reference:',
+    'location_nearby': 'Just minutes from Hidalgo County Jail (Cibolo Road)',
     'location_directions': 'Get Directions',
     
     // Contact
@@ -275,7 +275,7 @@ export const translations: Record<Language, TranslationSet> = {
     
     // Hero Section
     'hero_title': 'Libertad inmediata con Affordable Bail Bonds en el Condado de Hidalgo',
-    'hero_subtitle': 'Su fiador de confianza con más de 30 años de experiencia combinada en el sistema legal del Condado de Hidalgo. Cuando el tiempo es crucial, garantizamos el proceso de liberación más rápido posible.',
+    'hero_subtitle': 'Su fiador de confianza con más de 30 años de experiencia combinada en el sistema de proceso de fianzas. Cuando el tiempo es crucial, garantizamos el proceso de liberación más rápido posible.',
     'hero_call_button': 'Llame ahora: +1 956-867-9269',
     'hero_info_button': 'Solicitar información',
     
@@ -284,7 +284,7 @@ export const translations: Record<Language, TranslationSet> = {
     
     // Service Areas Section
     'service_areas_title': 'Sirviendo a todo el Condado de Hidalgo',
-    'service_areas_across_jail': 'Cerca de la Cárcel del Condado de Hidalgo en Cibolo Road',
+    'service_areas_across_jail': 'A solo minutos de la Cárcel del Condado de Hidalgo (Cibolo Road)',
     'service_areas_licensed': 'Licencia en el Condado de Hidalgo #800107',
     'service_areas_cities': 'Alamo • Alton • Donna • Edcouch • Edinburg • Elsa • La Joya • La Villa • McAllen • Mercedes • Mission • Palmhurst • Penitas • Pharr • Progresso • San Juan • Sullivan • Weslaco, entre otras ciudades de Texas',
     
@@ -410,8 +410,8 @@ export const translations: Record<Language, TranslationSet> = {
     'location_phone_note': '(Disponible 24/7)',
     'location_hours_label': 'Horario de oficina:',
     'location_hours': 'Lunes a Domingo, 24 horas',
-    'location_nearby_label': 'Cerca de:',
-    'location_nearby': 'Cárcel del Condado de Hidalgo en Cibolo Road',
+    'location_nearby_label': 'Referencia:',
+    'location_nearby': 'A solo minutos de la Cárcel del Condado de Hidalgo (Cibolo Road)',
     'location_directions': 'Obtener Direcciones',
     
     // Contact
