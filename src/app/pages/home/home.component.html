@@ -513,27 +513,29 @@
         </span>
       </div>
       
-      <div class="form-group">
-        <label for="arrestedPerson">{{ 'contact.form.contactPersonName' | translate }}</label>
-        <input 
-          type="text" 
-          id="arrestedPerson" 
-          formControlName="arrestedPerson"
-          placeholder="{{ 'callback.arrestedPerson.placeholder' | translate }}"
-        >
-      </div>
-      
-      <div class="form-group">
-        <label for="dob">{{ 'callback.dob' | translate }}</label>
-        <input 
-          type="date" 
-          id="dob" 
-          formControlName="dob" 
-          [class.invalid]="hasError('dob')"
-        >
-        <span class="error-message" *ngIf="hasError('dob')">
-          {{ 'callback.required' | translate }}
-        </span>
+      <div class="form-row">
+        <div class="form-group form-group-half">
+          <label for="arrestedPerson">{{ 'contact.form.contactPersonName' | translate }}</label>
+          <input 
+            type="text" 
+            id="arrestedPerson" 
+            formControlName="arrestedPerson"
+            placeholder="{{ 'callback.arrestedPerson.placeholder' | translate }}"
+          >
+        </div>
+        
+        <div class="form-group form-group-half">
+          <label for="dob">{{ 'callback.dob' | translate }}</label>
+          <input 
+            type="date" 
+            id="dob" 
+            formControlName="dob" 
+            [class.invalid]="hasError('dob')"
+          >
+          <span class="error-message" *ngIf="hasError('dob')">
+            {{ 'callback.required' | translate }}
+          </span>
+        </div>
       </div>
       
       <div class="form-group">
@@ -556,10 +558,27 @@
           id="message" 
           formControlName="message" 
           maxlength="200"
-          rows="3"
+          rows="2"
           placeholder="{{ 'callback.message_placeholder' | translate }}"
         ></textarea>
         <small class="char-count">{{ messageCharsLeft }}/200</small>
+      </div>
+      
+      <div class="form-group consent-group">
+        <div class="checkbox-wrapper">
+          <input 
+            type="checkbox" 
+            id="consentChecked" 
+            formControlName="consentChecked"
+            [class.invalid]="hasError('consentChecked')"
+          >
+          <label for="consentChecked" class="consent-label">
+            {{ 'callback.consent' | translate }}
+          </label>
+        </div>
+        <span class="error-message" *ngIf="hasError('consentChecked')">
+          {{ 'callback.consent.required' | translate }}
+        </span>
       </div>
       
       <button type="submit" class="primary-button submit-button" [disabled]="isSubmitting">

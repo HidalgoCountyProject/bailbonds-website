@@ -69,7 +69,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       arrestedPerson: [''],
       dob: [''],
       phone: ['', Validators.required],
-      message: ['']
+      message: [''],
+      consentChecked: [false, Validators.requiredTrue]
     });
     
     // Track message character count

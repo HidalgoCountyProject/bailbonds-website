@@ -44,6 +44,8 @@ export const translations: Record<Language, TranslationSet> = {
     'callback.submit': 'Request Callback',
     'callback.success': 'Thank you! We will call you back soon.',
     'callback.error': 'There was an error submitting your request. Please try again.',
+    'callback.consent': 'I consent to be contacted by Affordable Bail Bonds agents via the phone number I\'ve provided.',
+    'callback.consent.required': 'You must consent to be contacted before submitting this form.',
     
     // Hero Section
     'hero_title': 'Immediate Freedom with <span class="highlight">Affordable Bail Bonds</span> in Hidalgo County',
@@ -272,6 +274,8 @@ export const translations: Record<Language, TranslationSet> = {
     'callback.submit': 'Solicitar Llamada',
     'callback.success': 'Gracias! Le llamaremos pronto.',
     'callback.error': 'Hubo un error al enviar su solicitud. Por favor, intente de nuevo.',
+    'callback.consent': 'Doy mi consentimiento para ser contactado por los agentes de Affordable Bail Bonds a través del número de teléfono que he proporcionado.',
+    'callback.consent.required': 'Debe dar su consentimiento para ser contactado antes de enviar este formulario.',
     
     // Hero Section
     'hero_title': 'Libertad inmediata con <span class="highlight">Affordable Bail Bonds</span> en el Condado de Hidalgo',
