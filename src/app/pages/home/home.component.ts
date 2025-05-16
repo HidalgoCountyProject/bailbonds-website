@@ -8,6 +8,7 @@ import { GoogleReviewsComponent } from '../../shared/google-reviews/google-revie
 import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ApiService, PopupService } from '../../services';
+import { LanguageService } from '../../shared/services/language.service';
 
 interface FormStatus {
   type: 'success' | 'error';
@@ -48,6 +49,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   messageCharsLeft: number = 200;
   
   private popupSubscription: Subscription;
+  private languageSubscription: Subscription;
   
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object, 
@@ -56,7 +58,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     private fb: FormBuilder,
     private http: HttpClient,
     private apiService: ApiService,
-    private popupService: PopupService
+    private popupService: PopupService,
+    public languageService: LanguageService
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
     
@@ -75,13 +78,19 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       this.messageCharsLeft = 200 - text.length;
     });
 
-    // Inicializar la suscripción
+    // Inicializar las suscripciones
     this.popupSubscription = new Subscription();
+    this.languageSubscription = new Subscription();
   }
 
   ngOnInit(): void {
     if (this.isBrowser) {
       setTimeout(() => this.initAccordion(), 0);
+      
+      // Suscribirse a cambios de idioma para forzar la detección de cambios
+      this.languageSubscription = this.languageService.currentLanguage$.subscribe(() => {
+        // La suscripción asegura que Angular detecte cambios al cambiar el idioma
+      });
     }
     
     // Suscribirse al servicio de popup
@@ -121,6 +130,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     // Limpiar suscripciones
     if (this.popupSubscription) {
       this.popupSubscription.unsubscribe();
+    }
+    if (this.languageSubscription) {
+      this.languageSubscription.unsubscribe();
     }
   }
 

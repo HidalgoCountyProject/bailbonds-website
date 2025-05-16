@@ -33,9 +33,13 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   private headerHidden = false;
   private scrollThreshold = 100; // Minimum scroll before header can hide
   private scrollDistance = 0; // Track continuous scroll distance
-  private minScrollDistance = 150; // Minimum continuous scroll distance to hide header
+  private minScrollDistance = 100; // Reduced from 150 to make header hide faster
+  private minUpScrollDistance = 80; // Minimum continuous upward scroll to show header
+  private upScrollDistance = 0; // Track continuous upward scroll distance
   private isBrowser: boolean;
   currentLanguage: Language = 'en';
+  private logoAnimationInterval: any = null;
+  private readonly ANIMATION_INTERVAL = 20000; // Animation interval in ms (20 seconds)
 
   constructor(
     private renderer: Renderer2, 
@@ -59,6 +63,9 @@ export class HeaderComponent implements OnInit, AfterViewInit {
       setTimeout(() => {
         this.displayLanguagePrompt();
       }, 1500);
+      
+      // Initialize logo animation
+      this.setupLogoAnimation();
     }
   }
 
@@ -72,6 +79,57 @@ export class HeaderComponent implements OnInit, AfterViewInit {
       // Initial update to ensure content positioning
       setTimeout(() => this.updateHeaderHeight(), 100);
     }
+  }
+  
+  ngOnDestroy(): void {
+    // Clear logo animation interval if it exists
+    if (this.logoAnimationInterval) {
+      clearInterval(this.logoAnimationInterval);
+    }
+  }
+  
+  // Set up the logo animation sequence
+  private setupLogoAnimation(): void {
+    if (!this.isBrowser) return;
+    
+    // Wait a shorter time after page load before showing first animation
+    setTimeout(() => {
+      // Play animation after a short delay
+      this.playLogoAnimation();
+      
+      // Set up interval to periodically replay animation
+      this.logoAnimationInterval = setInterval(() => {
+        this.playLogoAnimation();
+      }, this.ANIMATION_INTERVAL);
+    }, 1500); // Reduced from 2500ms to 1500ms (1.5 seconds)
+  }
+  
+  // Handle the actual animation sequence
+  private playLogoAnimation(): void {
+    const logoImg = document.getElementById('logo-image') as HTMLImageElement;
+    if (!logoImg) return;
+    
+    const images = [
+      'assets/images/first.png',
+      'assets/images/second.png',
+      'assets/images/third.png'
+    ];
+    
+    // Start with first image
+    logoImg.src = images[0];
+    
+    // Show second image after a delay
+    setTimeout(() => {
+      logoImg.src = images[1];
+      
+      // Show third image after another delay
+      setTimeout(() => {
+        logoImg.src = images[2];
+        
+        // We no longer return to the first image
+        // Animation ends on the third image (open bars)
+      }, 1200);
+    }, 1200);
   }
 
   displayLanguagePrompt(): void {
@@ -130,6 +188,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
         }
       }
       this.scrollDistance = 0; // Reset scroll distance
+      this.upScrollDistance = 0; // Reset upward scroll distance
       return;
     }
     
@@ -137,6 +196,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     if (currentScroll > this.lastScrollTop) {
       // Scrolling down - track continuous scroll distance
       this.scrollDistance += (currentScroll - this.lastScrollTop);
+      this.upScrollDistance = 0; // Reset upward scroll tracking when direction changes
       
       // Hide header after continuous scroll distance threshold is reached
       if (!this.headerHidden && this.scrollDistance > this.minScrollDistance) {
@@ -147,14 +207,17 @@ export class HeaderComponent implements OnInit, AfterViewInit {
         }
       }
     } else {
-      // Scrolling up - immediately show header and reset scroll distance
-      this.scrollDistance = 0;
+      // Scrolling up - track continuous upward scroll
+      this.scrollDistance = 0; // Reset downward scroll tracking when direction changes
+      this.upScrollDistance += (this.lastScrollTop - currentScroll);
       
-      if (this.headerHidden) {
+      // Only show header after sufficient upward scroll
+      if (this.headerHidden && this.upScrollDistance > this.minUpScrollDistance) {
         const header = this.el.nativeElement.querySelector('.header');
         if (header) {
           this.renderer.removeClass(header, 'header--hidden');
           this.headerHidden = false;
+          this.upScrollDistance = 0; // Reset after showing
         }
       }
     }

@@ -46,7 +46,7 @@ export const translations: Record<Language, TranslationSet> = {
     'callback.error': 'There was an error submitting your request. Please try again.',
     
     // Hero Section
-    'hero_title': 'Immediate Freedom with Affordable Bail Bonds in Hidalgo County',
+    'hero_title': 'Immediate Freedom with <span class="highlight">Affordable Bail Bonds</span> in Hidalgo County',
     'hero_subtitle': 'Your trusted bondsman with over 30 years of combined experience in the bail bond process system. When time matters most, we guarantee the fastest release process possible.',
     'hero_call_button': 'Call Now: 956-867-9269',
     'hero_info_button': 'Request Information',
@@ -274,7 +274,7 @@ export const translations: Record<Language, TranslationSet> = {
     'callback.error': 'Hubo un error al enviar su solicitud. Por favor, intente de nuevo.',
     
     // Hero Section
-    'hero_title': 'Libertad inmediata con Affordable Bail Bonds en el Condado de Hidalgo',
+    'hero_title': 'Libertad inmediata con <span class="highlight">Affordable Bail Bonds</span> en el Condado de Hidalgo',
     'hero_subtitle': 'Su fiador de confianza con más de 30 años de experiencia combinada en el sistema de proceso de fianzas. Cuando el tiempo es crucial, garantizamos el proceso de liberación más rápido posible.',
     'hero_call_button': 'Llame ahora: 956-867-9269',
     'hero_info_button': 'Solicitar información',

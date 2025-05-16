@@ -3,7 +3,12 @@
   <div class="hero-overlay">
     <div class="container">
       <div class="hero-content">
-        <h1>{{ 'hero_title' | translate }}</h1>
+        <ng-container *ngIf="languageService.getCurrentLanguage() === 'en'; else spanishTitle">
+          <h1>Immediate Freedom with <span class="highlight-yellow">Affordable Bail Bonds</span> in Hidalgo County</h1>
+        </ng-container>
+        <ng-template #spanishTitle>
+          <h1>Libertad inmediata con <span class="highlight-yellow">Affordable Bail Bonds</span> en el Condado de Hidalgo</h1>
+        </ng-template>
         <p class="subtitle">{{ 'hero_subtitle' | translate }}</p>
         <div class="cta-buttons">
           <a href="tel:+19568679269" class="primary-button">

@@ -96,7 +96,8 @@ body {
 .navbar-brand {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  margin-right: 1rem;
 }
 
 .navbar-brand h1 {
@@ -104,6 +105,34 @@ body {
   font-weight: 700;
   color: #000000;
   margin: 0;
+}
+
+.logo-image {
+  max-height: 115px;
+  width: auto;
+  display: block;
+}
+
+.animated-logo-container {
+  display: inline-block;
+}
+
+.navbar-brand a {
+  display: block;
+  text-decoration: none;
+}
+
+.navbar-brand a:hover {
+  transform: scale(1.03);
+}
+
+/* Mobile-only and desktop-only display helpers */
+.mobile-only {
+  display: none;
+}
+
+.desktop-only {
+  display: flex;
 }
 
 /* Header content area with nav and phone */
@@ -220,6 +249,8 @@ body {
   .main-header-container {
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
   }
 
   .header-content {
@@ -228,9 +259,9 @@ body {
     gap: 1rem;
     align-items: center;
   }
-
-  .navbar-brand {
-    justify-content: flex-start;
+  
+  .logo-image {
+    max-height: 115px;
   }
 
   .navbar {
@@ -250,6 +281,20 @@ body {
     min-width: 180px;
   }
   
+  /* Hide mobile elements in desktop */
+  .mobile-header-top {
+    display: none;
+  }
+  
+  /* Show desktop elements */
+  .desktop-only {
+    display: flex;
+  }
+  
+  .mobile-only {
+    display: none;
+  }
+  
   .phone-icon {
     font-size: 1.6rem;
   }
@@ -264,23 +309,83 @@ body {
 }
 
 @media (max-width: 768px) {
+  /* Create mobile header layout with logo and phone on top row */
+  .main-header-container {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0.3rem 0;
+  }
+  
+  /* Create a mobile top row with logo and phone */
+  .main-header-container {
+    position: relative;
+  }
+  
+  /* Create a flex row for logo and phone in mobile */
+  .navbar-brand {
+    margin-bottom: 0.3rem;
+    padding: 0 0.5rem;
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+  
+  /* Position phone button next to logo */
+  .mobile-header-top {
+    position: static;
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Wrapper for logo and phone */
+  .navbar-brand, .mobile-header-top {
+    height: 72px;
+  }
+  
+  .logo-image {
+    max-height: 72px;
+    vertical-align: middle;
+  }
+  
+  /* Phone button styling for mobile */
+  .phone-button.mobile-only {
+    border-left: none;
+    padding: 0.3rem 0.4rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .phone-button.mobile-only .phone-icon {
+    display: flex;
+    align-items: center;
+    color: #ffcc00;
+  }
+  
+  .phone-button.mobile-only .phone-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  /* Hide desktop elements */
+  .desktop-only {
+    display: none;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    margin-top: 0;
+  }
+
+  /* Other mobile styles */
   .navbar-items {
     flex-wrap: wrap;
     gap: 0.4rem;
     justify-content: center;
   }
   
-  .navbar-brand h1 {
-    font-size: 1.5rem;
-  }
-  
-  .phone-button {
-    margin-top: 0.4rem;
-    padding: 0.3rem 0.9rem;
-    min-width: 160px;
-    align-self: center;
-  }
-
   .navbar-item {
     font-size: 0.95rem;
     padding: 0.3rem 0.15rem;
@@ -306,7 +411,11 @@ body {
   }
   
   .navbar-brand h1 {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+  }
+  
+  .logo-image {
+    max-height: 50px;
   }
   
   .navbar-items {
@@ -378,14 +487,24 @@ body {
     height: 2px;
   }
   
-  .phone-button {
-    transform: scale(1);
-    margin-top: 0.4rem;
+  /* Adjust mobile header for very small screens */
+  .navbar-brand, .mobile-header-top {
+    height: 65px;
+    gap: 2px;
+  }
+  
+  .navbar-brand {
+    justify-content: center;
     margin-bottom: 0.2rem;
-    padding: 0.3rem 0.5rem;
-    background-color: transparent;
-    border: none;
-    border-left: 3px solid #ffcc00;
+  }
+  
+  .logo-image {
+    max-height: 65px;
+  }
+  
+  .phone-button.mobile-only {
+    transform: scale(0.95);
+    padding: 0.2rem 0.3rem;
   }
   
   .call-text {
@@ -393,7 +512,7 @@ body {
   }
   
   .phone-number {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 }
 
