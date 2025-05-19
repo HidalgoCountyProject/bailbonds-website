@@ -15,7 +15,7 @@ export class ApiService {
       'Content-Type': 'application/json',
       'x-api-key': environment.apiKey
     });
-    
+
     return this.http.post<any>(environment.apiUrl, formData, { headers });
   }
 } 
