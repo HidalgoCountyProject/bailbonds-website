@@ -29,9 +29,12 @@
       <div class="navbar-brand">
         <a href="/">
           <!-- Simple logo animation container starting with closed bars -->
-          <div class="animated-logo-container">
+          <figure class="animated-logo-container">
             <img src="assets/images/first.png" alt="Affordable Bail Bonds" class="logo-image" id="logo-image">
-          </div>
+            <figcaption style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;">
+              affordable bail bonds in McAllen 24/7 – how to bail someone out in McAllen fast – cheap bail bonds Hidalgo County – fianzas económicas en McAllen
+            </figcaption>
+          </figure>
         </a>
         
         <!-- Mobile phone button (only visible in mobile) -->
@@ -55,12 +58,12 @@
         <!-- Navigation menu with call info directly beside it -->
         <nav class="navbar">
           <div class="navbar-items">
-            <a href="/" class="navbar-item active">{{ 'home' | translate }}</a>
-            <a href="/#servicios" class="navbar-item">{{ 'services' | translate }}</a>
-            <a href="/#ubicacion" class="navbar-item">{{ 'location' | translate }}</a>
+            <a href="/" class="navbar-item active" title="affordable bail bonds in McAllen 24/7">{{ 'home' | translate }}</a>
+            <a href="/#servicios" class="navbar-item" title="how to bail someone out in McAllen fast">{{ 'services' | translate }}</a>
+            <a href="/#ubicacion" class="navbar-item" title="cheap bail bonds Hidalgo County">{{ 'location' | translate }}</a>
             <a href="/#testimonios" class="navbar-item">{{ 'testimonials' | translate }}</a>
             <a href="/#preguntas-frecuentes" class="navbar-item">{{ 'faq' | translate }}</a>
-            <a href="javascript:void(0)" (click)="openCallbackPopup()" class="navbar-item">{{ 'contact' | translate }}</a>
+            <a href="javascript:void(0)" (click)="openCallbackPopup()" class="navbar-item" title="fianzas económicas en McAllen">{{ 'contact' | translate }}</a>
           </div>
         </nav>
         
