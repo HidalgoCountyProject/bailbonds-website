@@ -1,17 +1,47 @@
 <div class="wizard-view">
-  <!-- Slim, dedicated header for document filling -->
-  <header class="doc-header">
-    <button class="back-btn" (click)="close()" aria-label="Close form">
-      &#10005;
+  <!-- Minimal header toolbar for document filling -->
+  <header class="document-toolbar">
+    <button class="toolbar-btn close-btn" (click)="close()" aria-label="Close form">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
     </button>
-    <h1 class="doc-title">Document Form</h1>
+    
+    <h1 class="document-title">Indemnitor Application</h1>
+    
+    <button class="toolbar-btn download-btn" (click)="downloadPdf()" aria-label="Download PDF">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="7,10 12,15 17,10"></polyline>
+        <line x1="12" y1="15" x2="12" y2="3"></line>
+      </svg>
+    </button>
   </header>
 
-  <!-- PDF viewer -->
-  <app-pdf-viewer [src]="pdfSrc" (pageChange)="onPageUpdate($event)"></app-pdf-viewer>
-
-  <!-- Floating progress indicator -->
-  <div class="progress-indicator">
-    {{ currentPage }} / {{ totalPages }}
+  <!-- PDF Viewer with optimized settings for mobile form filling -->
+  <div class="pdf-container">
+    <ngx-extended-pdf-viewer
+      [src]="pdfSrc"
+      [height]="'calc(100vh - 60px)'"
+      [zoom]="'page-fit'"
+      [pageViewMode]="'multiple'"
+      [showToolbar]="false"
+      [showSidebarButton]="false"
+      [showFindButton]="false"
+      [showPagingButtons]="true"
+      [showZoomButtons]="true"
+      [showPresentationModeButton]="false"
+      [showOpenFileButton]="false"
+      [showPrintButton]="false"
+      [showDownloadButton]="false"
+      [showSecondaryToolbarButton]="false"
+      [showRotateButton]="false"
+      [showHandToolButton]="false"
+      [showSpreadButton]="false"
+      [showPropertiesButton]="false"
+      [textLayer]="true"
+      [showBorders]="false">
+    </ngx-extended-pdf-viewer>
   </div>
 </div>

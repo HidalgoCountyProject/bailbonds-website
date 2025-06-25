@@ -2,68 +2,257 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-color: #f5f5f5;
 }
 
-.doc-header {
+/* Minimal document toolbar */
+.document-toolbar {
   display: flex;
   align-items: center;
-  justify-content: center;
-  height: 48px;
-  border-bottom: 1px solid #e5e5e5;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  justify-content: space-between;
+  height: 60px;
   background: #ffffff;
+  border-bottom: 1px solid #e1e5e9;
+  padding: 0 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
   z-index: 1000;
 }
 
-.back-btn {
-  position: absolute;
-  left: 16px;
-  top: 10px;
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: #333;
-}
-
-.doc-title {
-  font-size: 1rem;
+.document-title {
+  font-size: 1.1rem;
   font-weight: 600;
+  color: #1a1a1a;
   margin: 0;
-}
-
-/* Ensure viewer below header */
-app-pdf-viewer {
-  margin-top: 48px;
+  text-align: center;
   flex: 1;
-  display: block;
+  padding: 0 16px;
 }
 
-.progress-indicator {
-  position: fixed;
-  bottom: 16px;
-  right: 16px;
-  background: rgba(0, 0, 0, 0.75);
-  color: #fff;
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.2px;
-  pointer-events: none;
+.toolbar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #4a5568;
+  transition: all 0.2s ease;
+  padding: 0;
 }
 
-@media (max-width: 576px) {
-  .back-btn {
-    left: 12px;
+.toolbar-btn:hover {
+  background-color: #f7fafc;
+  color: #2d3748;
+  transform: scale(1.05);
+}
+
+.toolbar-btn:active {
+  transform: scale(0.95);
+}
+
+.close-btn:hover {
+  background-color: #fed7d7;
+  color: #e53e3e;
+}
+
+.download-btn:hover {
+  background-color: #bee3f8;
+  color: #3182ce;
+}
+
+/* PDF container */
+.pdf-container {
+  flex: 1;
+  width: 100%;
+  height: calc(100vh - 60px);
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+/* Override ngx-extended-pdf-viewer styles for better mobile experience */
+::ng-deep .pdf-viewer {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+::ng-deep .pdfViewer {
+  padding: 8px !important;
+}
+
+::ng-deep .page {
+  margin: 8px auto !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 4px !important;
+}
+
+/* iOS-style compact form fields */
+::ng-deep .annotationLayer .textWidgetAnnotation input,
+::ng-deep .annotationLayer .textWidgetAnnotation textarea,
+::ng-deep .annotationLayer .choiceWidgetAnnotation select {
+  border: 1px solid #d1d5db !important;
+  border-radius: 3px !important;
+  padding: 1px 4px !important;
+  font-size: 0.7rem !important;
+  line-height: 1 !important;
+  height: auto !important;
+  min-height: 0.6rem !important;
+  max-height: 0.8rem !important;
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  transition: all 0.15s ease !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif !important;
+}
+
+/* Textarea specific styling for multiline fields */
+::ng-deep .annotationLayer .textWidgetAnnotation textarea {
+  min-height: 1.5rem !important;
+  max-height: 4rem !important;
+  resize: vertical !important;
+  line-height: 1.2 !important;
+}
+
+/* Focus states - iOS style */
+::ng-deep .annotationLayer .textWidgetAnnotation input:focus,
+::ng-deep .annotationLayer .textWidgetAnnotation textarea:focus,
+::ng-deep .annotationLayer .choiceWidgetAnnotation select:focus {
+  border-color: #007aff !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2) !important;
+  background-color: rgba(255, 255, 255, 1) !important;
+}
+
+/* Checkbox styling - more compact */
+::ng-deep .annotationLayer .buttonWidgetAnnotation.checkBox input {
+  width: 0.6rem !important;
+  height: 0.6rem !important;
+  margin: 0.1rem !important;
+  border-radius: 2px !important;
+}
+
+/* Radio button styling */
+::ng-deep .annotationLayer .buttonWidgetAnnotation.radioButton input {
+  width: 0.6rem !important;
+  height: 0.6rem !important;
+  margin: 0.1rem !important;
+}
+
+/* Ensure proper form field positioning */
+::ng-deep .annotationLayer .textWidgetAnnotation,
+::ng-deep .annotationLayer .choiceWidgetAnnotation,
+::ng-deep .annotationLayer .buttonWidgetAnnotation {
+  line-height: 1 !important;
+}
+
+/* Hide unnecessary PDF.js UI elements */
+::ng-deep .toolbar {
+  display: none !important;
+}
+
+::ng-deep .loadingBar {
+  background-color: #3182ce !important;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .document-toolbar {
+    height: 56px;
+    padding: 0 12px;
   }
-  .doc-header {
-    height: 44px;
+  
+  .document-title {
+    font-size: 1rem;
+    padding: 0 12px;
   }
-  app-pdf-viewer {
-    margin-top: 44px;
+  
+  .toolbar-btn {
+    width: 40px;
+    height: 40px;
   }
+  
+  .pdf-container {
+    height: calc(100vh - 56px);
+  }
+  
+  ::ng-deep .pdfViewer {
+    padding: 4px !important;
+  }
+  
+  ::ng-deep .page {
+    margin: 4px auto !important;
+  }
+  
+  /* Mobile form fields - ultra compact */
+  ::ng-deep .annotationLayer .textWidgetAnnotation input,
+  ::ng-deep .annotationLayer .textWidgetAnnotation textarea,
+  ::ng-deep .annotationLayer .choiceWidgetAnnotation select {
+    font-size: 0.65rem !important; /* Very small but prevents zoom on iOS */
+    padding: 0.05rem 0.25rem !important;
+    min-height: 0.5rem !important;
+    max-height: 0.65rem !important;
+    line-height: 0.9 !important;
+  }
+  
+  ::ng-deep .annotationLayer .textWidgetAnnotation textarea {
+    min-height: 0.8rem !important;
+    max-height: 2rem !important;
+    line-height: 1 !important;
+  }
+  
+  ::ng-deep .annotationLayer .buttonWidgetAnnotation.checkBox input,
+  ::ng-deep .annotationLayer .buttonWidgetAnnotation.radioButton input {
+    width: 0.4rem !important;
+    height: 0.4rem !important;
+    margin: 0.02rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .document-toolbar {
+    height: 52px;
+    padding: 0 8px;
+  }
+  
+  .document-title {
+    font-size: 0.9rem;
+    padding: 0 8px;
+  }
+  
+  .toolbar-btn {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .pdf-container {
+    height: calc(100vh - 52px);
+  }
+}
+
+/* Loading state */
+::ng-deep .ng-pdf-viewer-container {
+  background: #f5f5f5;
+}
+
+/* Ensure smooth scrolling */
+::ng-deep .pdf-viewer {
+  scroll-behavior: smooth;
+}
+
+/* Additional iOS-style improvements */
+::ng-deep .annotationLayer .textWidgetAnnotation input::placeholder,
+::ng-deep .annotationLayer .textWidgetAnnotation textarea::placeholder {
+  color: #8e8e93 !important;
+  opacity: 1 !important;
+}
+
+/* Ensure proper text rendering */
+::ng-deep .annotationLayer .textWidgetAnnotation input,
+::ng-deep .annotationLayer .textWidgetAnnotation textarea {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
 }

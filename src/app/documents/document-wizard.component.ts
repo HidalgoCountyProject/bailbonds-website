@@ -1,23 +1,31 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { PdfViewerComponent } from './components/pdf-viewer.component';
+import { NgxExtendedPdfViewerModule, pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
 
 @Component({
   selector: 'app-document-wizard',
   standalone: true,
-  imports: [CommonModule, PdfViewerComponent],
+  imports: [CommonModule, NgxExtendedPdfViewerModule],
   templateUrl: './document-wizard.component.html',
   styleUrls: ['./document-wizard.component.css']
 })
 export class DocumentWizardComponent implements OnInit, OnDestroy {
-  pdfSrc = 'assets/pdfs/defendant/defendant-application-and-agreement-en.pdf';
-  currentPage = 1;
-  totalPages = 1;
+  pdfSrc = 'assets/pdfs/indemnitor/indemnitor-application-and-agreement-en.pdf';
   isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined';
   originalHeaderHeight: string | null = null;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+    // Configure PDF.js paths for S3 deployment
+    this.configurePdfPaths();
+  }
+
+  private configurePdfPaths(): void {
+    // Set correct paths for S3 deployment
+    pdfDefaultOptions.assetsFolder = 'assets';
+    pdfDefaultOptions.workerSrc = () => 'assets/pdf.worker-4.10.728.min.mjs';
+    pdfDefaultOptions.sandboxBundleSrc = () => 'assets/pdf.sandbox-4.10.728.min.mjs';
+  }
 
   ngOnInit(): void {
     if (this.isBrowser) {
@@ -48,12 +56,15 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
     }
   }
 
-  onPageUpdate(ev: { current: number; total: number }) {
-    this.currentPage = ev.current;
-    this.totalPages = ev.total;
-  }
-
   close() {
     this.router.navigateByUrl('/');
+  }
+
+  downloadPdf() {
+    // The ngx-extended-pdf-viewer will handle the download
+    const downloadLink = document.createElement('a');
+    downloadLink.href = this.pdfSrc;
+    downloadLink.download = 'indemnitor-application-form.pdf';
+    downloadLink.click();
   }
 }
