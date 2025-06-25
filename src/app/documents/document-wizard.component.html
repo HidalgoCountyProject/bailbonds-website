@@ -41,7 +41,9 @@
       [showSpreadButton]="false"
       [showPropertiesButton]="false"
       [textLayer]="true"
-      [showBorders]="false">
+      [showBorders]="false"
+      (pdfLoaded)="onPdfLoaded($event)"
+      (zoomChange)="onZoomChange($event)">
     </ngx-extended-pdf-viewer>
   </div>
 </div>

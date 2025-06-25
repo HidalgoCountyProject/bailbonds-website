@@ -73,6 +73,8 @@
   height: calc(100vh - 60px);
   overflow: hidden;
   background: #f5f5f5;
+  /* Enable smooth pinch zoom with limits */
+  touch-action: pan-x pan-y pinch-zoom;
 }
 
 /* Override ngx-extended-pdf-viewer styles for better mobile experience */
@@ -255,4 +257,36 @@
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
   appearance: none !important;
+}
+
+/* Zoom control styles for mobile pinch-to-zoom limits */
+::ng-deep .pdf-viewer {
+  /* Constrain zoom behavior */
+  transform-origin: center center;
+}
+
+/* Mobile zoom constraints */
+@media (max-width: 768px) {
+  ::ng-deep .pdf-viewer {
+    /* Prevent excessive zoom out/in on mobile */
+    max-width: 300% !important;  /* Max zoom in - 300% */
+    min-width: 50% !important;   /* Max zoom out - 50% */
+  }
+  
+  ::ng-deep .pdfViewer {
+    /* Mobile zoom constraints with smooth transform origin */
+    transform-origin: top center;
+  }
+  
+  /* Smooth zoom transitions */
+  ::ng-deep .page {
+    transition: transform 0.15s ease-out !important;
+  }
+  
+  /* Constrain pinch zoom behavior */
+  .pdf-container {
+    /* Better touch zoom handling */
+    touch-action: pan-x pan-y pinch-zoom;
+    overflow: hidden;
+  }
 }
