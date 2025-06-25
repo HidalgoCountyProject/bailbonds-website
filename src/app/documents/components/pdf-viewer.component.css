@@ -1,0 +1,14 @@
+.pdf-scroll-container {
+  width: 100%;
+  height: calc(100vh - 48px); /* account for slim header, will adapt */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.pdf-scroll-container canvas {
+  width: 100% !important;
+  height: auto !important;
+  display: block;
+  margin: 0 auto 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}

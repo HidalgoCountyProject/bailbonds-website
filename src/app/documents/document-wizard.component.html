@@ -1,0 +1,17 @@
+<div class="wizard-view">
+  <!-- Slim, dedicated header for document filling -->
+  <header class="doc-header">
+    <button class="back-btn" (click)="close()" aria-label="Close form">
+      &#10005;
+    </button>
+    <h1 class="doc-title">Document Form</h1>
+  </header>
+
+  <!-- PDF viewer -->
+  <app-pdf-viewer [src]="pdfSrc" (pageChange)="onPageUpdate($event)"></app-pdf-viewer>
+
+  <!-- Floating progress indicator -->
+  <div class="progress-indicator">
+    {{ currentPage }} / {{ totalPages }}
+  </div>
+</div>
