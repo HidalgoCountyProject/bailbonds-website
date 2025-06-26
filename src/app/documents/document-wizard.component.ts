@@ -1,12 +1,13 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { NgxExtendedPdfViewerModule, pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
+import { SignatureModalComponent } from '../shared/signature-modal/signature-modal.component';
 
 @Component({
   selector: 'app-document-wizard',
   standalone: true,
-  imports: [CommonModule, NgxExtendedPdfViewerModule],
+  imports: [CommonModule, NgxExtendedPdfViewerModule, SignatureModalComponent],
   templateUrl: './document-wizard.component.html',
   styleUrls: ['./document-wizard.component.css']
 })
@@ -20,6 +21,11 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
   maxZoom = 3.0;  // 300% - maximum zoom (reasonable limit for mobile)
   currentZoom = 1.0;
   initialScale = 1.0;
+
+  // Hold captured signature (PNG Data URL)
+  capturedSignature?: string;
+
+  @ViewChild('signatureModal') signatureModal?: SignatureModalComponent;
 
   constructor(private router: Router) {
     // Configure PDF.js paths for S3 deployment
@@ -124,5 +130,19 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
         }
       }
     }
+  }
+
+  /* ---------------------------------------------------------------------- */
+  /* Signature modal helpers                                                */
+  /* ---------------------------------------------------------------------- */
+
+  openSignature() {
+    this.signatureModal?.open();
+  }
+
+  onSignatureSaved(dataUrl: string) {
+    this.capturedSignature = dataUrl;
+    // Later you can embed this into the PDF or preview it
+    console.log('Signature captured', dataUrl.substring(0, 50) + '...');
   }
 }
