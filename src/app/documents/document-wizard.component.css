@@ -74,13 +74,15 @@
   overflow: hidden;
   background: #f5f5f5;
   /* Enable smooth pinch zoom with limits */
-  touch-action: pan-x pan-y pinch-zoom;
+  touch-action: pan-y pinch-zoom;
+  overflow-x: hidden;
 }
 
 /* Override ngx-extended-pdf-viewer styles for better mobile experience */
 ::ng-deep .pdf-viewer {
   width: 100% !important;
   height: 100% !important;
+  overflow-x: hidden !important;
 }
 
 ::ng-deep .pdfViewer {
