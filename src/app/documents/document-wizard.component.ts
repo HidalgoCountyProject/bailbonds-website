@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { NgxExtendedPdfViewerModule, pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
 import { SignatureModalComponent } from '../shared/signature-modal/signature-modal.component';
+import { PDFDocument } from 'pdf-lib';
 
 @Component({
   selector: 'app-document-wizard',
@@ -25,6 +26,12 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
   // Hold captured signature (PNG Data URL)
   capturedSignature?: string;
 
+  /** Controls white overlay to smooth PDF reloads */
+  isLoading = false;
+
+  /** Holds the original PDF bytes so we can modify them after a signature is captured */
+  private originalPdfBytes?: Uint8Array;
+
   @ViewChild('signatureModal') signatureModal?: SignatureModalComponent;
 
   constructor(private router: Router) {
@@ -34,9 +41,10 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
 
   private configurePdfPaths(): void {
     // Set correct paths for S3 deployment
-    pdfDefaultOptions.assetsFolder = 'assets';
-    pdfDefaultOptions.workerSrc = () => 'assets/pdf.worker-4.10.728.min.mjs';
-    pdfDefaultOptions.sandboxBundleSrc = () => 'assets/pdf.sandbox-4.10.728.min.mjs';
+    // Use absolute paths (leading slash) so they resolve when the viewer is running from a blob: URL
+    pdfDefaultOptions.assetsFolder = '/assets';
+    pdfDefaultOptions.workerSrc = () => '/assets/pdf.worker-4.10.728.min.mjs';
+    pdfDefaultOptions.sandboxBundleSrc = () => '/assets/pdf.sandbox-4.10.728.min.mjs';
   }
 
   ngOnInit(): void {
@@ -85,6 +93,11 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.setupZoomLimits();
     }, 1000);
+
+    // Fade overlay out shortly after pages are rendered
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 300);
   }
 
   onZoomChange(zoom: string | number) {
@@ -144,5 +157,105 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
     this.capturedSignature = dataUrl;
     // Later you can embed this into the PDF or preview it
     console.log('Signature captured', dataUrl.substring(0, 50) + '...');
+
+    // Show overlay
+    this.isLoading = true;
+
+    // Final hard-coded placement (page 4)
+    const target = {
+      page: 4,
+      x: 300, // move further right (PDF points)
+      y: 122,
+      width: 120,
+      height: 48,
+    };
+
+    this.injectSignatureIntoPdf(dataUrl, target).catch((err) =>
+      console.error('Failed to inject signature', err)
+    );
+  }
+
+  /**
+   * Embeds the given base64 PNG into the provided page & bounding box and reloads the viewer.
+   */
+  private async injectSignatureIntoPdf(
+    dataUrl: string,
+    options: { page: number; x: number; y: number; width: number; height: number }
+  ): Promise<void> {
+    try {
+      // 1) Load PDF
+      const existingPdfBytes = await this.ensureOriginalPdfBytes();
+      const pdfDoc = await PDFDocument.load(existingPdfBytes, { ignoreEncryption: true });
+
+      // 2) Embed signature image
+      const pngBytes = this.base64ToUint8Array(dataUrl);
+      const pngImage = await pdfDoc.embedPng(pngBytes);
+
+      // 3) Draw image at the requested position/size
+      const page = pdfDoc.getPage(options.page - 1); // zero-based index
+      const pageHeight = page.getHeight();
+
+      // PDFLib uses bottom-left origin. Caller provides y from bottom, so we can use it directly.
+      // If you prefer supplying y from top-left (like screen coords), convert: y = pageHeight - topY - height
+      page.drawImage(pngImage, {
+        x: options.x,
+        y: options.y,
+        width: options.width,
+        height: options.height,
+      });
+
+      // 4) Save the document
+      const modifiedBytes = await pdfDoc.save();
+
+      // 5) Reload viewer with the updated PDF
+      const blob = new Blob([modifiedBytes], { type: 'application/pdf' });
+      const objectUrl = URL.createObjectURL(blob);
+
+      // Revoke old object URL if we generated one previously
+      if (this.pdfSrc.startsWith('blob:')) {
+        URL.revokeObjectURL(this.pdfSrc);
+      }
+
+      this.pdfSrc = objectUrl;
+      // Force ngx-extended-pdf-viewer to reload
+      this.originalPdfBytes = modifiedBytes;
+
+      this.logDebug('Injecting signature', { options, pageHeight });
+    } catch (error) {
+      console.error('Error while inserting signature into PDF', error);
+    }
+  }
+
+  /** Converts a Data URL (base64 PNG) to Uint8Array */
+  private base64ToUint8Array(dataUrl: string): Uint8Array {
+    const base64 = dataUrl.split(',')[1];
+    const binaryString = atob(base64);
+    const len = binaryString.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes;
+  }
+
+  /**
+   * Downloads the current pdfSrc (either the remote URL or the previously generated object URL)
+   * and keeps the bytes in memory so we can re-save the document later.
+   */
+  private async ensureOriginalPdfBytes(): Promise<Uint8Array> {
+    if (this.originalPdfBytes) {
+      return this.originalPdfBytes;
+    }
+
+    const response = await fetch(this.pdfSrc);
+    const arrayBuffer = await response.arrayBuffer();
+    this.originalPdfBytes = new Uint8Array(arrayBuffer);
+    return this.originalPdfBytes;
+  }
+
+  /** Verbose logging helper */
+  private logDebug(message: string, data?: any) {
+    // eslint-disable-next-line no-console
+    console.log('[SignatureDebug] ' + message, data ?? '');
   }
 }

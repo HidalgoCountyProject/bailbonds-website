@@ -20,6 +20,7 @@
   </header>
 
   <!-- PDF Viewer with optimized settings for mobile form filling -->
+  <div class="pdf-overlay" [class.show]="isLoading"></div>
   <div class="pdf-container">
     <ngx-extended-pdf-viewer
       [src]="pdfSrc"
