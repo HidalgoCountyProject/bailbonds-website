@@ -1,0 +1,143 @@
+.role-selection-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  color: #222;
+}
+
+.title .spanish {
+  font-size: 1rem;
+  font-weight: 400;
+  color: #555;
+  font-style: italic;
+  opacity: 0.9;
+  display: block;
+  margin-top: 0.5rem;
+}
+
+.subtitle {
+  font-size: 1.125rem;
+  color: #666;
+  margin-bottom: 1.25rem;
+}
+
+.subtitle .spanish {
+  display: block;
+  margin-top: 0.5rem;
+  color: #666;
+  font-style: italic;
+}
+
+.role-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0.5rem 0;
+}
+
+.friendly {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.legal {
+  font-size: 0.8rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.desc {
+  font-size: 0.95rem;
+  color: #555;
+  margin-top: 0.5rem;
+  line-height: 1.4;
+}
+
+.desc .spanish {
+  font-size: 0.85rem;
+  color: #666;
+  display: block;
+  margin-top: 0.4rem;
+  font-style: italic;
+}
+
+.card-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2.5rem;
+  margin-top: 2.5rem;
+}
+
+.role-card {
+  background: #ffffff;
+  border: 2px solid var(--brand-yellow, #ffd54f);
+  border-radius: 10px;
+  width: 280px;
+  padding: 1.75rem 1.25rem;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.role-card:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.role-card:hover,
+.role-card:focus {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+}
+
+.role-card .icon {
+  font-size: 3.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.role-card h3 {
+  margin: 0.5rem 0 0.25rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.role-card p {
+  font-size: 0.9rem;
+  color: #555;
+  margin: 0;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: var(--brand-yellow, #ffd600);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.back-btn:hover,
+.back-btn:focus {
+  text-decoration: underline;
+} 

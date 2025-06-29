@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener, Renderer2, ElementRef, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgClass } from '@angular/common';
 import { LanguageService, Language } from '../services/language.service';
@@ -46,7 +46,8 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     private el: ElementRef,
     @Inject(PLATFORM_ID) private platformId: Object,
     private languageService: LanguageService,
-    private popupService: PopupService
+    private popupService: PopupService,
+    private router: Router
   ) { 
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
@@ -57,12 +58,23 @@ export class HeaderComponent implements OnInit, AfterViewInit {
       this.currentLanguage = lang;
     });
     
-    // Always show the language prompt initially
+    // Show the language prompt only if we're not on the wizard flow
     if (this.isBrowser) {
       // Slight delay to ensure page has loaded
       setTimeout(() => {
-        this.displayLanguagePrompt();
+        if (!this.isWizardRoute()) {
+          this.displayLanguagePrompt();
+        }
       }, 1500);
+      
+      // Hide prompt when navigating into wizard flow (in case user arrives there later)
+      this.router.events.subscribe(event => {
+        if (event instanceof NavigationEnd) {
+          if ((event as NavigationEnd).url.startsWith('/wizard')) {
+            this.dismissLanguagePrompt();
+          }
+        }
+      });
       
       // Initialize logo animation
       this.setupLogoAnimation();
@@ -228,5 +240,11 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   // Método para abrir el popup de callback
   openCallbackPopup(): void {
     this.popupService.openCallbackPopup();
+  }
+
+  // Helper to know if current route corresponds to the fill-documents (wizard) flow
+  private isWizardRoute(): boolean {
+    if (!this.isBrowser) return false;
+    return this.router.url.startsWith('/wizard');
   }
 }
