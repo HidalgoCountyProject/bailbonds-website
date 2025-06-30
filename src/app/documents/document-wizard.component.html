@@ -32,6 +32,7 @@
 
   <!-- PDF Viewer Step -->
   <div *ngIf="!inIdPhotoStep" class="pdf-step">
+  <div class="pdf-overlay" [class.show]="isLoading"></div>
     <div class="pdf-container">
       <ngx-extended-pdf-viewer
         [src]="pdfSrc"
