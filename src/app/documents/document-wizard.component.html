@@ -1,0 +1,134 @@
+<div class="wizard-view">
+  <!-- Minimal header toolbar for document filling -->
+  <header class="document-toolbar">
+    <button class="toolbar-btn close-btn" (click)="close()" aria-label="Close form">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    
+    <h1 class="document-title">
+      {{ inIdPhotoStep ? 'ID Photo' : (pdfSrc | slice:(pdfSrc.lastIndexOf('/') + 1)) }}
+    </h1>
+
+    <!-- Toolbar universal controls -->
+    <button class="toolbar-btn prev-btn" (click)="prevDoc()" [disabled]="isFirstDoc && !inIdPhotoStep" aria-label="Documento anterior">
+      ◀
+    </button>
+
+    <button *ngIf="!inIdPhotoStep" class="toolbar-btn next-btn" (click)="nextDoc()" aria-label="Siguiente documento">
+      ▶
+    </button>
+
+    <button class="toolbar-btn download-btn" (click)="downloadPdf()" aria-label="Download PDF">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="7,10 12,15 17,10"></polyline>
+        <line x1="12" y1="15" x2="12" y2="3"></line>
+      </svg>
+    </button>
+  </header>
+
+  <!-- PDF Viewer Step -->
+  <div *ngIf="!inIdPhotoStep" class="pdf-step">
+  <div class="pdf-overlay" [class.show]="isLoading"></div>
+    <div class="pdf-container">
+      <ngx-extended-pdf-viewer
+        [src]="pdfSrc"
+        [height]="'calc(100vh - 60px)'"
+        [zoom]="'page-fit'"
+        [pageViewMode]="'multiple'"
+        [showToolbar]="false"
+        [showSidebarButton]="false"
+        [showFindButton]="false"
+        [showPagingButtons]="true"
+        [showZoomButtons]="true"
+        [showPresentationModeButton]="false"
+        [showOpenFileButton]="false"
+        [showPrintButton]="false"
+        [showDownloadButton]="false"
+        [showSecondaryToolbarButton]="false"
+        [showRotateButton]="false"
+        [showHandToolButton]="false"
+        [showSpreadButton]="false"
+        [showPropertiesButton]="false"
+        [textLayer]="true"
+        [showBorders]="false"
+        (pdfLoaded)="onPdfLoaded($event)"
+        (zoomChange)="onZoomChange($event)">
+      </ngx-extended-pdf-viewer>
+    </div>
+
+    <!-- Floating "Click to Sign" button -->
+    <button *ngIf="!inIdPhotoStep" class="sign-btn" (click)="openSignature()">
+      Click to Sign
+    </button>
+
+    <!-- Signature modal instance -->
+    <app-signature-modal #signatureModal (saved)="onSignatureSaved($event)"></app-signature-modal>
+  </div>
+
+  <!-- ID Photo Step -->
+  <div *ngIf="inIdPhotoStep" class="id-photo-container">
+    <!-- Guidance & tips -->
+    <section class="photo-guidelines">
+      <h2 class="guidelines-title">
+        Please add a clear photo of your ID
+        <span class="title-es">Por favor sube una foto clara de tu identificación</span>
+      </h2>
+      <p class="accepted-ids">
+        Recommended IDs: <strong>U.S. Passport</strong>, <strong>Driver's License</strong>, or <strong>State-issued ID</strong>
+        <span class="text-es">Identificaciones recomendadas: <strong>Pasaporte estadounidense</strong>, <strong>Licencia de conducir</strong> o <strong>ID gubernamental</strong></span>
+      </p>
+      <ul class="tips">
+        <li>
+          Use good lighting to avoid glare or shadows
+          <span class="tip-es">Usa buena iluminación para evitar reflejos o sombras</span>
+        </li>
+        <li>
+          Keep the picture sharp—avoid blurry photos
+          <span class="tip-es">Mantén la imagen nítida; evita fotos borrosas</span>
+        </li>
+        <li>
+          Try to keep all four edges visible and text readable
+          <span class="tip-es">Procura que los cuatro bordes sean visibles y el texto legible</span>
+        </li>
+      </ul>
+    </section>
+
+    <form [formGroup]="currentForm" novalidate>
+      <div class="photo-upload">
+        <div class="uploader-sides">
+          <!-- Front side -->
+          <div class="side" [class.uploaded]="idPhotoControl?.value?.frontPreview">
+            <span class="side-label">Front / Frente</span>
+            <button *ngIf="!idPhotoControl?.value?.frontPreview" type="button" class="upload-btn" (click)="frontInput.click()">
+              <span class="upload-en">Upload front</span>
+              <span class="upload-es">Subir frente</span>
+            </button>
+            <img *ngIf="idPhotoControl?.value?.frontPreview" [src]="idPhotoControl?.value?.frontPreview" class="preview-img" alt="Front preview" />
+            <input #frontInput type="file" accept="image/*" (change)="onPhotoSelected($event, 'front', 'idPhoto')" hidden />
+            <a *ngIf="idPhotoControl?.value?.frontPreview" class="reset-link" (click)="resetPhoto('front', 'idPhoto')">Eliminar</a>
+          </div>
+
+          <!-- Back side -->
+          <div class="side" [class.uploaded]="idPhotoControl?.value?.backPreview">
+            <span class="side-label">Back / Reverso</span>
+            <button *ngIf="!idPhotoControl?.value?.backPreview" type="button" class="upload-btn" (click)="backInput.click()">
+              <span class="upload-en">Upload back</span>
+              <span class="upload-es">Subir reverso</span>
+            </button>
+            <img *ngIf="idPhotoControl?.value?.backPreview" [src]="idPhotoControl?.value?.backPreview" class="preview-img" alt="Back preview" />
+            <input #backInput type="file" accept="image/*" (change)="onPhotoSelected($event, 'back', 'idPhoto')" hidden />
+            <a *ngIf="idPhotoControl?.value?.backPreview" class="reset-link" (click)="resetPhoto('back', 'idPhoto')">Eliminar</a>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="save-btn main-save" (click)="saveIdPhoto()" [disabled]="currentForm.invalid || idPhotoControl?.invalid">
+        Guardar y continuar
+      </button>
+    </form>
+  </div>
+</div>

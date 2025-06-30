@@ -145,6 +145,19 @@
   color: var(--primary-color);
 }
 
+/* Fill Documents Button - Discreet Styling */
+.fill-documents-button {
+  background-color: transparent; /* No background to blend in */
+  color: rgba(255, 255, 255, 0.9); /* Slightly muted white text */
+  border: none; /* No border */
+}
+
+.fill-documents-button:hover {
+  background-color: rgba(255, 255, 255, 0.85); /* Light fill on hover */
+  color: var(--primary-color); /* Readable text on hover */
+  border: none;
+}
+
 /* Promo Banner */
 .promo-banner {
   background-color: var(--accent-color);
