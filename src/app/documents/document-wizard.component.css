@@ -108,11 +108,11 @@
 }
 
 ::ng-deep .pdfViewer {
-  padding: 8px !important;
+  padding: 0 !important;
 }
 
 ::ng-deep .page {
-  margin: 8px auto !important;
+  margin: 0 auto !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
   border-radius: 4px !important;
 }
@@ -121,57 +121,29 @@
 ::ng-deep .annotationLayer .textWidgetAnnotation input,
 ::ng-deep .annotationLayer .textWidgetAnnotation textarea,
 ::ng-deep .annotationLayer .choiceWidgetAnnotation select {
-  border: 1px solid #d1d5db !important;
-  border-radius: 3px !important;
-  padding: 1px 4px !important;
-  font-size: 0.7rem !important;
-  line-height: 1 !important;
-  height: auto !important;
-  min-height: 0.6rem !important;
-  max-height: 0.8rem !important;
+  border: 1.5px solid #cbd5e1 !important;  /* slightly thicker, modern border */
+  border-radius: 4px !important;           /* gentle rounded corners */
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-size: 0.5rem !important;            /* consistent font size */
+  line-height: 1.25 !important;
   background-color: rgba(255, 255, 255, 0.95) !important;
-  transition: all 0.15s ease !important;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif !important;
+  transition: all 0.15s ease !important;   /* smooth feedback animation */
 }
 
-/* Textarea specific styling for multiline fields */
-::ng-deep .annotationLayer .textWidgetAnnotation textarea {
-  min-height: 1.5rem !important;
-  max-height: 4rem !important;
-  resize: vertical !important;
-  line-height: 1.2 !important;
-}
-
-/* Focus states - iOS style */
+/* Focus state colours */
 ::ng-deep .annotationLayer .textWidgetAnnotation input:focus,
 ::ng-deep .annotationLayer .textWidgetAnnotation textarea:focus,
 ::ng-deep .annotationLayer .choiceWidgetAnnotation select:focus {
-  border-color: #007aff !important;
-  outline: none !important;
+  border-color: #007aff !important;          /* iOS blue */
+  background-color: #ffffff !important;
   box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2) !important;
-  background-color: rgba(255, 255, 255, 1) !important;
 }
 
-/* Checkbox styling - more compact */
-::ng-deep .annotationLayer .buttonWidgetAnnotation.checkBox input {
-  width: 0.6rem !important;
-  height: 0.6rem !important;
-  margin: 0.1rem !important;
-  border-radius: 2px !important;
-}
-
-/* Radio button styling */
+/* Checkbox / radio colours */
+::ng-deep .annotationLayer .buttonWidgetAnnotation.checkBox input,
 ::ng-deep .annotationLayer .buttonWidgetAnnotation.radioButton input {
-  width: 0.6rem !important;
-  height: 0.6rem !important;
-  margin: 0.1rem !important;
-}
-
-/* Ensure proper form field positioning */
-::ng-deep .annotationLayer .textWidgetAnnotation,
-::ng-deep .annotationLayer .choiceWidgetAnnotation,
-::ng-deep .annotationLayer .buttonWidgetAnnotation {
-  line-height: 1 !important;
+  border-color: #d1d5db !important;
+  transition: all 0.15s ease !important;
 }
 
 /* Hide unnecessary PDF.js UI elements */
@@ -212,29 +184,13 @@
     margin: 4px auto !important;
   }
   
+  /* Prevent Safari/iOS auto-zoom on form fields while keeping compact look */
+  /* (rules moved to touch-only query below) */
+  
   /* Mobile form fields - ultra compact */
-  ::ng-deep .annotationLayer .textWidgetAnnotation input,
-  ::ng-deep .annotationLayer .textWidgetAnnotation textarea,
-  ::ng-deep .annotationLayer .choiceWidgetAnnotation select {
-    font-size: 0.65rem !important; /* Very small but prevents zoom on iOS */
-    padding: 0.05rem 0.25rem !important;
-    min-height: 0.5rem !important;
-    max-height: 0.65rem !important;
-    line-height: 0.9 !important;
-  }
+  /* (block fully removed) */
   
-  ::ng-deep .annotationLayer .textWidgetAnnotation textarea {
-    min-height: 0.8rem !important;
-    max-height: 2rem !important;
-    line-height: 1 !important;
-  }
-  
-  ::ng-deep .annotationLayer .buttonWidgetAnnotation.checkBox input,
-  ::ng-deep .annotationLayer .buttonWidgetAnnotation.radioButton input {
-    width: 0.4rem !important;
-    height: 0.4rem !important;
-    margin: 0.02rem !important;
-  }
+  /* Removed textarea and checkbox/radio size overrides */
 }
 
 @media (max-width: 480px) {
@@ -279,46 +235,6 @@
 ::ng-deep .annotationLayer .textWidgetAnnotation textarea::placeholder {
   color: #8e8e93 !important;
   opacity: 1 !important;
-}
-
-/* Ensure proper text rendering */
-::ng-deep .annotationLayer .textWidgetAnnotation input,
-::ng-deep .annotationLayer .textWidgetAnnotation textarea {
-  -webkit-appearance: none !important;
-  -moz-appearance: none !important;
-  appearance: none !important;
-}
-
-/* Zoom control styles for mobile pinch-to-zoom limits */
-::ng-deep .pdf-viewer {
-  /* Constrain zoom behavior */
-  transform-origin: center center;
-}
-
-/* Mobile zoom constraints */
-@media (max-width: 768px) {
-  ::ng-deep .pdf-viewer {
-    /* Prevent excessive zoom out/in on mobile */
-    max-width: 300% !important;  /* Max zoom in - 300% */
-    min-width: 50% !important;   /* Max zoom out - 50% */
-  }
-  
-  ::ng-deep .pdfViewer {
-    /* Mobile zoom constraints with smooth transform origin */
-    transform-origin: top center;
-  }
-  
-  /* Smooth zoom transitions */
-  ::ng-deep .page {
-    transition: transform 0.15s ease-out !important;
-  }
-  
-  /* Constrain pinch zoom behavior */
-  .pdf-container {
-    /* Better touch zoom handling */
-    touch-action: pan-x pan-y pinch-zoom;
-    overflow: hidden;
-  }
 }
 
 /* Overlay to hide reload flash */
@@ -525,3 +441,40 @@
   font-size: 0.75rem;
   color: #4a5568;
 }
+
+/* ----- Full-width PDF, no horizontal pan (mobile & desktop) ----- */
+.pdf-container {
+  overflow-x: hidden;                 /* Hide horizontal scroll */
+  touch-action: pan-y pinch-zoom;     /* Only vertical pan + pinch */
+}
+
+::ng-deep .pdfViewer {
+  padding: 0 !important;              /* Remove side gutters */
+}
+
+::ng-deep .page {
+  margin: 0 auto !important;          /* Center page, no side space */
+}
+
+::ng-deep .pdf-viewer {
+  width: 100% !important;             /* Ensure viewer never exceeds viewport */
+  touch-action: pan-y pinch-zoom !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* Desktop / medium-large screens – improve readability              */
+/* ------------------------------------------------------------------ */
+@media (min-width: 992px) {
+  /* Bigger toolbar title */
+  .document-title {
+    font-size: 1.3rem;
+  }
+
+  /* Larger text inside PDF form widgets */
+  ::ng-deep .annotationLayer .textWidgetAnnotation input,
+  ::ng-deep .annotationLayer .textWidgetAnnotation textarea,
+  ::ng-deep .annotationLayer .choiceWidgetAnnotation select {
+    font-size: 0.9rem !important; /* was 0.5rem */
+  }
+}
+

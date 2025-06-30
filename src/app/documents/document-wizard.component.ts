@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Meta } from '@angular/platform-browser';
 import { NgxExtendedPdfViewerModule, pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
 import { SignatureModalComponent } from '../shared/signature-modal/signature-modal.component';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
@@ -24,12 +25,6 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
   originalHeaderHeight: string | null = null;
   originalFooterDisplay: string | null = null;
   
-  // Zoom limits for mobile optimization
-  minZoom = 0.5;  // 50% - minimum zoom (can't zoom out beyond initial fit)
-  maxZoom = 3.0;  // 300% - maximum zoom (reasonable limit for mobile)
-  currentZoom = 1.0;
-  initialScale = 1.0;
-
   // Added missing properties for compile-time safety
   inIdPhotoStep = false;                        // Tracks whether the wizard is currently showing the ID-photo step
   currentForm!: FormGroup;                      // Reactive form used in the ID-photo step (initialised in ngOnInit)
@@ -47,9 +42,19 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
   /** Holds the original PDF bytes so we can modify them after a signature is captured */
   private originalPdfBytes?: Uint8Array;
 
+  minZoom = .50;
+  // Minimum zoom scale (set to page-fit after PDF loads)
+
   @ViewChild('signatureModal') signatureModal?: SignatureModalComponent;
 
-  constructor(private router: Router, private route: ActivatedRoute, private fb: FormBuilder) {
+  private originalViewportContent: string | null = null;
+
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private fb: FormBuilder,
+    private meta: Meta
+  ) {
     // Configure PDF.js paths for S3 deployment
     this.configurePdfPaths();
   }
@@ -63,6 +68,12 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // Persist the current viewport meta so we can restore it later
+    const viewportTag = this.meta.getTag('name="viewport"');
+    this.originalViewportContent = viewportTag?.content ?? null;
+    // Disable browser zoom for the whole page while the wizard is active
+    this.meta.updateTag({ name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' });
+
     // Determine role and language from route params
     const paramRole = this.route.snapshot.paramMap.get('role');
     const paramLang = this.route.snapshot.paramMap.get('lang');
@@ -174,6 +185,14 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    // Restore original viewport settings
+    if (this.originalViewportContent !== null) {
+      this.meta.updateTag({ name: 'viewport', content: this.originalViewportContent });
+    } else {
+      // If there was no viewport tag originally, remove the one we added
+      this.meta.removeTag('name="viewport"');
+    }
+
     if (this.isBrowser) {
       // Restore global header
       const headerEl = document.querySelector('header.header') as HTMLElement | null;
@@ -208,62 +227,28 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
     downloadLink.click();
   }
 
-  onPdfLoaded(pdf: any) {
-    // Set initial zoom limits when PDF loads
-    setTimeout(() => {
-      this.setupZoomLimits();
-    }, 1000);
+  /*onPdfLoaded(pdf: any) {
+    // Capture the scale used by 'page-fit' after render settles (give 300 ms)
+    console.log('onPdfLoaded');
+    console.log(this.isBrowser);
+    if (this.isBrowser) {
+      setTimeout(() => {
+        const viewer = (window as any).PDFViewerApplication;
+        if (viewer && viewer.pdfViewer) {
+          const fitScale = viewer.pdfViewer.currentScale || 1;
+          console.log('fitScale', fitScale);
+          // Apply a small tolerance so user can return smoothly to fit
+          //this.minZoom = fitScale * 0.98;
+          console.log('minZoom', this.minZoom);
+        }
+      }, 1000);
+    }
 
     // Fade overlay out shortly after pages are rendered
     setTimeout(() => {
       this.isLoading = false;
     }, 300);
-  }
-
-  onZoomChange(zoom: string | number) {
-    this.currentZoom = typeof zoom === 'string' ? parseFloat(zoom) : zoom;
-    // Throttle zoom limit enforcement to avoid performance issues
-    setTimeout(() => {
-      this.enforceZoomLimits();
-    }, 100);
-  }
-
-  private setupZoomLimits() {
-    if (this.isBrowser && typeof window !== 'undefined') {
-      const viewer = (window as any).PDFViewerApplication;
-      if (viewer && viewer.pdfViewer) {
-        // Store initial scale as baseline for zoom out limit
-        this.initialScale = viewer.pdfViewer.currentScale;
-        this.minZoom = Math.max(0.5, this.initialScale * 0.7); // Allow 30% zoom out from initial
-        
-        // Set mobile-specific limits
-        if (window.innerWidth <= 768) {
-          this.maxZoom = 2.5; // Limit max zoom on mobile for better performance
-        }
-        
-        this.enforceZoomLimits();
-      }
-    }
-  }
-
-  private enforceZoomLimits() {
-    if (this.isBrowser && typeof window !== 'undefined') {
-      const viewer = (window as any).PDFViewerApplication;
-      if (viewer && viewer.pdfViewer) {
-        const currentScale = viewer.pdfViewer.currentScale;
-        
-        // Enforce minimum zoom (can't zoom out too much from initial fit)
-        if (currentScale < this.minZoom) {
-          viewer.pdfViewer.currentScale = this.minZoom;
-        }
-        
-        // Enforce maximum zoom (can't zoom in too much)
-        if (currentScale > this.maxZoom) {
-          viewer.pdfViewer.currentScale = this.maxZoom;
-        }
-      }
-    }
-  }
+  }*/
 
   /* ---------------------------------------------------------------------- */
   /* Signature modal helpers                                                */
@@ -392,6 +377,9 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
       this.originalPdfBytes = modifiedBytes;
 
       this.logDebug('Injecting signature & restoring field values', { options, pageHeight, fieldValues });
+
+      // Hide loading overlay after the viewer has had a moment to refresh
+      setTimeout(() => (this.isLoading = false), 300);
     } catch (error) {
       console.error('Error while inserting signature into PDF', error);
     }
