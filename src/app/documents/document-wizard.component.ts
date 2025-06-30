@@ -42,7 +42,7 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
   /** Holds the original PDF bytes so we can modify them after a signature is captured */
   private originalPdfBytes?: Uint8Array;
 
-  minZoom = .50;
+  minZoom = .495;
   // Minimum zoom scale (set to page-fit after PDF loads)
 
   @ViewChild('signatureModal') signatureModal?: SignatureModalComponent;
