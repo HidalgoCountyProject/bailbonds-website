@@ -30,6 +30,11 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
   currentZoom = 1.0;
   initialScale = 1.0;
 
+  // Added missing properties for compile-time safety
+  inIdPhotoStep = false;                        // Tracks whether the wizard is currently showing the ID-photo step
+  currentForm!: FormGroup;                      // Reactive form used in the ID-photo step (initialised in ngOnInit)
+  idPhotoQuestion: string = 'idPhoto';          // Identifier used when persisting the ID-photo answer
+  
   // Hold captured signature (PNG Data URL)
   capturedSignature?: string;
 
