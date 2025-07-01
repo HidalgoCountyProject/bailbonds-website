@@ -251,15 +251,6 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl('/documents');
   }
 
-  downloadPdf() {
-    // The ngx-extended-pdf-viewer will handle the download
-    const downloadLink = document.createElement('a');
-    downloadLink.href = this.pdfSrc;
-    const filename = this.pdfSrc.split('/').pop() || 'document.pdf';
-    downloadLink.download = filename;
-    downloadLink.click();
-  }
-
   /*onPdfLoaded(pdf: any) {
     // Capture the scale used by 'page-fit' after render settles (give 300 ms)
     console.log('onPdfLoaded');
