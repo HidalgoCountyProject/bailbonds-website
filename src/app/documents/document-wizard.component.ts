@@ -585,8 +585,8 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
       }
 
       this.pdfSrc = objectUrl;
-      // Force ngx-extended-pdf-viewer to reload
-      this.originalPdfBytes = modifiedBytes;
+      // Note: we intentionally keep this.originalPdfBytes unchanged so that any future
+      // signature replacements start from the pristine (un-signed) PDF.
 
       this.logDebug('Injecting signature & restoring field values', { options, pageHeight, fieldValues });
 
@@ -618,7 +618,10 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
       return this.originalPdfBytes;
     }
 
-    const response = await fetch(this.pdfSrc);
+    // If the current src is a generated blob URL, fallback to the original file path
+    const fetchUrl = this.pdfSrc.startsWith('blob:') ? this.docs[this.currentIndex] : this.pdfSrc;
+
+    const response = await fetch(fetchUrl);
     const arrayBuffer = await response.arrayBuffer();
     this.originalPdfBytes = new Uint8Array(arrayBuffer);
     return this.originalPdfBytes;
