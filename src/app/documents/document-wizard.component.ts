@@ -143,24 +143,26 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
     // Static manifests (English and Spanish)
     const DEFENDANT_DOCS_EN = [
       'assets/pdfs/defendant/defendant-application-and-agreement-en.pdf',
-      'assets/pdfs/defendant/texas-addendum-en.pdf'
+      'assets/pdfs/defendant/texas-addendum-en.pdf',
+      'assets/pdfs/indemnitor/supreme-court-opinion-en.pdf'
     ];
     const DEFENDANT_DOCS_ES = [
       'assets/pdfs/defendant/defendant-application-and-agreement-es.pdf',
-      'assets/pdfs/defendant/texas-addendum-es.pdf'
+      'assets/pdfs/defendant/texas-addendum-es.pdf',
+      'assets/pdfs/indemnitor/supreme-court-opinion-es.pdf'
     ];
 
     const INDEMNITOR_DOCS_EN = [
       'assets/pdfs/indemnitor/indemnitor-application-and-agreement-en.pdf',
       'assets/pdfs/indemnitor/plain-talk-contract-en.pdf',
-      'assets/pdfs/indemnitor/rules-and-regulations-en.pdf',
-      'assets/pdfs/indemnitor/supreme-court-opinion-en.pdf'
+      'assets/pdfs/indemnitor/rules-and-regulations-en.pdf'
+      
     ];
     const INDEMNITOR_DOCS_ES = [
       'assets/pdfs/indemnitor/indemnitor-application-and-agreement-es.pdf',
       'assets/pdfs/indemnitor/plain-talk-contract-es.pdf',
-      'assets/pdfs/indemnitor/rules-and-regulations-es.pdf',
-      'assets/pdfs/indemnitor/supreme-court-opinion-es.pdf'
+      'assets/pdfs/indemnitor/rules-and-regulations-es.pdf'
+      
     ];
 
     if (this.role === 'defendant') {
