@@ -221,6 +221,11 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
       this.currentIndex -= 1;
       this.updatePdfSrc();
       this.signedDocs[this.currentIndex] = false;
+
+      // Re-apply any stored field values (and signature) when navigating back
+      if (this.isBrowser) {
+        this.prefillPdfIfNeeded();
+      }
     }
   }
 
