@@ -45,6 +45,39 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
   minZoom = .495;
   // Minimum zoom scale (set to page-fit after PDF loads)
 
+  /** Hard-coded page numbers (1-based) where the signature debe ir for each PDF filename */
+  private readonly SIGN_PAGES: Record<string, number> = {
+    'assets/pdfs/defendant/defendant-application-and-agreement-en.pdf': 4,
+    'assets/pdfs/defendant/texas-addendum-en.pdf': 1,
+    'assets/pdfs/defendant/defendant-application-and-agreement-es.pdf': 5,
+    'assets/pdfs/defendant/texas-addendum-es.pdf': 1,
+    'assets/pdfs/indemnitor/indemnitor-application-and-agreement-en.pdf': 4,
+    'assets/pdfs/indemnitor/plain-talk-contract-en.pdf': 1,
+    'assets/pdfs/indemnitor/rules-and-regulations-en.pdf': 1,
+    'assets/pdfs/indemnitor/supreme-court-opinion-en.pdf': 1,
+    'assets/pdfs/indemnitor/indemnitor-application-and-agreement-es.pdf': 5,
+    'assets/pdfs/indemnitor/plain-talk-contract-es.pdf': 1,
+    'assets/pdfs/indemnitor/rules-and-regulations-es.pdf': 1,
+    'assets/pdfs/indemnitor/supreme-court-opinion-es.pdf': 1,
+    // TODO: añade los restantes documentos y su página correspondiente
+  };
+
+
+  /** Return the page (1-based) for the currently cargado PDF; default 1 */
+  private getSignaturePageForCurrentDoc(): number {
+    // Strip query/hash and blob object URLs
+    const cleanSrc = this.pdfSrc.startsWith('blob:') ? this.docs[this.currentIndex] : this.pdfSrc.split(/[?#]/)[0];
+
+    // 1) Try full path match (as provided in SIGN_PAGES)
+    if (cleanSrc in this.SIGN_PAGES) {
+      return this.SIGN_PAGES[cleanSrc];
+    }
+
+    // 2) Fallback to filename only
+    const fileName = cleanSrc.split('/').pop() ?? '';
+    return this.SIGN_PAGES[fileName] ?? 1;
+  }
+
   @ViewChild('signatureModal') signatureModal?: SignatureModalComponent;
 
   private originalViewportContent: string | null = null;
@@ -274,7 +307,7 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
 
     // Final hard-coded placement (page 4)
     const target = {
-      page: 4,
+      page: this.getSignaturePageForCurrentDoc(),
       x: 300, // move further right (PDF points)
       y: 122,
       width: 120,
@@ -322,31 +355,138 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Searches the PDF for a (hidden) text field meant to host the signature and returns its page/rectangle.
+   * If the field is not present, returns null so the caller can fall back to a hard-coded target.
+   */
+  private getSignatureTargetFromPdf(
+    pdfDoc: PDFDocument,
+    fieldName: string = 'invisible_signature'
+  ): { page: number; x: number; y: number; width: number; height: number } | null {
+    try {
+      const form = pdfDoc.getForm();
+
+      // --- Debug: list every field name present in the PDF ---
+      const allFieldNames: string[] = form.getFields().map((f: any) => f.getName());
+      console.log('[SignatureDebug] Fields found in PDF:', allFieldNames);
+
+      // 1) Exact match first
+      let resolvedField: any;
+      try {
+        resolvedField = form.getField(fieldName);
+      } catch {
+        resolvedField = undefined;
+      }
+
+      // 2) Case-insensitive match
+      if (!resolvedField) {
+        const alt = allFieldNames.find((n) => n.toLowerCase() === fieldName.toLowerCase());
+        if (alt) {
+          resolvedField = form.getField(alt);
+          console.log('[SignatureDebug] Matched case-insensitive field name:', alt);
+        }
+      }
+
+      // 3) Hierarchical match (e.g. 'undefined.invisible_signature')
+      if (!resolvedField) {
+        const altHier = allFieldNames.find((n) => n.toLowerCase().endsWith(`.${fieldName.toLowerCase()}`));
+        if (altHier) {
+          resolvedField = form.getField(altHier);
+          console.log('[SignatureDebug] Matched hierarchical field name:', altHier);
+        }
+      }
+
+      if (!resolvedField) {
+        console.warn('[SignatureDebug] Signature field not found');
+        return null;
+      }
+
+      console.log('[SignatureDebug] Using field for signature:', resolvedField.getName?.() ?? '(unknown name)');
+
+      // Access widget and rectangle
+      const acroField = (resolvedField as any).acroField;
+      const widgets = acroField?.getWidgets?.() || [];
+      if (widgets.length === 0) {
+        console.warn('[SignatureDebug] Field has no widgets');
+        return null;
+      }
+
+      const widget = widgets[0];
+      const rect = widget.getRectangle?.(); // pdf-lib may return array or object
+      console.log('[SignatureDebug] Widget rect:', rect);
+
+      let x1: number, y1: number, x2: number, y2: number;
+
+      if (Array.isArray(rect) && rect.length === 4) {
+        // Classic tuple form: [x1, y1, x2, y2]
+        [x1, y1, x2, y2] = rect as number[];
+      } else if (
+        rect && typeof rect === 'object' && 'x' in rect && 'y' in rect && 'width' in rect && 'height' in rect
+      ) {
+        // Object form: { x, y, width, height }
+        const r = rect as any;
+        x1 = r.x;
+        y1 = r.y;
+        x2 = r.x + r.width;
+        y2 = r.y + r.height;
+      } else {
+        console.warn('[SignatureDebug] Invalid widget rectangle shape');
+        return null;
+      }
+
+      const target = {
+        page: this.getSignaturePageForCurrentDoc(),
+        x: x1,
+        y: y1,
+        width: x2 - x1,
+        height: y2 - y1,
+      };
+
+      console.log('[SignatureDebug] Calculated signature target:', target);
+      return target;
+    } catch (err) {
+      console.error('[SignatureDebug] Error while locating signature field', err);
+      return null;
+    }
+  }
+
+  /**
    * Embeds the given base64 PNG into the provided page & bounding box, re-applies form field values,
    * and reloads the viewer.
    */
   private async injectSignatureIntoPdf(
     dataUrl: string,
-    options: { page: number; x: number; y: number; width: number; height: number },
+    options: { page: number; x: number; y: number; width: number; height: number } | undefined,
     fieldValues: Record<string, any> = {}
   ): Promise<void> {
     try {
       // 1) Load PDF
       const existingPdfBytes = await this.ensureOriginalPdfBytes();
       const pdfDoc = await PDFDocument.load(existingPdfBytes, { ignoreEncryption: true });
+      console.log('pdfDoc');
+      // 1b) Try to calculate the signature rectangle dynamically
+      const autoTarget = this.getSignatureTargetFromPdf(pdfDoc, 'invisible_signature');
+      if (autoTarget) {
+        if (options) {
+          console.log('[SignatureDebug] Provided vs. Calculated target', options, autoTarget);
+        }
+        // Replace the target with the one extracted from the PDF
+        options = autoTarget;
+      } else if (!options) {
+        throw new Error('No target provided and invisible signature field not found.');
+      }
 
       // 2) Embed signature image
       const pngBytes = this.base64ToUint8Array(dataUrl);
       const pngImage = await pdfDoc.embedPng(pngBytes);
 
       // 3) Draw image at the requested position/size
-      const page = pdfDoc.getPage(options.page - 1); // zero-based index
+      const page = pdfDoc.getPage(options!.page - 1); // zero-based index
       const pageHeight = page.getHeight();
       page.drawImage(pngImage, {
-        x: options.x,
-        y: options.y,
-        width: options.width,
-        height: options.height,
+        x: options!.x,
+        y: options!.y,
+        width: options!.width,
+        height: options!.height,
       });
 
       // 4) Re-apply previously captured field values so they persist in the final PDF
