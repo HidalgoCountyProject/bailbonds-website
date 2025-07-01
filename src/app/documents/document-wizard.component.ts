@@ -8,11 +8,19 @@ import { AlertModalComponent } from '../shared/alert-modal/alert-modal.component
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { PDFDocument, StandardFonts } from 'pdf-lib';
+import { LoadingModalComponent } from '../shared/loading-modal/loading-modal.component';
 
 @Component({
   selector: 'app-document-wizard',
   standalone: true,
-  imports: [CommonModule, NgxExtendedPdfViewerModule, SignatureModalComponent, AlertModalComponent, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    NgxExtendedPdfViewerModule,
+    SignatureModalComponent,
+    AlertModalComponent,
+    ReactiveFormsModule,
+    LoadingModalComponent,
+  ],
   templateUrl: './document-wizard.component.html',
   styleUrls: ['./document-wizard.component.css']
 })
