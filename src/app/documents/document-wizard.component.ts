@@ -176,6 +176,8 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
 
   private updatePdfSrc() {
     this.pdfSrc = this.docs[this.currentIndex];
+    // Clear any cached bytes so future modifications apply to the currently displayed PDF
+    this.originalPdfBytes = undefined;
   }
 
   get isFirstDoc() {
@@ -192,12 +194,18 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
       this.inIdPhotoStep = false;
       // currentIndex already points to last document, simply refresh src
       this.updatePdfSrc();
+      if (this.isBrowser) {
+        this.prefillPdfIfNeeded();
+      }
       return;
     }
 
     if (!this.isFirstDoc) {
       this.currentIndex -= 1;
       this.updatePdfSrc();
+      if (this.isBrowser) {
+        this.prefillPdfIfNeeded();
+      }
     }
   }
 
@@ -304,9 +312,46 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
   /* Signature modal helpers                                                */
   /* ---------------------------------------------------------------------- */
 
+  /**
+   * Handles the Sign button click.
+   *  • First document → open modal so the user can capture / recapture the signature.
+   *  • Subsequent documents → silently apply the stored signature (if any) into the
+   *    document's invisible signature field without opening the modal.
+   */
   openSignature() {
-    if (this.inIdPhotoStep) { return; } // Disable signature during photo step
-    this.signatureModal?.open();
+    if (this.inIdPhotoStep) { return; }
+
+    const storedSignature = this.getStoredSignature();
+
+    // If we are on the very first document – or we don't have a stored signature yet –
+    // fall back to the existing behaviour (show modal to capture it).
+    if (this.isFirstDoc || !storedSignature) {
+      this.signatureModal?.open();
+      return;
+    }
+
+    // ------------------------------------------------------------------
+    // Subsequent documents: apply the previously captured signature
+    // ------------------------------------------------------------------
+
+    // 1) Capture current field values before we reload the PDF
+    if (this.isBrowser) {
+      this.currentFieldValues = this.captureCurrentFieldValues();
+    }
+
+    this.isLoading = true;
+
+    const target = {
+      page: this.getSignaturePageForCurrentDoc(),
+      x: 300,
+      y: 122,
+      width: 120,
+      height: 48,
+    };
+
+    this.injectSignatureIntoPdf(storedSignature, target, this.currentFieldValues).catch((err) =>
+      console.error('Failed to apply stored signature', err)
+    );
   }
 
   onSignatureSaved(dataUrl: string) {
@@ -802,8 +847,9 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
         this.applyFieldValuesToPdf(pdfDoc, storedValues);
       }
 
-      // 2) Inject stored signature (if any) into its invisible field
-      if (storedSignature) {
+      // 2) Inject stored signature only for the FIRST document. Subsequent docs require
+      //    the user to press the Sign button explicitly.
+      if (storedSignature && this.isFirstDoc) {
         const target =
           this.getSignatureTargetFromPdf(pdfDoc, `${this.role}_invisible_signature`) ||
           this.getSignatureTargetFromPdf(pdfDoc, 'invisible_signature');
@@ -841,6 +887,16 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
       console.error('Failed to pre-fill PDF', err);
     } finally {
       setTimeout(() => (this.isLoading = false), 300);
+    }
+  }
+
+  /** Returns the signature (data-URL) stored in localStorage for the active role, or null if absent */
+  private getStoredSignature(): string | null {
+    if (!this.isBrowser) { return null; }
+    try {
+      return localStorage.getItem(`${this.role}_signature`);
+    } catch {
+      return null;
     }
   }
 }
