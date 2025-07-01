@@ -222,7 +222,10 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
     // 1) If we are leaving the very first PDF, persist its field values
     // ------------------------------------------------------------------
     if (this.isFirstDoc && this.isBrowser) {
-      const fieldValues = this.captureCurrentFieldValues();
+      const fieldValues = {
+        ...this.captureCurrentFieldValues(),
+        ...this.getCurrentDateFieldValues(),
+      };
       try {
         localStorage.setItem(`${this.role}_field_values`, JSON.stringify(fieldValues));
       } catch {
@@ -340,7 +343,10 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
 
     // 1) Capture current field values before we reload the PDF
     if (this.isBrowser) {
-      this.currentFieldValues = this.captureCurrentFieldValues();
+      this.currentFieldValues = {
+        ...this.captureCurrentFieldValues(),
+        ...this.getCurrentDateFieldValues(),
+      };
     }
 
     this.isLoading = true;
@@ -363,7 +369,10 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
 
     // 1) Capture the current values the user has entered before we reload the PDF
     if (this.isBrowser) {
-      this.currentFieldValues = this.captureCurrentFieldValues();
+      this.currentFieldValues = {
+        ...this.captureCurrentFieldValues(),
+        ...this.getCurrentDateFieldValues(),
+      };
       // Persist signature & field values so they can be re-used later on
       try {
         localStorage.setItem(`${this.role}_signature`, dataUrl);
@@ -946,10 +955,17 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
     const monthName = now.toLocaleDateString(locale, { month: 'long' });
     const twoLastYearDigits = now.getFullYear().toString().slice(-2);
 
+    // Build full date in dd/mm/yyyy (ES) or mm/dd/yyyy (EN)
+    const dd = numberDay.padStart(2, '0');
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const yyyy = String(now.getFullYear());
+    const currentDate = this.lang === 'es' ? `${dd}/${mm}/${yyyy}` : `${mm}/${dd}/${yyyy}`;
+
     return {
       number_day: numberDay,
       month_name: monthName,
       two_last_year_digits: twoLastYearDigits,
+      current_date: currentDate,
     };
   }
 
