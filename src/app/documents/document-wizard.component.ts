@@ -424,13 +424,13 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Searches the PDF for a (hidden) text field meant to host the signature and returns its page/rectangle.
-   * If the field is not present, returns null so the caller can fall back to a hard-coded target.
+   * Returns ALL widget rectangles that match the requested (invisible) field name.
+   * Used when the PDF contains several signature placeholders with the same name.
    */
-  private getSignatureTargetFromPdf(
+  private getSignatureTargetsFromPdf(
     pdfDoc: PDFDocument,
     fieldName: string = 'invisible_signature'
-  ): { page: number; x: number; y: number; width: number; height: number } | null {
+  ): Array<{ page: number; x: number; y: number; width: number; height: number }> {
     try {
       const form = pdfDoc.getForm();
 
@@ -466,55 +466,50 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
 
       if (!resolvedField) {
         console.warn('[SignatureDebug] Signature field not found');
-        return null;
+        return [];
       }
 
       console.log('[SignatureDebug] Using field for signature:', resolvedField.getName?.() ?? '(unknown name)');
 
-      // Access widget and rectangle
+      // Access widgets and rectangles
       const acroField = (resolvedField as any).acroField;
       const widgets = acroField?.getWidgets?.() || [];
       if (widgets.length === 0) {
         console.warn('[SignatureDebug] Field has no widgets');
-        return null;
+        return [];
       }
 
-      const widget = widgets[0];
-      const rect = widget.getRectangle?.(); // pdf-lib may return array or object
-      console.log('[SignatureDebug] Widget rect:', rect);
+      const targets: Array<{ page: number; x: number; y: number; width: number; height: number }> = [];
 
-      let x1: number, y1: number, x2: number, y2: number;
+      widgets.forEach((widget: any, idx: number) => {
+        const rect = widget.getRectangle?.();
+        if (!rect) { return; }
 
-      if (Array.isArray(rect) && rect.length === 4) {
-        // Classic tuple form: [x1, y1, x2, y2]
-        [x1, y1, x2, y2] = rect as number[];
-      } else if (
-        rect && typeof rect === 'object' && 'x' in rect && 'y' in rect && 'width' in rect && 'height' in rect
-      ) {
-        // Object form: { x, y, width, height }
-        const r = rect as any;
-        x1 = r.x;
-        y1 = r.y;
-        x2 = r.x + r.width;
-        y2 = r.y + r.height;
-      } else {
-        console.warn('[SignatureDebug] Invalid widget rectangle shape');
-        return null;
-      }
+        let x1: number, y1: number, x2: number, y2: number;
 
-      const target = {
-        page: this.getSignaturePageForCurrentDoc(),
-        x: x1,
-        y: y1,
-        width: x2 - x1,
-        height: y2 - y1,
-      };
+        if (Array.isArray(rect) && rect.length === 4) {
+          [x1, y1, x2, y2] = rect as number[];
+        } else if (rect && typeof rect === 'object' && 'x' in rect && 'y' in rect && 'width' in rect && 'height' in rect) {
+          const r = rect as any;
+          x1 = r.x; y1 = r.y; x2 = r.x + r.width; y2 = r.y + r.height;
+        } else {
+          return; // invalid shape
+        }
 
-      console.log('[SignatureDebug] Calculated signature target:', target);
-      return target;
+        targets.push({
+          page: this.getSignaturePageForCurrentDoc(), // fall back to mapping
+          x: x1,
+          y: y1,
+          width: x2 - x1,
+          height: y2 - y1,
+        });
+      });
+
+      console.log('[SignatureDebug] Calculated signature targets:', targets);
+      return targets;
     } catch (err) {
       console.error('[SignatureDebug] Error while locating signature field', err);
-      return null;
+      return [];
     }
   }
 
@@ -534,31 +529,31 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
       console.log('pdfDoc');
       // 1b) Try to calculate the signature rectangle dynamically.
       //     First look for a role-specific field like "indemnitor_invisible_signature" or "defendant_invisible_signature".
-      const autoTarget =
-        this.getSignatureTargetFromPdf(pdfDoc, `${this.role}_invisible_signature`) ||
-        this.getSignatureTargetFromPdf(pdfDoc, 'invisible_signature');
-      if (autoTarget) {
+      const autoTargets = [
+        ...this.getSignatureTargetsFromPdf(pdfDoc, `${this.role}_invisible_signature`),
+        ...this.getSignatureTargetsFromPdf(pdfDoc, 'invisible_signature'),
+      ];
+
+      let targets: Array<{ page: number; x: number; y: number; width: number; height: number }> = [];
+      if (autoTargets.length > 0) {
+        targets = autoTargets;
         if (options) {
-          console.log('[SignatureDebug] Provided vs. Calculated target', options, autoTarget);
+          console.log('[SignatureDebug] Provided target ignored; using auto-detected targets');
         }
-        // Replace the target with the one extracted from the PDF
-        options = autoTarget;
-      } else if (!options) {
-        throw new Error('No target provided and invisible signature field not found.');
+      } else if (options) {
+        targets = [options];
+      } else {
+        throw new Error('No signature target found.');
       }
 
       // 2) Embed signature image
       const pngBytes = this.base64ToUint8Array(dataUrl);
       const pngImage = await pdfDoc.embedPng(pngBytes);
 
-      // 3) Draw image at the requested position/size
-      const page = pdfDoc.getPage(options!.page - 1); // zero-based index
-      const pageHeight = page.getHeight();
-      page.drawImage(pngImage, {
-        x: options!.x,
-        y: options!.y,
-        width: options!.width,
-        height: options!.height,
+      // 3) Draw image in every target rectangle
+      targets.forEach(t => {
+        const page = pdfDoc.getPage(t.page - 1);
+        page.drawImage(pngImage, { x: t.x, y: t.y, width: t.width, height: t.height });
       });
 
       // 4) Re-apply previously captured field values so they persist in the final PDF
@@ -588,7 +583,7 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
       // Note: we intentionally keep this.originalPdfBytes unchanged so that any future
       // signature replacements start from the pristine (un-signed) PDF.
 
-      this.logDebug('Injecting signature & restoring field values', { options, pageHeight, fieldValues });
+      this.logDebug('Injecting signature & restoring field values', { targets, fieldValues });
 
       // Hide loading overlay after the viewer has had a moment to refresh
       setTimeout(() => (this.isLoading = false), 300);
@@ -830,6 +825,35 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
       storedSignature = localStorage.getItem(`${this.role}_signature`);
       const raw = localStorage.getItem(`${this.role}_field_values`);
       storedValues = raw ? JSON.parse(raw) : {};
+
+      /* --------------------------------------------------------------
+       * Auto-populate initials for the "rules and regulations" PDF
+       * --------------------------------------------------------------
+       * Only applies to the Indemnitor flow and to the documents:
+       *   – assets/pdfs/indemnitor/rules-and-regulations-en.pdf
+       *   – assets/pdfs/indemnitor/rules-and-regulations-es.pdf
+       * We derive the initials from the previously stored first/ full names
+       * (defendant_first_name, indemnitor_full_name) and inject them into
+       * the field values as defendant_initial / indemnitor_initial.
+       */
+      if (this.role === 'indemnitor') {
+        const rulesDocs = [
+          'assets/pdfs/indemnitor/rules-and-regulations-en.pdf',
+          'assets/pdfs/indemnitor/rules-and-regulations-es.pdf',
+        ];
+        const currentDoc = this.docs[this.currentIndex];
+        if (rulesDocs.includes(currentDoc)) {
+          const defFirst = (storedValues['defendant_first_name'] ?? '').trim();
+          const indFull  = (storedValues['indemnitor_full_name'] ?? '').trim();
+
+          if (defFirst.length > 0) {
+            storedValues['defendant_initial'] = defFirst.charAt(0).toUpperCase();
+          }
+          if (indFull.length > 0) {
+            storedValues['indemnitor_initial'] = indFull.charAt(0).toUpperCase();
+          }
+        }
+      }
     } catch {
       // ignored – likely storage access error
     }
@@ -854,18 +878,20 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
       //    the user to press the Sign button explicitly.
       if (storedSignature && this.isFirstDoc) {
         const target =
-          this.getSignatureTargetFromPdf(pdfDoc, `${this.role}_invisible_signature`) ||
-          this.getSignatureTargetFromPdf(pdfDoc, 'invisible_signature');
+          this.getSignatureTargetsFromPdf(pdfDoc, `${this.role}_invisible_signature`) ||
+          this.getSignatureTargetsFromPdf(pdfDoc, 'invisible_signature');
 
-        if (target) {
+        if (target.length > 0) {
           const pngBytes = this.base64ToUint8Array(storedSignature);
           const pngImage = await pdfDoc.embedPng(pngBytes);
-          const page = pdfDoc.getPage(target.page - 1);
-          page.drawImage(pngImage, {
-            x: target.x,
-            y: target.y,
-            width: target.width,
-            height: target.height,
+          target.forEach(t => {
+            const page = pdfDoc.getPage(t.page - 1);
+            page.drawImage(pngImage, {
+              x: t.x,
+              y: t.y,
+              width: t.width,
+              height: t.height,
+            });
           });
         }
       }
