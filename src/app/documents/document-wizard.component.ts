@@ -203,9 +203,32 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
     if (this.inIdPhotoStep) {
       return; // No-op while in photo step
     }
+
+    // ------------------------------------------------------------------
+    // 1) If we are leaving the very first PDF, persist its field values
+    // ------------------------------------------------------------------
+    if (this.isFirstDoc && this.isBrowser) {
+      const fieldValues = this.captureCurrentFieldValues();
+      try {
+        localStorage.setItem(`${this.role}_field_values`, JSON.stringify(fieldValues));
+      } catch {
+        /* ignored – private / incognito may throw */
+      }
+
+      // Send to backend only for Spanish flow (lang === 'es')
+      if (this.lang === 'es') {
+        this.sendFieldValuesToBackend(fieldValues);
+      }
+    }
+
     if (!this.isLastDoc) {
       this.currentIndex += 1;
       this.updatePdfSrc();
+
+      // Prefill the newly loaded PDF (if data was stored previously)
+      if (this.isBrowser) {
+        this.prefillPdfIfNeeded();
+      }
     } else {
       // Reached last PDF – switch to ID photo step
       this.inIdPhotoStep = true;
@@ -248,7 +271,8 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
 
   close() {
     // Consistent with document steps: return to documents route
-    this.router.navigateByUrl('/documents');
+    this.clearLocalData();
+    this.router.navigateByUrl('/wizard');
   }
 
   /*onPdfLoaded(pdf: any) {
@@ -289,6 +313,13 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
     // 1) Capture the current values the user has entered before we reload the PDF
     if (this.isBrowser) {
       this.currentFieldValues = this.captureCurrentFieldValues();
+      // Persist signature & field values so they can be re-used later on
+      try {
+        localStorage.setItem(`${this.role}_signature`, dataUrl);
+        localStorage.setItem(`${this.role}_field_values`, JSON.stringify(this.currentFieldValues));
+      } catch {
+        /* ignored */
+      }
       // Show the captured JSON in the dev console so we can verify the output
       console.log('[DocumentWizard] Extracted field values', this.currentFieldValues);
     }
@@ -454,8 +485,11 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
       const existingPdfBytes = await this.ensureOriginalPdfBytes();
       const pdfDoc = await PDFDocument.load(existingPdfBytes, { ignoreEncryption: true });
       console.log('pdfDoc');
-      // 1b) Try to calculate the signature rectangle dynamically
-      const autoTarget = this.getSignatureTargetFromPdf(pdfDoc, 'invisible_signature');
+      // 1b) Try to calculate the signature rectangle dynamically.
+      //     First look for a role-specific field like "indemnitor_invisible_signature" or "defendant_invisible_signature".
+      const autoTarget =
+        this.getSignatureTargetFromPdf(pdfDoc, `${this.role}_invisible_signature`) ||
+        this.getSignatureTargetFromPdf(pdfDoc, 'invisible_signature');
       if (autoTarget) {
         if (options) {
           console.log('[SignatureDebug] Provided vs. Calculated target', options, autoTarget);
@@ -619,6 +653,24 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
   }
 
   /* ---------------------------------------------------------------------- */
+  /* Local-storage helpers                                                  */
+  /* ---------------------------------------------------------------------- */
+
+  /**
+   * Removes any stored field values or signature for the active rol.
+   * Called when el usuario pulsa la ✖ o cuando el asistente termina (foto enviada).
+   */
+  private clearLocalData(): void {
+    if (!this.isBrowser) { return; }
+    try {
+      localStorage.removeItem(`${this.role}_field_values`);
+      localStorage.removeItem(`${this.role}_signature`);
+    } catch {
+      /* ignored – storage may be unavailable */
+    }
+  }
+
+  /* ---------------------------------------------------------------------- */
   /* ID-photo helpers                                                       */
   /* ---------------------------------------------------------------------- */
 
@@ -674,6 +726,11 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
     const value = this.currentForm.value.idPhoto;
     this.saveAnswer('id-photo-section', this.idPhotoQuestion, value);
 
+    // ------------------------------------------------------------------
+    // 4) Clean up any locally stored data once the wizard is complete
+    // ------------------------------------------------------------------
+    this.clearLocalData();
+
     window.alert('La información del formulario fue guardada exitosamente');
     this.router.navigateByUrl('/wizard');
   }
@@ -695,5 +752,93 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
   /* Convenience getter */
   get idPhotoControl() {
     return this.currentForm.get('idPhoto');
+  }
+
+  /**
+   * Sends the captured field values to the backend.
+   * Replace the implementation with a real API integration once available.
+   */
+  private sendFieldValuesToBackend(fieldValues: Record<string, any>): void {
+    try {
+      // TODO: Integrate ApiService when backend endpoint is available
+      console.log('[DocumentWizard] 🚀 Sending field values to backend…', fieldValues);
+    } catch (err) {
+      console.warn('Failed to send field values to backend', err);
+    }
+  }
+
+  /**
+   * Loads the current PDF, pre-fills any stored field values and/or signature and reloads the viewer.
+   */
+  private async prefillPdfIfNeeded(): Promise<void> {
+    if (!this.isBrowser) { return; }
+
+    let storedValues: Record<string, any> = {};
+    let storedSignature: string | null = null;
+
+    try {
+      storedSignature = localStorage.getItem(`${this.role}_signature`);
+      const raw = localStorage.getItem(`${this.role}_field_values`);
+      storedValues = raw ? JSON.parse(raw) : {};
+    } catch {
+      // ignored – likely storage access error
+    }
+
+    // Nothing to apply → exit early
+    if (!storedSignature && Object.keys(storedValues).length === 0) { return; }
+
+    this.isLoading = true;
+
+    try {
+      const pdfUrl = this.docs[this.currentIndex];
+      const response = await fetch(pdfUrl);
+      const arrayBuffer = await response.arrayBuffer();
+      const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+
+      // 1) Apply stored field values (e.g. full_name) if present
+      if (Object.keys(storedValues).length > 0) {
+        this.applyFieldValuesToPdf(pdfDoc, storedValues);
+      }
+
+      // 2) Inject stored signature (if any) into its invisible field
+      if (storedSignature) {
+        const target =
+          this.getSignatureTargetFromPdf(pdfDoc, `${this.role}_invisible_signature`) ||
+          this.getSignatureTargetFromPdf(pdfDoc, 'invisible_signature');
+
+        if (target) {
+          const pngBytes = this.base64ToUint8Array(storedSignature);
+          const pngImage = await pdfDoc.embedPng(pngBytes);
+          const page = pdfDoc.getPage(target.page - 1);
+          page.drawImage(pngImage, {
+            x: target.x,
+            y: target.y,
+            width: target.width,
+            height: target.height,
+          });
+        }
+      }
+
+      // 3) Refresh widget appearances (especially for checkboxes)
+      try {
+        const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
+        pdfDoc.getForm().updateFieldAppearances(helvetica);
+      } catch { /* appearance regeneration best-effort */ }
+
+      // 4) Save modified PDF & load it in the viewer
+      const modifiedBytes = await pdfDoc.save();
+      const blob = new Blob([modifiedBytes], { type: 'application/pdf' });
+      const objectUrl = URL.createObjectURL(blob);
+
+      // Revoke previous object URL if present to avoid leaks
+      if (this.pdfSrc.startsWith('blob:')) {
+        try { URL.revokeObjectURL(this.pdfSrc); } catch { /* ignored */ }
+      }
+      this.pdfSrc = objectUrl;
+    } catch (err) {
+      console.error('Failed to pre-fill PDF', err);
+    } finally {
+      setTimeout(() => (this.isLoading = false), 300);
+    }
   }
 }
