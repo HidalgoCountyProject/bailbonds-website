@@ -499,3 +499,10 @@
   font-weight: 600;
 }
 
+/* Highlight for required fields not filled */
+::ng-deep .missing-required {
+  outline: 2px solid var(--secondary-color, #FFCC00) !important;
+}
+
+/* Removed custom yellow required outline – default red will apply */
+

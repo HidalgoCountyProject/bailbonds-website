@@ -237,6 +237,18 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // NEW: Validate that all required PDF fields are filled out
+    if (this.isBrowser) {
+      const missing = this.getMissingRequiredFields();
+      if (missing.length > 0) {
+        const msg = this.lang === 'es'
+          ? 'Por favor completa los campos que son requeridos (se marcan en color rojo).'
+          : 'Please fill out all required fields marked in red before continuing.';
+        this.warningModal?.open(msg);
+        return; // Abort navigation
+      }
+    }
+
     // ------------------------------------------------------------------
     // 1) If we are leaving the very first PDF, persist its field values
     // ------------------------------------------------------------------
@@ -1010,5 +1022,43 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
     } catch {
       return null;
     }
+  }
+
+  /**
+   * NEW HELPER – Returns the "prompt" or name of each required field that is currently empty.
+   * Uses the presence of the HTML `required` attribute or `aria-required="true"` to determine
+   * whether a field is mandatory (as set by the originating PDF AcroForm definition).
+   */
+  private getMissingRequiredFields(): string[] {
+    const missing: string[] = [];
+    const selector =
+      '.textWidgetAnnotation input, .textWidgetAnnotation textarea, ' +
+      '.choiceWidgetAnnotation select, .buttonWidgetAnnotation input';
+
+    document.querySelectorAll(selector).forEach((el) => {
+      const htmlEl = el as HTMLElement & { required?: boolean };
+      const isRequired = (htmlEl as any).required === true || htmlEl.getAttribute('required') !== null || htmlEl.getAttribute('aria-required') === 'true';
+      if (!isRequired) { return; }
+
+      // Determine if the field is filled
+      let filled = false;
+      if (el instanceof HTMLInputElement) {
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          filled = el.checked;
+        } else {
+          filled = el.value.trim().length > 0;
+        }
+      } else if (el instanceof HTMLTextAreaElement) {
+        filled = el.value.trim().length > 0;
+      } else if (el instanceof HTMLSelectElement) {
+        filled = (el as HTMLSelectElement).value !== '';
+      }
+
+      if (!filled) {
+        missing.push(''); // value doesn't matter; we only need count
+      }
+    });
+
+    return missing;
   }
 }
