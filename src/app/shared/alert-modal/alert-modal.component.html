@@ -1,0 +1,7 @@
+<div class="overlay" *ngIf="show">
+  <div class="modal">
+    <button class="close-btn" (click)="close()" aria-label="Close">×</button>
+    <p class="message">{{ message }}</p>
+    <button class="ok-btn" (click)="close()">OK</button>
+  </div>
+</div> 

@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Meta } from '@angular/platform-browser';
 import { NgxExtendedPdfViewerModule, pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
 import { SignatureModalComponent } from '../shared/signature-modal/signature-modal.component';
+import { AlertModalComponent } from '../shared/alert-modal/alert-modal.component';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { PDFDocument, StandardFonts } from 'pdf-lib';
@@ -11,7 +12,7 @@ import { PDFDocument, StandardFonts } from 'pdf-lib';
 @Component({
   selector: 'app-document-wizard',
   standalone: true,
-  imports: [CommonModule, NgxExtendedPdfViewerModule, SignatureModalComponent, ReactiveFormsModule],
+  imports: [CommonModule, NgxExtendedPdfViewerModule, SignatureModalComponent, AlertModalComponent, ReactiveFormsModule],
   templateUrl: './document-wizard.component.html',
   styleUrls: ['./document-wizard.component.css']
 })
@@ -62,6 +63,14 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
     // TODO: añade los restantes documentos y su página correspondiente
   };
 
+  signedDocs: boolean[] = [];
+
+  /**
+   * Convenience helper – returns true when the currently displayed PDF has already been signed.
+   */
+  hasSignedCurrentDoc(): boolean {
+    return this.signedDocs[this.currentIndex] === true;
+  }
 
   /** Return the page (1-based) for the currently cargado PDF; default 1 */
   private getSignaturePageForCurrentDoc(): number {
@@ -79,6 +88,7 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
   }
 
   @ViewChild('signatureModal') signatureModal?: SignatureModalComponent;
+  @ViewChild('warningModal') warningModal?: AlertModalComponent;
 
   private originalViewportContent: string | null = null;
 
@@ -170,6 +180,10 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
     } else {
       this.docs = this.lang === 'es' ? INDEMNITOR_DOCS_ES : INDEMNITOR_DOCS_EN;
     }
+
+    // Reset signature tracking for the (re-)loaded manifest
+    this.signedDocs = this.docs.map(() => false);
+
     this.currentIndex = 0;
     this.updatePdfSrc();
     // Prefill the first PDF (e.g. auto-date fields) right after loading it
@@ -201,21 +215,26 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
       if (this.isBrowser) {
         this.prefillPdfIfNeeded();
       }
-      return;
     }
 
     if (!this.isFirstDoc) {
       this.currentIndex -= 1;
       this.updatePdfSrc();
-      if (this.isBrowser) {
-        this.prefillPdfIfNeeded();
-      }
+      this.signedDocs[this.currentIndex] = false;
     }
   }
 
   nextDoc() {
     if (this.inIdPhotoStep) {
       return; // No-op while in photo step
+    }
+
+    if (!this.hasSignedCurrentDoc()) {
+      const msg = this.lang === 'es'
+        ? 'Debes firmar este documento antes de continuar.'
+        : 'You must sign this document before continuing.';
+      this.warningModal?.open(msg);
+      return;
     }
 
     // ------------------------------------------------------------------
@@ -243,6 +262,7 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
     if (!this.isLastDoc) {
       this.currentIndex += 1;
       this.updatePdfSrc();
+      this.signedDocs[this.currentIndex] = false;
 
       // Prefill the newly loaded PDF (if data was stored previously)
       if (this.isBrowser) {
@@ -602,6 +622,9 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
       // Note: we intentionally keep this.originalPdfBytes unchanged so that any future
       // signature replacements start from the pristine (un-signed) PDF.
 
+      // Mark current PDF as signed so the user can advance
+      this.signedDocs[this.currentIndex] = true;
+
       this.logDebug('Injecting signature & restoring field values', { targets, fieldValues });
 
       // Hide loading overlay after the viewer has had a moment to refresh
@@ -901,27 +924,8 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
         this.applyFieldValuesToPdf(pdfDoc, storedValues);
       }
 
-      // 2) Inject stored signature only for the FIRST document. Subsequent docs require
-      //    the user to press the Sign button explicitly.
-      if (storedSignature && this.isFirstDoc) {
-        const target =
-          this.getSignatureTargetsFromPdf(pdfDoc, `${this.role}_invisible_signature`) ||
-          this.getSignatureTargetsFromPdf(pdfDoc, 'invisible_signature');
-
-        if (target.length > 0) {
-          const pngBytes = this.base64ToUint8Array(storedSignature);
-          const pngImage = await pdfDoc.embedPng(pngBytes);
-          target.forEach(t => {
-            const page = pdfDoc.getPage(t.page - 1);
-            page.drawImage(pngImage, {
-              x: t.x,
-              y: t.y,
-              width: t.width,
-              height: t.height,
-            });
-          });
-        }
-      }
+      // 2) (Removed) No longer auto-inject stored signature for the first document.
+      //    The user must open the signature modal and confirm/firmar de nuevo.
 
       // 3) Refresh widget appearances (especially for checkboxes)
       try {
