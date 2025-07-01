@@ -222,9 +222,11 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
     // 1) If we are leaving the very first PDF, persist its field values
     // ------------------------------------------------------------------
     if (this.isFirstDoc && this.isBrowser) {
+      const captured = this.captureCurrentFieldValues();
       const fieldValues = {
-        ...this.captureCurrentFieldValues(),
+        ...captured,
         ...this.getCurrentDateFieldValues(),
+        ...this.getDefendantFullName(captured),
       };
       try {
         localStorage.setItem(`${this.role}_field_values`, JSON.stringify(fieldValues));
@@ -343,9 +345,11 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
 
     // 1) Capture current field values before we reload the PDF
     if (this.isBrowser) {
+      const captured = this.captureCurrentFieldValues();
       this.currentFieldValues = {
-        ...this.captureCurrentFieldValues(),
+        ...captured,
         ...this.getCurrentDateFieldValues(),
+        ...this.getDefendantFullName(captured),
       };
     }
 
@@ -369,9 +373,11 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
 
     // 1) Capture the current values the user has entered before we reload the PDF
     if (this.isBrowser) {
+      const captured = this.captureCurrentFieldValues();
       this.currentFieldValues = {
-        ...this.captureCurrentFieldValues(),
+        ...captured,
         ...this.getCurrentDateFieldValues(),
+        ...this.getDefendantFullName(captured),
       };
       // Persist signature & field values so they can be re-used later on
       try {
@@ -967,6 +973,29 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
       two_last_year_digits: twoLastYearDigits,
       current_date: currentDate,
     };
+  }
+
+  /**
+   * For the Indemnitor flow, concatenates first/ middle/ last name fields
+   * (if present) and returns an object with defendant_full_name.
+   * Used when persisting values after the first document so subsequent PDFs
+   * can reuse the full name directly.
+   */
+  private getDefendantFullName(values: Record<string, any>): Record<string, string> {
+    if (this.role !== 'indemnitor') {
+      return {};
+    }
+
+    const first = (values['defendant_first_name'] ?? '').trim();
+    const middle = (values['defendant_middle_name'] ?? '').trim();
+    const last = (values['defendant_last_name'] ?? '').trim();
+
+    const parts = [first, middle, last].filter(p => p.length > 0);
+    if (parts.length === 0) {
+      return {};
+    }
+
+    return { defendant_full_name: parts.join(' ') };
   }
 
   /** Returns the signature (data-URL) stored in localStorage for the active role, or null if absent */
