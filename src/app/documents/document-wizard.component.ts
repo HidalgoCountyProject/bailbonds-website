@@ -172,6 +172,10 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
     }
     this.currentIndex = 0;
     this.updatePdfSrc();
+    // Prefill the first PDF (e.g. auto-date fields) right after loading it
+    if (this.isBrowser) {
+      this.prefillPdfIfNeeded();
+    }
   }
 
   private updatePdfSrc() {
@@ -854,6 +858,14 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
           }
         }
       }
+
+      // --------------------------------------------------------------
+      // Auto-populate today's date fields (number_day, month_name, two_last_year_digits)
+      // --------------------------------------------------------------
+      storedValues = {
+        ...storedValues,
+        ...this.getCurrentDateFieldValues(),
+      };
     } catch {
       // ignored – likely storage access error
     }
@@ -917,6 +929,28 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
     } finally {
       setTimeout(() => (this.isLoading = false), 300);
     }
+  }
+
+  /**
+   * Computes today's date parts in the format expected by the PDF fields.
+   *
+   *   • number_day – Numeric day of the month (1-31)
+   *   • month_name – Localised month name (e.g. "January", "enero")
+   *   • two_last_year_digits – Last two digits of the current year (e.g. "24")
+   */
+  private getCurrentDateFieldValues(): Record<string, string> {
+    const now = new Date();
+    const numberDay = String(now.getDate());
+    // Use English or Spanish month names based on the active flow language
+    const locale = this.lang === 'es' ? 'es' : 'en';
+    const monthName = now.toLocaleDateString(locale, { month: 'long' });
+    const twoLastYearDigits = now.getFullYear().toString().slice(-2);
+
+    return {
+      number_day: numberDay,
+      month_name: monthName,
+      two_last_year_digits: twoLastYearDigits,
+    };
   }
 
   /** Returns the signature (data-URL) stored in localStorage for the active role, or null if absent */
