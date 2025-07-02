@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Output, ViewChild, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -38,6 +38,46 @@ export class SignatureModalComponent {
   @ViewChild('canvas', { static: false }) private canvasRef?: ElementRef<HTMLCanvasElement>;
   private ctx?: CanvasRenderingContext2D;
   private drawing = false;
+
+  /** Language passed by the parent wizard (defaults to English) */
+  @Input() lang: 'en' | 'es' = 'en';
+
+  /** Internal strings for EN/ES. This is kept local so we don't pollute the global website dictionary. */
+  private readonly i18n: Record<'en' | 'es', Record<string, string>> = {
+    en: {
+      drawTab: 'DRAW',
+      typeTab: 'TYPE',
+      drawTitle: 'DRAW SIGNATURE',
+      typeTitle: 'TYPE SIGNATURE',
+      legal: 'I agree that this electronic signature is legally binding and can be used by Affordable Bail Bonds.',
+      rotate: 'Rotate your phone for more space',
+      clearSignature: 'CLEAR SIGNATURE',
+      clearName: 'CLEAR NAME',
+      chooseFont: 'CHOOSE FONT:',
+      typeHere: 'TYPE SIGNATURE',
+      placeholderName: 'Your Name',
+      save: 'SAVE'
+    },
+    es: {
+      drawTab: 'DIBUJAR',
+      typeTab: 'ESCRIBIR',
+      drawTitle: 'DIBUJAR FIRMA',
+      typeTitle: 'ESCRIBIR FIRMA',
+      legal: 'Estoy de acuerdo en que esta firma electrónica es legalmente vinculante y puede ser utilizada por Affordable Bail Bonds.',
+      rotate: 'Gira tu teléfono para más espacio',
+      clearSignature: 'BORRAR FIRMA',
+      clearName: 'BORRAR NOMBRE',
+      chooseFont: 'ELEGIR FUENTE:',
+      typeHere: 'ESCRIBIR FIRMA',
+      placeholderName: 'Tu Nombre',
+      save: 'GUARDAR'
+    }
+  };
+
+  /** Helper translation getter */
+  t(key: string): string {
+    return this.i18n[this.lang][key] || key;
+  }
 
   // Public API --------------------------------------------------------------
 

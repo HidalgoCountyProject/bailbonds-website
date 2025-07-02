@@ -83,7 +83,7 @@
     </div>
 
     <!-- Signature modal instance -->
-    <app-signature-modal #signatureModal (saved)="onSignatureSaved($event)"></app-signature-modal>
+    <app-signature-modal #signatureModal [lang]="lang" (saved)="onSignatureSaved($event)"></app-signature-modal>
     <app-alert-modal #warningModal></app-alert-modal>
   </div>
 
