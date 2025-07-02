@@ -98,6 +98,7 @@ body {
   align-items: center;
   justify-content: flex-start;
   margin-right: 1rem;
+  flex-shrink: 0;
 }
 
 .navbar-brand h1 {
@@ -305,6 +306,11 @@ body {
   
   .call-text {
     font-size: 0.85rem;
+  }
+
+  .navbar-items {
+    flex-wrap: wrap;
+    gap: 1rem;
   }
 }
 
