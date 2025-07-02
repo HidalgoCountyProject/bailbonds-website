@@ -282,24 +282,24 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
     }
 
     // ------------------------------------------------------------------
-    // 1) If we are leaving the very first PDF, persist its field values
+    // Persist the field values of the PDF we are leaving (for ALL docs)
     // ------------------------------------------------------------------
-    if (this.isFirstDoc && this.isBrowser) {
+    if (this.isBrowser) {
       const captured = this.captureCurrentFieldValues();
       const fieldValues = {
         ...captured,
         ...this.getCurrentDateFieldValues(),
         ...this.getDefendantFullName(captured),
       };
-      try {
-        localStorage.setItem(`${this.role}_field_values`, JSON.stringify(fieldValues));
-      } catch {
-        /* ignored – private / incognito may throw */
-      }
 
-      // Send to backend only for Spanish flow (lang === 'es')
-      if (this.lang === 'es') {
-        this.sendFieldValuesToBackend(fieldValues);
+      try {
+        const storageKey = `${this.role}_field_values`;
+        const existingRaw = localStorage.getItem(storageKey) || '{}';
+        const existingValues = JSON.parse(existingRaw);
+        const mergedValues = { ...existingValues, ...fieldValues };
+        localStorage.setItem(storageKey, JSON.stringify(mergedValues));
+      } catch {
+        /* ignored – storage access may fail in private/incognito */
       }
     }
 
@@ -443,12 +443,18 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
         ...this.getCurrentDateFieldValues(),
         ...this.getDefendantFullName(captured),
       };
-      // Persist signature & field values so they can be re-used later on
+      // Persist signature & *merged* field values so they can be re-used later on without
+      // deleting keys that may have been collected from other documents.
       try {
         localStorage.setItem(`${this.role}_signature`, dataUrl);
-        localStorage.setItem(`${this.role}_field_values`, JSON.stringify(this.currentFieldValues));
+
+        const storageKey = `${this.role}_field_values`;
+        const existingRaw = localStorage.getItem(storageKey) || '{}';
+        const existingValues = JSON.parse(existingRaw);
+        const mergedValues = { ...existingValues, ...this.currentFieldValues };
+        localStorage.setItem(storageKey, JSON.stringify(mergedValues));
       } catch {
-        /* ignored */
+        /* Storage access can fail in private/incognito contexts – ignore */
       }
       // Show the captured JSON in the dev console so we can verify the output
       //console.log('[DocumentWizard] Extracted field values', this.currentFieldValues);
