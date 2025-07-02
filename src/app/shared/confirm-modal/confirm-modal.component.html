@@ -1,0 +1,10 @@
+<div class="overlay" *ngIf="show">
+  <div class="modal">
+    <button class="close-btn" (click)="close('secondary')" aria-label="Close">×</button>
+    <p class="message">{{ message }}</p>
+    <div class="actions">
+      <button class="primary-btn" (click)="close('primary')">{{ primaryLabel }}</button>
+      <button class="secondary-btn" (click)="close('secondary')">{{ secondaryLabel }}</button>
+    </div>
+  </div>
+</div> 

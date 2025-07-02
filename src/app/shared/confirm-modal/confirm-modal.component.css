@@ -1,0 +1,62 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2100;
+}
+
+.modal {
+  background: #ffffff;
+  width: 92%;
+  max-width: 420px;
+  border-radius: 8px;
+  padding: 1.5rem 1rem 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  position: relative;
+  text-align: center;
+}
+
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  color: #999;
+  cursor: pointer;
+}
+
+.message {
+  font-size: 1rem;
+  margin: 1.8rem 0 1.5rem;
+  color: #212529;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.primary-btn,
+.secondary-btn {
+  padding: 0.6rem 1.3rem;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 2px solid var(--secondary-color, #FFCC00);
+}
+
+.primary-btn {
+  background: var(--secondary-color, #FFCC00);
+  color: var(--primary-color, #003478);
+}
+
+.secondary-btn {
+  background: #ffffff;
+  color: var(--primary-color, #003478);
+} 

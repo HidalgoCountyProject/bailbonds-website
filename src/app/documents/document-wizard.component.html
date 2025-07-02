@@ -20,7 +20,7 @@
           <path d="M12 20h9"></path>
           <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"></path>
         </svg>
-        <span>Sign</span>
+        <span>{{ lang==='es' ? 'Firmar' : 'Sign' }}</span>
       </button>
 
       <button *ngIf="!inIdPhotoStep" class="toolbar-btn next-btn" (click)="nextDoc()" aria-label="Next document">
@@ -32,8 +32,21 @@
     <div *ngIf="inReviewStep" class="toolbar-nav-group review-group">
       <button *ngIf="!isFirstReview" class="toolbar-btn prev-btn" (click)="prevFlattened()" aria-label="Previous document">◀</button>
 
-      <button class="toolbar-btn back-btn" (click)="goBackToEdit()">Go back</button>
-      <button class="toolbar-btn send-toolbar-btn" (click)="sendDocuments()">Send Documents</button>
+      <button class="toolbar-btn back-btn" (click)="goBackToEdit()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 20H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8" />
+          <polyline points="15 3 21 3 21 9" />
+          <line x1="10" y1="14" x2="21" y2="3" />
+        </svg>
+        <span>{{ lang==='es' ? 'Editar información' : 'Edit information' }}</span>
+      </button>
+      <button class="toolbar-btn send-toolbar-btn" (click)="sendDocuments()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+        <span>{{ lang==='es' ? 'Enviar documentos' : 'Send Documents' }}</span>
+      </button>
 
       <button *ngIf="!isLastReview" class="toolbar-btn next-btn" (click)="nextFlattened()" aria-label="Next document">▶</button>
     </div>
@@ -162,6 +175,10 @@
     </div>
   </div>
 </div>
+
+<!-- Intro & success modals (always present) -->
+<app-alert-modal #infoModal></app-alert-modal>
+<app-confirm-modal #successModal></app-confirm-modal>
 
 <!-- Global loading modal -->
 <app-loading-modal [show]="isLoading"></app-loading-modal>

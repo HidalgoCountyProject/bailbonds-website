@@ -5,6 +5,7 @@ import { Meta } from '@angular/platform-browser';
 import { NgxExtendedPdfViewerModule, pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
 import { SignatureModalComponent } from '../shared/signature-modal/signature-modal.component';
 import { AlertModalComponent } from '../shared/alert-modal/alert-modal.component';
+import { ConfirmModalComponent } from '../shared/confirm-modal/confirm-modal.component';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { PDFDocument, StandardFonts, PDFName } from 'pdf-lib';
@@ -18,6 +19,7 @@ import { LoadingModalComponent } from '../shared/loading-modal/loading-modal.com
     NgxExtendedPdfViewerModule,
     SignatureModalComponent,
     AlertModalComponent,
+    ConfirmModalComponent,
     ReactiveFormsModule,
     LoadingModalComponent,
   ],
@@ -109,6 +111,8 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
 
   @ViewChild('signatureModal') signatureModal?: SignatureModalComponent;
   @ViewChild('warningModal') warningModal?: AlertModalComponent;
+  @ViewChild('infoModal') infoModal?: AlertModalComponent;
+  @ViewChild('successModal') successModal?: ConfirmModalComponent;
 
   private originalViewportContent: string | null = null;
 
@@ -1206,6 +1210,11 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
       this.finalDocsData = flattened.map(f => ({ name: f.name, bytes: f.bytes }));
       this.reviewIndex = 0;
       this.inReviewStep = true;
+      // Show introductory info modal once review step visible
+      const msgIntro = this.lang === 'es'
+        ? `Perfecto, has completado toda la información para tu fianza.\n\nRevisa los documentos y pulsa "Enviar documentos" para confirmar el envío a Affordable Bail Bonds, o "Editar información" si detectas algún dato erróneo.`
+        : `Great! You have completed all the information for your bail.\n\nReview the documents and press "Send Documents" to confirm sending them to Affordable Bail Bonds, or "Edit information" if you spot any mistakes.`;
+      this.infoModal?.open(msgIntro);
     } finally {
       this.isLoading = false;
     }
@@ -1213,18 +1222,56 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
 
   /** Sends the flattened documents to the backend (stub implementation) */
   sendDocuments(): void {
-    //console.log('[DocumentWizard] 🚀 Sending documents to backend…', this.finalDocsData);
-    // TODO: integrate ApiService once endpoint is available
-
-    // Clean up local data & notify user
-    this.clearLocalData();
-    window.alert('Documents sent successfully');
-    this.router.navigateByUrl('/wizard');
+    this.isLoading = true;
+    // Simulate backend call with timeout for demo
+    setTimeout(() => {
+      this.isLoading = false;
+      const msg = this.lang==='es'
+        ? '¡Enhorabuena! Has enviado los documentos a Affordable Bail Bonds. Si lo deseas, puedes llamar al número de contacto para avisar; de cualquier manera nos pondremos en contacto contigo.'
+        : 'Congratulations! Your documents have been sent to Affordable Bail Bonds. Feel free to call us to let us know; otherwise we will contact you shortly.';
+      if (this.successModal) {
+        this.successModal.primaryLabel = this.lang==='es' ? 'Ir a la página principal' : 'Go to main page';
+        this.successModal.secondaryLabel = this.lang==='es' ? 'Completar nuevos documentos' : 'Fill new documents';
+        this.successModal.open(msg);
+        // Subscribe once
+        const sub = this.successModal.choice.subscribe((c) => {
+          this.clearLocalData();
+          if (c === 'primary') {
+            this.router.navigateByUrl('/');
+          } else {
+            this.router.navigateByUrl('/wizard');
+          }
+          sub.unsubscribe();
+        });
+      } else {
+        // Fallback
+        window.alert('Documents sent successfully');
+        this.clearLocalData();
+        this.router.navigateByUrl('/');
+      }
+    }, 600);
   }
 
   /** Navigates back to the editable wizard retaining the local storage data */
   goBackToEdit(): void {
-    this.router.navigateByUrl(`/wizard/${this.role}/${this.lang}`);
+    if (this.inReviewStep) {
+      // Reset review-specific state and return to interactive editing
+      this.inReviewStep = false;
+      this.reviewIndex = 0;
+      this.flattenedDocs = [];
+      this.finalDocsData = [];
+
+      // Jump back to the first document so the user can empezar de nuevo
+      this.currentIndex = 0;
+      this.updatePdfSrc();
+
+      // Reapply pre-fill values (signature, etc.)
+      if (this.isBrowser) {
+        this.prefillPdfIfNeeded();
+      }
+    } else {
+      this.router.navigateByUrl(`/wizard/${this.role}/${this.lang}`);
+    }
   }
 
   /** Safe flatten form method */

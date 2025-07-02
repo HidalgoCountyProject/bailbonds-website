@@ -506,3 +506,8 @@
 
 /* Removed custom yellow required outline – default red will apply */
 
+.review-group .toolbar-btn {
+  width: auto;
+  padding: 0 10px;
+}
+
