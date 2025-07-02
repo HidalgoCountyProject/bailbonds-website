@@ -1,49 +1,43 @@
 <div class="role-selection-container" *ngIf="step === 'role'">
-  <h2 class="title">Select Your Role <span class="spanish">/ Seleccione su rol</span></h2>
-  <p class="subtitle">Please select which role applies to you for this bail bond process:<br><span class="spanish">Por favor seleccione cuál rol aplica para este proceso de fianza:</span></p>
+  <h2 class="title">{{ 'role.select.title' | translate }}</h2>
+  <p class="subtitle">{{ 'role.select.subtitle' | translate }}</p>
 
   <div class="card-wrapper">
     <button type="button" class="role-card" (click)="onRoleSelect('defendant')" aria-label="Defendant role">
       <div class="icon">👤</div>
       <div class="role-heading">
-        <strong class="friendly">Arrested&nbsp;Person</strong>
-        <small class="legal">Defendant</small>
+        <strong class="friendly">{{ 'role.arrested.friendly' | translate }}</strong>
+        <small class="legal">{{ 'role.arrested.legal' | translate }}</small>
       </div>
-      <p class="desc">
-        I am the person who was arrested and need a bail bond<br>
-        <span class="spanish">Soy la persona que fue arrestada y necesita una fianza</span>
-      </p>
+      <p class="desc">{{ 'role.arrested.desc' | translate }}</p>
     </button>
 
     <button type="button" class="role-card" (click)="onRoleSelect('indemnitor')" aria-label="Indemnitor role">
       <div class="icon">🤝</div>
       <div class="role-heading">
-        <strong class="friendly">Family&nbsp;/&nbsp;Friend</strong>
-        <small class="legal">Co-signer&nbsp;/&nbsp;Indemnitor</small>
+        <strong class="friendly">{{ 'role.indemnitor.friendly' | translate }}</strong>
+        <small class="legal">{{ 'role.indemnitor.legal' | translate }}</small>
       </div>
-      <p class="desc">
-        I am signing on behalf of someone else who was arrested<br>
-        <span class="spanish">Estoy firmando en nombre de alguien que fue arrestado</span>
-      </p>
+      <p class="desc">{{ 'role.indemnitor.desc' | translate }}</p>
     </button>
   </div>
 </div>
 
 <!-- Language selection step -->
 <div class="role-selection-container" *ngIf="step === 'language'">
-  <button class="back-btn" type="button" (click)="backToRole()">← Back / Regresar</button>
-  <h2 class="title">Choose Document Language <span class="spanish">/ Elija el idioma del documento</span></h2>
-  <p class="subtitle">Please select the language in which you would like to complete the documents:<br><span class="spanish">Por favor seleccione el idioma en el que desea completar los documentos:</span></p>
+  <button class="back-btn" type="button" (click)="backToRole()">← {{ 'role.language.back' | translate }}</button>
+  <h2 class="title">{{ 'role.language.title' | translate }}</h2>
+  <p class="subtitle">{{ 'role.language.subtitle' | translate }}</p>
 
   <div class="card-wrapper">
     <button type="button" class="role-card" (click)="onLanguageSelect('en')" aria-label="English documents">
       <div class="icon">🇺🇸</div>
-      <h3>English</h3>
+      <h3>{{ 'role.language.english' | translate }}</h3>
     </button>
 
     <button type="button" class="role-card" (click)="onLanguageSelect('es')" aria-label="Spanish documents">
       <div class="icon">🇲🇽</div>
-      <h3>Español</h3>
+      <h3>{{ 'role.language.spanish' | translate }}</h3>
     </button>
   </div>
 </div> 

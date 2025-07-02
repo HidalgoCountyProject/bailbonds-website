@@ -235,6 +235,21 @@ export const translations: Record<Language, TranslationSet> = {
     'contact_map_title': 'Find Us on the Map',
     'contact_cta_title': 'Need Immediate Assistance?',
     'contact_cta_text': 'Our bail bond agents are available 24/7 to help you get your loved one out of jail',
+    
+    // Role Selection Wizard
+    'role.select.title': 'Select Your Role',
+    'role.select.subtitle': 'Please select which role applies to you for this bail bond process:',
+    'role.arrested.friendly': 'Arrested Person',
+    'role.arrested.legal': 'Defendant',
+    'role.arrested.desc': 'I am the person who was arrested and need a bail bond',
+    'role.indemnitor.friendly': 'Family / Friend',
+    'role.indemnitor.legal': 'Co-signer / Indemnitor',
+    'role.indemnitor.desc': 'I am signing on behalf of someone else who was arrested',
+    'role.language.back': 'Back',
+    'role.language.title': 'Choose Document Language',
+    'role.language.subtitle': 'Please select the language in which you would like to complete the documents:',
+    'role.language.english': 'English',
+    'role.language.spanish': 'Español',
   },
   es: {
     // Header
@@ -466,5 +481,20 @@ export const translations: Record<Language, TranslationSet> = {
     'contact_map_title': 'Encuéntrenos en el Mapa',
     'contact_cta_title': '¿Necesita Asistencia Inmediata?',
     'contact_cta_text': 'Nuestros agentes de fianzas están disponibles 24/7 para ayudarle a liberar a su ser querido',
+    
+    // Role Selection Wizard
+    'role.select.title': 'Seleccione su rol',
+    'role.select.subtitle': 'Por favor seleccione cuál rol aplica para este proceso de fianza:',
+    'role.arrested.friendly': 'Persona Arrestada',
+    'role.arrested.legal': 'Acusado',
+    'role.arrested.desc': 'Soy la persona que fue arrestada y necesito una fianza',
+    'role.indemnitor.friendly': 'Familiar / Amigo',
+    'role.indemnitor.legal': 'Fiador / Indemnitor',
+    'role.indemnitor.desc': 'Estoy firmando en nombre de alguien que fue arrestado',
+    'role.language.back': 'Regresar',
+    'role.language.title': 'Elija el idioma del documento',
+    'role.language.subtitle': 'Por favor seleccione el idioma en el que desea completar los documentos:',
+    'role.language.english': 'Inglés',
+    'role.language.spanish': 'Español',
   }
 }; 
