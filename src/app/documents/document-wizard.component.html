@@ -8,8 +8,8 @@
       </svg>
     </button>
     
-    <!-- Centered navigation/sign controls -->
-    <div class="toolbar-nav-group">
+    <!-- Toolbar controls -->
+    <div *ngIf="!inReviewStep" class="toolbar-nav-group">
       <button *ngIf="!isFirstDoc || inIdPhotoStep" class="toolbar-btn prev-btn" (click)="prevDoc()" aria-label="Previous document">
         ◀
       </button>
@@ -27,11 +27,21 @@
         ▶
       </button>
     </div>
+
+    <!-- Review step toolbar -->
+    <div *ngIf="inReviewStep" class="toolbar-nav-group review-group">
+      <button *ngIf="!isFirstReview" class="toolbar-btn prev-btn" (click)="prevFlattened()" aria-label="Previous document">◀</button>
+
+      <button class="toolbar-btn back-btn" (click)="goBackToEdit()">Go back</button>
+      <button class="toolbar-btn send-toolbar-btn" (click)="sendDocuments()">Send Documents</button>
+
+      <button *ngIf="!isLastReview" class="toolbar-btn next-btn" (click)="nextFlattened()" aria-label="Next document">▶</button>
+    </div>
   </header>
 
   <!-- PDF Viewer Step -->
-  <div *ngIf="!inIdPhotoStep" class="pdf-step">
-  <div class="pdf-overlay" [class.show]="isLoading"></div>
+  <div *ngIf="!inIdPhotoStep && !inReviewStep" class="pdf-step">
+    <div class="pdf-overlay" [class.show]="isLoading"></div>
     <div class="pdf-container">
       <ngx-extended-pdf-viewer
         [src]="pdfSrc"
@@ -125,6 +135,31 @@
         Guardar y continuar
       </button>
     </form>
+  </div>
+
+  <!-- Review Step (flattened PDFs) -->
+  <div *ngIf="inReviewStep" class="review-step">
+    <div class="pdf-overlay" [class.show]="isLoading"></div>
+    <div class="pdf-container" *ngIf="flattenedDocs.length">
+      <ngx-extended-pdf-viewer
+        [src]="flattenedDocs[reviewIndex].url"
+        [height]="'calc(100vh - 60px)'"
+        [zoom]="'page-fit'"
+        [pageViewMode]="'multiple'"
+        [showToolbar]="false"
+        [showSidebarButton]="false"
+        [showFindButton]="false"
+        [showPagingButtons]="true"
+        [showPrintButton]="false"
+        [showDownloadButton]="false"
+        [showSecondaryToolbarButton]="false"
+        [showRotateButton]="false"
+        [showHandToolButton]="false"
+        [showSpreadButton]="false"
+        [showPropertiesButton]="false"
+        [showBorders]="false">
+      </ngx-extended-pdf-viewer>
+    </div>
   </div>
 </div>
 

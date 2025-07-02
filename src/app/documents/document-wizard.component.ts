@@ -7,7 +7,7 @@ import { SignatureModalComponent } from '../shared/signature-modal/signature-mod
 import { AlertModalComponent } from '../shared/alert-modal/alert-modal.component';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { PDFDocument, StandardFonts } from 'pdf-lib';
+import { PDFDocument, StandardFonts, PDFName } from 'pdf-lib';
 import { LoadingModalComponent } from '../shared/loading-modal/loading-modal.component';
 
 @Component({
@@ -54,6 +54,18 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
   minZoom = .495;
   // Minimum zoom scale (set to page-fit after PDF loads)
 
+  // -----------------------------
+  // Review/finalisation helpers
+  // -----------------------------
+  /** Indicates the component is showing the final review (flattened PDFs) step */
+  inReviewStep = false;
+
+  /** Object-URL list of the flattened PDFs that will be reviewed by the user */
+  flattenedDocs: Array<{ name: string; url: string; bytes: Uint8Array }> = [];
+
+  /** Keeps the raw bytes of the flattened documents so they can be uploaded */
+  private finalDocsData: Array<{ name: string; bytes: Uint8Array }> = [];
+
   /** Hard-coded page numbers (1-based) where the signature debe ir for each PDF filename */
   private readonly SIGN_PAGES: Record<string, number> = {
     'assets/pdfs/defendant/defendant-application-and-agreement-en.pdf': 4,
@@ -99,6 +111,9 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
   @ViewChild('warningModal') warningModal?: AlertModalComponent;
 
   private originalViewportContent: string | null = null;
+
+  /** Index of the currently displayed flattened doc */
+  reviewIndex = 0;
 
   constructor(
     private router: Router,
@@ -432,7 +447,7 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
         /* ignored */
       }
       // Show the captured JSON in the dev console so we can verify the output
-      console.log('[DocumentWizard] Extracted field values', this.currentFieldValues);
+      //console.log('[DocumentWizard] Extracted field values', this.currentFieldValues);
     }
 
     // Show overlay
@@ -500,7 +515,7 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
 
       // --- Debug: list every field name present in the PDF ---
       const allFieldNames: string[] = form.getFields().map((f: any) => f.getName());
-      console.log('[SignatureDebug] Fields found in PDF:', allFieldNames);
+      //console.log('[SignatureDebug] Fields found in PDF:', allFieldNames);
 
       // 1) Exact match first
       let resolvedField: any;
@@ -696,7 +711,6 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
 
       // Debug: list all field names present in the PDF once per save cycle
       const allPdfFields = form.getFields().map((f: any) => f.getName());
-      this.logDebug('PDF contains the following AcroForm fields', allPdfFields);
 
       Object.entries(fieldValues).forEach(([fieldName, value]) => {
         try {
@@ -727,7 +741,6 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
 
 
           const ctorName = field?.constructor?.name || '';
-          console.log('ctorName', ctorName);
 
           if (!field) {
             this.logDebug(`Field not found in PDF: ${fieldName}`);
@@ -739,7 +752,6 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
           } else if (ctorName.includes('PDFDropdown') || ctorName.includes('PDFOptionList')) {
             field.select(String(value));
           } else if (ctorName.includes('PDFCheckBox')) {
-            console.log('field', field);
             value ? field.check() : field.uncheck();
           } else if (ctorName.includes('PDFRadioGroup')) {
             field.select(String(value));
@@ -761,7 +773,7 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
   /** Verbose logging helper */
   private logDebug(message: string, data?: any) {
     // eslint-disable-next-line no-console
-    console.log('[SignatureDebug] ' + message, data ?? '');
+    //console.log('[SignatureDebug] ' + message, data ?? '');
   }
 
   /* ---------------------------------------------------------------------- */
@@ -838,13 +850,10 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
     const value = this.currentForm.value.idPhoto;
     this.saveAnswer('id-photo-section', this.idPhotoQuestion, value);
 
-    // ------------------------------------------------------------------
-    // 4) Clean up any locally stored data once the wizard is complete
-    // ------------------------------------------------------------------
-    this.clearLocalData();
-
-    window.alert('La información del formulario fue guardada exitosamente');
-    this.router.navigateByUrl('/wizard');
+    // Leave the photo step and prepare review
+    this.inIdPhotoStep = false;
+    // Continue to final review step: flatten all documents and show them to the user
+    this.finalizeDocuments().catch(err => console.error('Failed to finalise documents', err));
   }
 
   /** Mock implementation that logs the payload – replace with real API call */
@@ -873,7 +882,7 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
   private sendFieldValuesToBackend(fieldValues: Record<string, any>): void {
     try {
       // TODO: Integrate ApiService when backend endpoint is available
-      console.log('[DocumentWizard] 🚀 Sending field values to backend…', fieldValues);
+      //console.log('[DocumentWizard] 🚀 Sending field values to backend…', fieldValues);
     } catch (err) {
       console.warn('Failed to send field values to backend', err);
     }
@@ -1073,5 +1082,204 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
     });
 
     return missing;
+  }
+
+  /** ------------------------------------------------------------
+   * Review & final sending helpers
+   * ------------------------------------------------------------ */
+
+  /** Returns the signature page (1-based) for the provided document path */
+  private getSignaturePageForDoc(docPath: string): number {
+    const clean = docPath.split(/[?#]/)[0];
+    if (clean in this.SIGN_PAGES) { return this.SIGN_PAGES[clean]; }
+    const name = clean.split('/').pop() ?? '';
+    return this.SIGN_PAGES[name] ?? 1;
+  }
+
+  /** Builds flattened (no form fields) versions of every document with field values & signature applied */
+  private async flattenAllDocuments(): Promise<Array<{ name: string; bytes: Uint8Array; url: string }>> {
+    const results: Array<{ name: string; bytes: Uint8Array; url: string }> = [];
+    const desiredFontSize = 11; // Standardize font size across all filled fields
+
+    // 1) Retrieve stored values & signature
+    let storedValues: Record<string, any> = {};
+    const storedSignature = this.getStoredSignature();
+    try {
+      storedValues = JSON.parse(localStorage.getItem(`${this.role}_field_values`) || '{}');
+    } catch { /* ignored */ }
+
+    // Always refresh date placeholders
+    storedValues = { ...storedValues, ...this.getCurrentDateFieldValues() };
+
+    // 2) Iterate documents and build flattened copies
+    for (const docPath of this.docs) {
+      try {
+        const response = await fetch(docPath);
+        const originalBytes = new Uint8Array(await response.arrayBuffer());
+        const pdfDoc = await PDFDocument.load(originalBytes, { ignoreEncryption: true });
+
+        // Apply stored field values
+        this.applyFieldValuesToPdf(pdfDoc, storedValues);
+
+        // Harmonise font size & font across all text fields before regenerating appearances
+        await this.adjustTextFieldFonts(pdfDoc, desiredFontSize);
+
+        // Apply signature if we have one
+        if (storedSignature) {
+          // Temporarily override pdfSrc so getSignatureTargetsFromPdf can compute fallback page correctly
+          const prevSrc = this.pdfSrc;
+          this.pdfSrc = docPath;
+
+          const autoTargets = [
+            ...this.getSignatureTargetsFromPdf(pdfDoc, `${this.role}_invisible_signature`),
+            ...this.getSignatureTargetsFromPdf(pdfDoc, 'invisible_signature'),
+          ];
+          this.pdfSrc = prevSrc; // restore
+
+          let targets = autoTargets;
+          if (targets.length === 0) {
+            targets = [{
+              page: this.getSignaturePageForDoc(docPath),
+              x: 300,
+              y: 122,
+              width: 120,
+              height: 48,
+            }];
+          }
+
+          const pngBytes = this.base64ToUint8Array(storedSignature);
+          const pngImage = await pdfDoc.embedPng(pngBytes);
+          targets.forEach(t => {
+            const page = pdfDoc.getPage(t.page - 1);
+            page.drawImage(pngImage, { x: t.x, y: t.y, width: t.width, height: t.height });
+          });
+        }
+
+        // -- Debug: fields before flatten --
+        try {
+          const form = pdfDoc.getForm();
+          const beforeCount = form.getFields().length;
+          console.log(`[FlattenDebug] ${docPath} – form fields before flatten:`, beforeCount);
+
+          // Regenerate appearances so text is visible once flattened
+          try {
+            const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
+            form.updateFieldAppearances(helvetica);
+          } catch (appearanceErr) {
+            console.warn('[FlattenDebug] Could not update appearances', appearanceErr);
+          }
+
+          // Flatten – convert interactive widgets into static content
+          this.safeFlattenForm(form);
+
+          const afterCount = form.getFields().length;
+          console.log(`[FlattenDebug] ${docPath} – form fields after flatten:`, afterCount);
+
+          // Remove AcroForm to ensure viewer treats PDF as static (prevents parsing errors)
+          try {
+            pdfDoc.catalog.delete(PDFName.of('AcroForm'));
+          } catch (delErr) {
+            console.warn('[FlattenDebug] Failed to delete AcroForm', delErr);
+          }
+        } catch (flattenErr) {
+          console.warn('[FlattenDebug] Unable to flatten form', flattenErr);
+        }
+        
+
+        const outBytes = await pdfDoc.save();
+        const url = URL.createObjectURL(new Blob([outBytes], { type: 'application/pdf' }));
+        const name = docPath.split('/').pop() ?? `document-${results.length + 1}.pdf`;
+        results.push({ name, bytes: outBytes, url });
+      } catch (err) {
+        console.error('[DocumentWizard] Failed to flatten document', docPath, err);
+      }
+    }
+    return results;
+  }
+
+  /** Prepares flattened documents and switches view to review step */
+  private async finalizeDocuments(): Promise<void> {
+    this.isLoading = true;
+    try {
+      const flattened = await this.flattenAllDocuments();
+      this.flattenedDocs = flattened.map(f => ({ name: f.name, url: f.url, bytes: f.bytes }));
+      this.finalDocsData = flattened.map(f => ({ name: f.name, bytes: f.bytes }));
+      this.reviewIndex = 0;
+      this.inReviewStep = true;
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  /** Sends the flattened documents to the backend (stub implementation) */
+  sendDocuments(): void {
+    //console.log('[DocumentWizard] 🚀 Sending documents to backend…', this.finalDocsData);
+    // TODO: integrate ApiService once endpoint is available
+
+    // Clean up local data & notify user
+    this.clearLocalData();
+    window.alert('Documents sent successfully');
+    this.router.navigateByUrl('/wizard');
+  }
+
+  /** Navigates back to the editable wizard retaining the local storage data */
+  goBackToEdit(): void {
+    this.router.navigateByUrl(`/wizard/${this.role}/${this.lang}`);
+  }
+
+  /** Safe flatten form method */
+  private safeFlattenForm(form: any): void {
+    try {
+      // pdf-lib exposes Field.flatten(); flatten each individually so one failure doesn't abort whole doc
+      const fields = form.getFields?.() ?? [];
+      fields.forEach((fld: any) => {
+        try {
+          if (typeof fld.flatten === 'function') {
+            fld.flatten();
+          } else {
+            // Fallback: remove widgets so field is no longer interactive
+            fld.enableReadOnly?.();
+          }
+        } catch (fieldErr) {
+          console.warn('[FlattenDebug] Failed to flatten field', fld?.getName?.(), fieldErr);
+          try { fld.enableReadOnly?.(); } catch { /* ignore */ }
+        }
+      });
+    } catch (err) {
+      console.warn('[FlattenDebug] safeFlattenForm failed', err);
+    }
+  }
+
+  /* ------------ Review navigation ------------- */
+  get isFirstReview() { return this.reviewIndex === 0; }
+  get isLastReview() { return this.reviewIndex === this.flattenedDocs.length - 1; }
+
+  prevFlattened(): void {
+    if (!this.isFirstReview) { this.reviewIndex -= 1; }
+  }
+
+  nextFlattened(): void {
+    if (!this.isLastReview) { this.reviewIndex += 1; }
+  }
+
+  /** Sets a consistent Helvetica font and size for every text field in the PDF */
+  private async adjustTextFieldFonts(pdfDoc: PDFDocument, fontSize: number = 11): Promise<void> {
+    try {
+      const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const form = pdfDoc.getForm();
+      form.getFields().forEach((fld: any) => {
+        const ctor = fld.constructor?.name || '';
+        if (ctor.includes('PDFTextField')) {
+          try {
+            if (typeof fld.setFont === 'function') { fld.setFont(helvetica); }
+            if (typeof fld.setFontSize === 'function') { fld.setFontSize(fontSize); }
+          } catch {/* ignore individual field errors */}
+        }
+      });
+      // After setting, regenerate appearances to reflect new size (will also happen later)
+      try { form.updateFieldAppearances(helvetica); } catch {}
+    } catch (err) {
+      console.warn('[FlattenDebug] Unable to adjust text field fonts', err);
+    }
   }
 }
