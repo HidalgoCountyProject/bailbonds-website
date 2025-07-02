@@ -92,26 +92,16 @@
     <!-- Guidance & tips -->
     <section class="photo-guidelines">
       <h2 class="guidelines-title">
-        Please add a clear photo of your ID
-        <span class="title-es">Por favor sube una foto clara de tu identificación</span>
+        {{ lang==='es' ? 'Por favor sube una foto clara de tu identificación' : 'Please add a clear photo of your ID' }}
       </h2>
       <p class="accepted-ids">
-        Recommended IDs: <strong>U.S. Passport</strong>, <strong>Driver's License</strong>, or <strong>State-issued ID</strong>
-        <span class="text-es">Identificaciones recomendadas: <strong>Pasaporte estadounidense</strong>, <strong>Licencia de conducir</strong> o <strong>ID gubernamental</strong></span>
+        <ng-container *ngIf="lang==='es'; else enIDs">Identificaciones recomendadas: <strong>Pasaporte estadounidense</strong>, <strong>Licencia de conducir</strong> o <strong>ID gubernamental</strong></ng-container>
+        <ng-template #enIDs>Recommended IDs: <strong>U.S. Passport</strong>, <strong>Driver's License</strong>, or <strong>State-issued ID</strong></ng-template>
       </p>
       <ul class="tips">
-        <li>
-          Use good lighting to avoid glare or shadows
-          <span class="tip-es">Usa buena iluminación para evitar reflejos o sombras</span>
-        </li>
-        <li>
-          Keep the picture sharp—avoid blurry photos
-          <span class="tip-es">Mantén la imagen nítida; evita fotos borrosas</span>
-        </li>
-        <li>
-          Try to keep all four edges visible and text readable
-          <span class="tip-es">Procura que los cuatro bordes sean visibles y el texto legible</span>
-        </li>
+        <li>{{ lang==='es' ? 'Usa buena iluminación para evitar reflejos o sombras' : 'Use good lighting to avoid glare or shadows' }}</li>
+        <li>{{ lang==='es' ? 'Mantén la imagen nítida; evita fotos borrosas' : 'Keep the picture sharp—avoid blurry photos' }}</li>
+        <li>{{ lang==='es' ? 'Procura que los cuatro bordes sean visibles y el texto legible' : 'Try to keep all four edges visible and text readable' }}</li>
       </ul>
     </section>
 
@@ -120,32 +110,30 @@
         <div class="uploader-sides">
           <!-- Front side -->
           <div class="side" [class.uploaded]="idPhotoControl?.value?.frontPreview">
-            <span class="side-label">Front / Frente</span>
+            <span class="side-label">{{ lang==='es' ? 'Frente' : 'Front' }}</span>
             <button *ngIf="!idPhotoControl?.value?.frontPreview" type="button" class="upload-btn" (click)="frontInput.click()">
-              <span class="upload-en">Upload front</span>
-              <span class="upload-es">Subir frente</span>
+              {{ lang==='es' ? 'Subir frente' : 'Upload front' }}
             </button>
             <img *ngIf="idPhotoControl?.value?.frontPreview" [src]="idPhotoControl?.value?.frontPreview" class="preview-img" alt="Front preview" />
             <input #frontInput type="file" accept="image/*" (change)="onPhotoSelected($event, 'front', 'idPhoto')" hidden />
-            <a *ngIf="idPhotoControl?.value?.frontPreview" class="reset-link" (click)="resetPhoto('front', 'idPhoto')">Eliminar</a>
+            <a *ngIf="idPhotoControl?.value?.frontPreview" class="reset-link" (click)="resetPhoto('front', 'idPhoto')">{{ lang==='es' ? 'Eliminar' : 'Remove' }}</a>
           </div>
 
           <!-- Back side -->
           <div class="side" [class.uploaded]="idPhotoControl?.value?.backPreview">
-            <span class="side-label">Back / Reverso</span>
+            <span class="side-label">{{ lang==='es' ? 'Reverso' : 'Back' }}</span>
             <button *ngIf="!idPhotoControl?.value?.backPreview" type="button" class="upload-btn" (click)="backInput.click()">
-              <span class="upload-en">Upload back</span>
-              <span class="upload-es">Subir reverso</span>
+              {{ lang==='es' ? 'Subir reverso' : 'Upload back' }}
             </button>
             <img *ngIf="idPhotoControl?.value?.backPreview" [src]="idPhotoControl?.value?.backPreview" class="preview-img" alt="Back preview" />
             <input #backInput type="file" accept="image/*" (change)="onPhotoSelected($event, 'back', 'idPhoto')" hidden />
-            <a *ngIf="idPhotoControl?.value?.backPreview" class="reset-link" (click)="resetPhoto('back', 'idPhoto')">Eliminar</a>
+            <a *ngIf="idPhotoControl?.value?.backPreview" class="reset-link" (click)="resetPhoto('back', 'idPhoto')">{{ lang==='es' ? 'Eliminar' : 'Remove' }}</a>
           </div>
         </div>
       </div>
 
       <button type="button" class="save-btn main-save" (click)="saveIdPhoto()" [disabled]="currentForm.invalid || idPhotoControl?.invalid">
-        Guardar y continuar
+        {{ lang==='es' ? 'Guardar y continuar' : 'Save and continue' }}
       </button>
     </form>
   </div>

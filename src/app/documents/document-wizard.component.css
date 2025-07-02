@@ -195,6 +195,9 @@
   /* (block fully removed) */
   
   /* Removed textarea and checkbox/radio size overrides */
+  .id-photo-container {
+    margin-top: 56px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -270,6 +273,7 @@
   padding: 24px 16px;
   overflow-y: auto;
   background: #f9fafb;
+  margin-top: 60px;
 }
 
 .photo-upload {
