@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Meta } from '@angular/platform-browser';
@@ -6,6 +6,7 @@ import { NgxExtendedPdfViewerModule, pdfDefaultOptions } from 'ngx-extended-pdf-
 import { SignatureModalComponent } from '../shared/signature-modal/signature-modal.component';
 import { AlertModalComponent } from '../shared/alert-modal/alert-modal.component';
 import { ConfirmModalComponent } from '../shared/confirm-modal/confirm-modal.component';
+import { IntroModalComponent } from '../shared/intro-modal/intro-modal.component';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { PDFDocument, StandardFonts, PDFName } from 'pdf-lib';
@@ -20,13 +21,14 @@ import { LoadingModalComponent } from '../shared/loading-modal/loading-modal.com
     SignatureModalComponent,
     AlertModalComponent,
     ConfirmModalComponent,
+    IntroModalComponent,
     ReactiveFormsModule,
     LoadingModalComponent,
   ],
   templateUrl: './document-wizard.component.html',
   styleUrls: ['./document-wizard.component.css']
 })
-export class DocumentWizardComponent implements OnInit, OnDestroy {
+export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit {
   pdfSrc = '';
   docs: string[] = [];
   currentIndex = 0;
@@ -113,6 +115,7 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
   @ViewChild('warningModal') warningModal?: AlertModalComponent;
   @ViewChild('infoModal') infoModal?: AlertModalComponent;
   @ViewChild('successModal') successModal?: ConfirmModalComponent;
+  @ViewChild('introModal') introModal?: IntroModalComponent;
 
   private originalViewportContent: string | null = null;
 
@@ -1361,5 +1364,19 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
 
       input.placeholder = placeholder;
     });
+  }
+
+  ngAfterViewInit(): void {
+    // Show introductory modal when the wizard loads
+    const roleLabel = this.role === 'defendant'
+      ? (this.lang === 'es' ? 'acusado' : 'defendant')
+      : (this.lang === 'es' ? 'fiador' : 'indemnitor');
+
+    const msgIntro = this.lang === 'es'
+      ? `Estás a punto de empezar el proceso de llenado para el ${roleLabel}. Utiliza los botones de la barra superior para firmar y navegar. Los campos con borde rojo son obligatorios y debes completarlos para continuar.`
+      : `You are about to start the filling process for the ${roleLabel}. Use the top bar buttons to sign and navigate. Fields with a red border are required and must be completed before you can proceed.`;
+
+    // Use setTimeout to ensure the modal is opened after view initialisation
+    setTimeout(() => this.introModal?.open(msgIntro));
   }
 }
