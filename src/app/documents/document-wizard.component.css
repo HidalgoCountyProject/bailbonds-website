@@ -128,7 +128,7 @@
   border: 1.5px solid #cbd5e1 !important;  /* slightly thicker, modern border */
   border-radius: 4px !important;           /* gentle rounded corners */
   font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
-  font-size: 0.5rem !important;            /* consistent font size */
+  font-size: 0.6em !important;            /* consistent font size */
   line-height: 1.25 !important;
   background-color: rgba(255, 255, 255, 0.95) !important;
   transition: all 0.15s ease !important;   /* smooth feedback animation */
