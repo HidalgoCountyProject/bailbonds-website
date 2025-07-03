@@ -112,22 +112,38 @@
           <!-- Front side -->
           <div class="side" [class.uploaded]="idPhotoControl?.value?.frontPreview">
             <span class="side-label">{{ lang==='es' ? 'Frente' : 'Front' }}</span>
-            <button *ngIf="!idPhotoControl?.value?.frontPreview" type="button" class="upload-btn" (click)="frontInput.click()">
-              {{ lang==='es' ? 'Subir frente' : 'Upload front' }}
-            </button>
+            <!-- Opciones de subida (solo si aún no hay imagen) -->
+            <div *ngIf="!idPhotoControl?.value?.frontPreview" class="upload-options">
+              <button type="button" class="upload-btn" (click)="frontGalleryInput.click()">
+                {{ lang==='es' ? 'Galería' : 'Photo library' }}
+              </button>
+              <button type="button" class="upload-btn" (click)="frontCameraInput.click()">
+                {{ lang==='es' ? 'Cámara' : 'Camera' }}
+              </button>
+            </div>
             <img *ngIf="idPhotoControl?.value?.frontPreview" [src]="idPhotoControl?.value?.frontPreview" class="preview-img" alt="Front preview" />
-            <input #frontInput type="file" accept="image/*"  (change)="onPhotoSelected($event, 'front', 'idPhoto')" hidden />
+            <!-- Inputs ocultos -->
+            <input #frontGalleryInput type="file" accept="image/*" (change)="onPhotoSelected($event, 'front', 'idPhoto')" hidden />
+            <input #frontCameraInput type="file" accept="image/*" capture="environment" (change)="onPhotoSelected($event, 'front', 'idPhoto')" hidden />
             <a *ngIf="idPhotoControl?.value?.frontPreview" class="reset-link" (click)="resetPhoto('front', 'idPhoto')">{{ lang==='es' ? 'Eliminar' : 'Remove' }}</a>
           </div>
 
           <!-- Back side -->
           <div class="side" [class.uploaded]="idPhotoControl?.value?.backPreview">
             <span class="side-label">{{ lang==='es' ? 'Reverso' : 'Back' }}</span>
-            <button *ngIf="!idPhotoControl?.value?.backPreview" type="button" class="upload-btn" (click)="backInput.click()">
-              {{ lang==='es' ? 'Subir reverso' : 'Upload back' }}
-            </button>
+            <!-- Opciones de subida (solo si aún no hay imagen) -->
+            <div *ngIf="!idPhotoControl?.value?.backPreview" class="upload-options">
+              <button type="button" class="upload-btn" (click)="backGalleryInput.click()">
+                {{ lang==='es' ? 'Galería' : 'Photo library' }}
+              </button>
+              <button type="button" class="upload-btn" (click)="backCameraInput.click()">
+                {{ lang==='es' ? 'Cámara' : 'Camera' }}
+              </button>
+            </div>
             <img *ngIf="idPhotoControl?.value?.backPreview" [src]="idPhotoControl?.value?.backPreview" class="preview-img" alt="Back preview" />
-            <input #backInput type="file" accept="image/*"  (change)="onPhotoSelected($event, 'back', 'idPhoto')" hidden />
+            <!-- Inputs ocultos -->
+            <input #backGalleryInput type="file" accept="image/*" (change)="onPhotoSelected($event, 'back', 'idPhoto')" hidden />
+            <input #backCameraInput type="file" accept="image/*" capture="environment" (change)="onPhotoSelected($event, 'back', 'idPhoto')" hidden />
             <a *ngIf="idPhotoControl?.value?.backPreview" class="reset-link" (click)="resetPhoto('back', 'idPhoto')">{{ lang==='es' ? 'Eliminar' : 'Remove' }}</a>
           </div>
         </div>
