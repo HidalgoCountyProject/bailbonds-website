@@ -498,9 +498,17 @@
   gap: 12px;
 }
 
-.sign-toolbar-btn span {
-  margin-left: 6px;
+.sign-toolbar-btn {
+  background-color: var(--secondary-color, #FFCC00);
+  color: var(--primary-color, #000000);
+  border: 2px solid var(--secondary-color, #FFCC00);
+  min-width: 110px;
+  padding: 0 14px;
   font-weight: 600;
+}
+
+.sign-toolbar-btn:hover {
+  background-color: #e6b800;
 }
 
 /* Highlight for required fields not filled */

@@ -1197,8 +1197,8 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
       this.inReviewStep = true;
       // Show introductory info modal once review step visible
       const msgIntro = this.lang === 'es'
-        ? `Perfecto, has completado toda la información para tu fianza.\n\nRevisa los documentos y pulsa "Enviar documentos" para confirmar el envío a Affordable Bail Bonds, o "Editar información" si detectas algún dato erróneo.`
-        : `Great! You have completed all the information for your bail.\n\nReview the documents and press "Send Documents" to confirm sending them to Affordable Bail Bonds, or "Edit information" if you spot any mistakes.`;
+        ? `¡Perfecto! Has completado toda la información para tu solicitud de fianza.\n\nRevisa los documentos y pulsa "Enviar documentos" para confirmar el envío a Affordable Bail Bonds, o "Editar información" si detectas algún dato erróneo.`
+        : `Great! You have completed all the information for your bail bond application.\n\nReview the documents and press "Send Documents" to confirm sending them to Affordable Bail Bonds, or "Edit information" if you spot any mistakes.`;
       this.infoModal?.open(msgIntro);
     } finally {
       this.isLoading = false;
@@ -1212,8 +1212,8 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.isLoading = false;
       const msg = this.lang==='es'
-        ? '¡Enhorabuena! Has enviado los documentos a Affordable Bail Bonds. Si lo deseas, puedes llamar al número de contacto para avisar; de cualquier manera nos pondremos en contacto contigo.'
-        : 'Congratulations! Your documents have been sent to Affordable Bail Bonds. Feel free to call us to let us know; otherwise we will contact you shortly.';
+        ? '¡Enhorabuena! Has enviado los documentos a Affordable Bail Bonds. Si lo deseas, puedes llamar al número de contacto +1 956-867-9269 para avisar; de cualquier manera nos pondremos en contacto contigo.'
+        : 'Congratulations! Your documents have been sent to Affordable Bail Bonds. Feel free to call us at +1 956-867-9269 to let us know; otherwise we will contact you shortly.';
       if (this.successModal) {
         this.successModal.primaryLabel = this.lang==='es' ? 'Ir a la página principal' : 'Go to main page';
         this.successModal.secondaryLabel = this.lang==='es' ? 'Completar nuevos documentos' : 'Fill new documents';
