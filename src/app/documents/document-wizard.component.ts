@@ -358,28 +358,7 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl('/wizard');
   }
 
-  /*onPdfLoaded(pdf: any) {
-    // Capture the scale used by 'page-fit' after render settles (give 300 ms)
-    console.log('onPdfLoaded');
-    console.log(this.isBrowser);
-    if (this.isBrowser) {
-      setTimeout(() => {
-        const viewer = (window as any).PDFViewerApplication;
-        if (viewer && viewer.pdfViewer) {
-          const fitScale = viewer.pdfViewer.currentScale || 1;
-          console.log('fitScale', fitScale);
-          // Apply a small tolerance so user can return smoothly to fit
-          //this.minZoom = fitScale * 0.98;
-          console.log('minZoom', this.minZoom);
-        }
-      }, 1000);
-    }
 
-    // Fade overlay out shortly after pages are rendered
-    setTimeout(() => {
-      this.isLoading = false;
-    }, 300);
-  }*/
 
   /* ---------------------------------------------------------------------- */
   /* Signature modal helpers                                                */
@@ -1334,5 +1313,53 @@ export class DocumentWizardComponent implements OnInit, OnDestroy {
     } catch (err) {
       console.warn('[FlattenDebug] Unable to adjust text field fonts', err);
     }
+  }
+
+  /* ---------------------------------------------------------------------- */
+  /* Placeholder helpers                                                    */
+  /* ---------------------------------------------------------------------- */
+
+  /** Called by the PDF viewer once all pages are rendered */
+  onPagesLoaded(): void {
+    console.log('onPagesLoaded');
+    if (!this.isBrowser) { console.log('not browser'); return; }
+
+    // Only apply on first document of Indemnitor flow and not during review/photo steps
+    if (this.role !== 'indemnitor' || !this.isFirstDoc || this.inReviewStep || this.inIdPhotoStep) {
+      console.log('not first doc or review step or id photo step');
+      return;
+
+    }
+
+    // Defer to next tick to ensure annotations are in the DOM
+    setTimeout(() => this.applyPlaceholders(), 300);
+  }
+
+  /** Inserts dynamic placeholders into text inputs rendered by pdf.js */
+  private applyPlaceholders(): void {
+    console.log('applyPlaceholders');
+    const selector = '.textWidgetAnnotation input, .textWidgetAnnotation textarea';
+    const personInJailFields = ['defendant_first_name', 'defendant_middle_name', 'defendant_last_name'];
+    const excludeFields = ['number_day', 'month_name', 'two_last_year_digits'];
+
+    document.querySelectorAll(selector).forEach((el) => {
+      const input = el as HTMLInputElement | HTMLTextAreaElement;
+      const fieldName = input.name || '';
+      if (!fieldName) { return; }
+
+      // Skip checkboxes / radios
+      if (input instanceof HTMLInputElement && (input.type === 'checkbox' || input.type === 'radio')) {
+        return;
+      }
+      console.log('fieldName Placeholder', fieldName);
+      if (excludeFields.includes(fieldName)) { return; }
+
+      let placeholder = 'Person bailing out';
+      if (personInJailFields.includes(fieldName)) {
+        placeholder = 'Person in Jail';
+      }
+
+      input.placeholder = placeholder;
+    });
   }
 }

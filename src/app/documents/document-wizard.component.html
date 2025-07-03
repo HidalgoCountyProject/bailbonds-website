@@ -57,6 +57,7 @@
     <div class="pdf-overlay" [class.show]="isLoading"></div>
     <div class="pdf-container">
       <ngx-extended-pdf-viewer
+        (pagesLoaded)="onPagesLoaded()"
         [src]="pdfSrc"
         [height]="'calc(100vh - 60px)'"
         [zoom]="'page-fit'"

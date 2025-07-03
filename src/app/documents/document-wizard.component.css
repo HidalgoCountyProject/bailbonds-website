@@ -240,7 +240,7 @@
 /* Additional iOS-style improvements */
 ::ng-deep .annotationLayer .textWidgetAnnotation input::placeholder,
 ::ng-deep .annotationLayer .textWidgetAnnotation textarea::placeholder {
-  color: #8e8e93 !important;
+  color: #374151 !important; /* even darker gray */
   opacity: 1 !important;
 }
 
@@ -482,7 +482,7 @@
   ::ng-deep .annotationLayer .textWidgetAnnotation input,
   ::ng-deep .annotationLayer .textWidgetAnnotation textarea,
   ::ng-deep .annotationLayer .choiceWidgetAnnotation select {
-    font-size: 0.9rem !important; /* was 0.5rem */
+    font-size: 0.75rem !important; /* was 0.5rem */
   }
 }
 
