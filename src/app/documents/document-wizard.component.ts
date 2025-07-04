@@ -12,6 +12,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { PDFDocument, StandardFonts, PDFName } from 'pdf-lib';
 import { LoadingModalComponent } from '../shared/loading-modal/loading-modal.component';
 
+
 @Component({
   selector: 'app-document-wizard',
   standalone: true,
@@ -226,6 +227,9 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
     this.pdfSrc = this.docs[this.currentIndex];
     // Clear any cached bytes so future modifications apply to the currently displayed PDF
     this.originalPdfBytes = undefined;
+    
+    // Hide any active tooltips when changing documents
+    this.hideActiveTooltip();
   }
 
   get isFirstDoc() {
@@ -867,18 +871,7 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
     return this.currentForm.get('idPhoto');
   }
 
-  /**
-   * Sends the captured field values to the backend.
-   * Replace the implementation with a real API integration once available.
-   */
-  private sendFieldValuesToBackend(fieldValues: Record<string, any>): void {
-    try {
-      // TODO: Integrate ApiService when backend endpoint is available
-      //console.log('[DocumentWizard] 🚀 Sending field values to backend…', fieldValues);
-    } catch (err) {
-      console.warn('Failed to send field values to backend', err);
-    }
-  }
+
 
   /**
    * Loads the current PDF, pre-fills any stored field values and/or signature and reloads the viewer.
@@ -1331,16 +1324,15 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
     if (this.role !== 'indemnitor' || !this.isFirstDoc || this.inReviewStep || this.inIdPhotoStep) {
       console.log('not first doc or review step or id photo step');
       return;
-
     }
 
     // Defer to next tick to ensure annotations are in the DOM
-    setTimeout(() => this.applyPlaceholders(), 300);
+    setTimeout(() => this.applyTooltips(), 300);
   }
 
-  /** Inserts dynamic placeholders into text inputs rendered by pdf.js */
-  private applyPlaceholders(): void {
-    console.log('applyPlaceholders');
+  /** Applies tooltips to PDF form fields to help users understand what to enter */
+  private applyTooltips(): void {
+    console.log('applyTooltips');
     const selector = '.textWidgetAnnotation input, .textWidgetAnnotation textarea';
     const personInJailFields = ['defendant_first_name', 'defendant_middle_name', 'defendant_last_name'];
     const excludeFields = ['number_day', 'month_name', 'two_last_year_digits'];
@@ -1354,16 +1346,245 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
       if (input instanceof HTMLInputElement && (input.type === 'checkbox' || input.type === 'radio')) {
         return;
       }
-      console.log('fieldName Placeholder', fieldName);
+      
       if (excludeFields.includes(fieldName)) { return; }
 
-      let placeholder = 'Person bailing out';
-      if (personInJailFields.includes(fieldName)) {
-        placeholder = 'Person in Jail';
-      }
-
-      input.placeholder = placeholder;
+      // Add tooltip behavior directly to the input
+      this.addTooltipBehavior(input, personInJailFields.includes(fieldName));
     });
+  }
+
+  /** Global tooltip management - only one tooltip can be active at a time */
+  private static activeTooltip: HTMLElement | null = null;
+  private static activeHideTimeout: any = null;
+
+  /** Adds tooltip behavior to an input element */
+  private addTooltipBehavior(input: HTMLInputElement | HTMLTextAreaElement, isPersonInJail: boolean): void {
+    const showTooltip = () => {
+      // Hide any existing tooltip first
+      this.hideActiveTooltip();
+      
+      const tooltipType = isPersonInJail ? 'person-in-jail' : 'person-bailing-out';
+      const tooltipText = isPersonInJail 
+        ? (this.lang === 'es' ? 'Persona en la cárcel' : 'Person in Jail')
+        : (this.lang === 'es' ? 'Persona que paga la fianza' : 'Person bailing out');
+      const tooltipIcon = isPersonInJail ? '🔒' : '👤';
+      
+      const tooltipElement = document.createElement('div');
+      tooltipElement.className = `pdf-tooltip pdf-tooltip-${tooltipType}`;
+      tooltipElement.innerHTML = `
+        <div class="pdf-tooltip-content">
+          <span class="pdf-tooltip-icon">${tooltipIcon}</span>
+          <span class="pdf-tooltip-text">${tooltipText}</span>
+        </div>
+        <div class="pdf-tooltip-arrow"></div>
+      `;
+      
+      // Position tooltip above input with higher z-index to avoid interference
+      tooltipElement.style.position = 'absolute';
+      tooltipElement.style.top = '-50px';
+      tooltipElement.style.left = '50%';
+      tooltipElement.style.transform = 'translateX(-50%)';
+      tooltipElement.style.zIndex = '9999';
+      tooltipElement.style.pointerEvents = 'none'; // Don't interfere with input
+      
+      input.parentElement?.appendChild(tooltipElement);
+      
+      // Set as active tooltip
+      DocumentWizardComponent.activeTooltip = tooltipElement;
+      
+      // Auto-hide after 5 seconds
+      DocumentWizardComponent.activeHideTimeout = setTimeout(() => {
+        this.hideActiveTooltip();
+      }, 5000);
+    };
+
+    const hideTooltip = () => {
+      // Only hide if this is the active tooltip
+      if (DocumentWizardComponent.activeTooltip && 
+          input.parentElement?.contains(DocumentWizardComponent.activeTooltip)) {
+        this.hideActiveTooltip();
+      }
+    };
+
+    // Event listeners
+    input.addEventListener('focus', showTooltip);
+    input.addEventListener('blur', hideTooltip);
+    
+    // Show tooltip on touch but don't prevent default to allow keyboard
+    input.addEventListener('touchstart', (e) => {
+      // Small delay to ensure the input gets focus first
+      setTimeout(() => {
+        if (document.activeElement === input) {
+          showTooltip();
+        }
+      }, 100);
+    });
+    
+    // Hide tooltip when user starts typing
+    input.addEventListener('input', () => {
+      this.hideActiveTooltip();
+    });
+    
+    // Hide tooltip when user starts typing (for mobile)
+    input.addEventListener('keydown', () => {
+      this.hideActiveTooltip();
+    });
+    
+    // Hide tooltip when user starts typing (for mobile keyboards)
+    input.addEventListener('compositionstart', () => {
+      this.hideActiveTooltip();
+    });
+    
+    // Hide tooltip when user starts typing (for mobile keyboards)
+    input.addEventListener('compositionend', () => {
+      this.hideActiveTooltip();
+    });
+    
+    // Close tooltip when clicking outside
+    document.addEventListener('click', (e) => {
+      if (DocumentWizardComponent.activeTooltip && 
+          !DocumentWizardComponent.activeTooltip.contains(e.target as Node) &&
+          !input.contains(e.target as Node)) {
+        this.hideActiveTooltip();
+      }
+    });
+    
+    // Add CSS styles if not already added
+    this.addTooltipStyles();
+  }
+
+  /** Hides the currently active tooltip */
+  private hideActiveTooltip(): void {
+    if (DocumentWizardComponent.activeTooltip) {
+      DocumentWizardComponent.activeTooltip.remove();
+      DocumentWizardComponent.activeTooltip = null;
+    }
+    if (DocumentWizardComponent.activeHideTimeout) {
+      clearTimeout(DocumentWizardComponent.activeHideTimeout);
+      DocumentWizardComponent.activeHideTimeout = null;
+    }
+  }
+
+  /** Adds tooltip CSS styles to the document */
+  private addTooltipStyles(): void {
+    if (document.getElementById('pdf-tooltip-styles')) return;
+    
+    const style = document.createElement('style');
+    style.id = 'pdf-tooltip-styles';
+    style.textContent = `
+      .pdf-tooltip {
+        padding: 12px 16px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        white-space: nowrap;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        animation: pdfTooltipSlideIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        pointer-events: none;
+        user-select: none;
+      }
+      
+      .pdf-tooltip-content {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      
+      .pdf-tooltip-icon {
+        font-size: 18px;
+        line-height: 1;
+      }
+      
+      .pdf-tooltip-text {
+        font-size: 14px;
+        line-height: 1.2;
+      }
+      
+      .pdf-tooltip-arrow {
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
+        border-top: 8px solid currentColor;
+      }
+      
+      .pdf-tooltip-person-in-jail {
+        background: linear-gradient(135deg, #000000, #1a1a1a);
+        color: #ffcc00;
+        border-color: rgba(255, 204, 0, 0.3);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 204, 0, 0.1);
+      }
+      
+      .pdf-tooltip-person-bailing-out {
+        background: linear-gradient(135deg, #ffcc00, #ffd633);
+        color: #000000;
+        border-color: rgba(0, 0, 0, 0.1);
+        box-shadow: 0 8px 25px rgba(255, 204, 0, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.1);
+      }
+      
+      @keyframes pdfTooltipSlideIn {
+        from {
+          opacity: 0;
+          transform: translateX(-50%) translateY(10px) scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(-50%) translateY(0) scale(1);
+        }
+      }
+      
+      @media (max-width: 768px) {
+        .pdf-tooltip {
+          font-size: 16px;
+          padding: 14px 18px;
+          min-width: 220px;
+          text-align: center;
+          top: -45px !important;
+          animation-duration: 0.15s !important;
+          pointer-events: none !important;
+        }
+        
+        .pdf-tooltip-content {
+          justify-content: center;
+        }
+        
+        /* Faster animation on mobile for better responsiveness */
+        @keyframes pdfTooltipSlideIn {
+          from {
+            opacity: 0;
+            transform: translateX(-50%) translateY(5px) scale(0.98);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0) scale(1);
+          }
+        }
+      }
+      
+      /* High contrast mode support */
+      @media (prefers-contrast: high) {
+        .pdf-tooltip {
+          border: 2px solid currentColor;
+        }
+      }
+      
+      /* Reduced motion support */
+      @media (prefers-reduced-motion: reduce) {
+        .pdf-tooltip {
+          animation: none;
+        }
+      }
+    `;
+    
+    document.head.appendChild(style);
   }
 
   ngAfterViewInit(): void {
