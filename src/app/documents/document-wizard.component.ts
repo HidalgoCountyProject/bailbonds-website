@@ -13,6 +13,27 @@ import { PDFDocument, StandardFonts, PDFName } from 'pdf-lib';
 import { LoadingModalComponent } from '../shared/loading-modal/loading-modal.component';
 import { ApiService } from '../services/api.service';
 
+// --- PDF Manifest Constants ---
+const DEFENDANT_DOCS_EN = [
+  'assets/pdfs/defendant/defendant-application-and-agreement-en.pdf',
+  'assets/pdfs/defendant/texas-addendum-en.pdf',
+  'assets/pdfs/indemnitor/supreme-court-opinion-en.pdf'
+];
+const DEFENDANT_DOCS_ES = [
+  'assets/pdfs/defendant/defendant-application-and-agreement-es.pdf',
+  'assets/pdfs/defendant/texas-addendum-es.pdf',
+  'assets/pdfs/indemnitor/supreme-court-opinion-es.pdf'
+];
+const INDEMNITOR_DOCS_EN = [
+  'assets/pdfs/indemnitor/indemnitor-application-and-agreement-en.pdf',
+  'assets/pdfs/indemnitor/plain-talk-contract-en.pdf',
+  'assets/pdfs/indemnitor/rules-and-regulations-en.pdf'
+];
+const INDEMNITOR_DOCS_ES = [
+  'assets/pdfs/indemnitor/indemnitor-application-and-agreement-es.pdf',
+  'assets/pdfs/indemnitor/plain-talk-contract-es.pdf',
+  'assets/pdfs/indemnitor/rules-and-regulations-es.pdf'
+];
 
 @Component({
   selector: 'app-document-wizard',
@@ -124,6 +145,9 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
   /** Index of the currently displayed flattened doc */
   reviewIndex = 0;
 
+  // Add state for flattened English docs
+  flattenedEnglishDocs: Array<{ name: string; url: string; bytes: Uint8Array }> = [];
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -183,31 +207,6 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   private initializeDocs() {
-    // Static manifests (English and Spanish)
-    const DEFENDANT_DOCS_EN = [
-      'assets/pdfs/defendant/defendant-application-and-agreement-en.pdf',
-      'assets/pdfs/defendant/texas-addendum-en.pdf',
-      'assets/pdfs/indemnitor/supreme-court-opinion-en.pdf'
-    ];
-    const DEFENDANT_DOCS_ES = [
-      'assets/pdfs/defendant/defendant-application-and-agreement-es.pdf',
-      'assets/pdfs/defendant/texas-addendum-es.pdf',
-      'assets/pdfs/indemnitor/supreme-court-opinion-es.pdf'
-    ];
-
-    const INDEMNITOR_DOCS_EN = [
-      'assets/pdfs/indemnitor/indemnitor-application-and-agreement-en.pdf',
-      'assets/pdfs/indemnitor/plain-talk-contract-en.pdf',
-      'assets/pdfs/indemnitor/rules-and-regulations-en.pdf'
-      
-    ];
-    const INDEMNITOR_DOCS_ES = [
-      'assets/pdfs/indemnitor/indemnitor-application-and-agreement-es.pdf',
-      'assets/pdfs/indemnitor/plain-talk-contract-es.pdf',
-      'assets/pdfs/indemnitor/rules-and-regulations-es.pdf'
-      
-    ];
-
     if (this.role === 'defendant') {
       this.docs = this.lang === 'es' ? DEFENDANT_DOCS_ES : DEFENDANT_DOCS_EN;
     } else {
@@ -936,10 +935,11 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
 
     try {
       const pdfUrl = this.docs[this.currentIndex];
+      console.log('pdfUrl', pdfUrl);
       const response = await fetch(pdfUrl);
       const arrayBuffer = await response.arrayBuffer();
       const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
-
+      console.log('pdfDoc', pdfDoc);
       // 1) Apply stored field values (e.g. full_name) if present
       if (Object.keys(storedValues).length > 0) {
         this.applyFieldValuesToPdf(pdfDoc, storedValues);
@@ -1083,46 +1083,38 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
     return this.SIGN_PAGES[name] ?? 1;
   }
 
-  /** Builds flattened (no form fields) versions of every document with field values & signature applied */
-  private async flattenAllDocuments(): Promise<Array<{ name: string; bytes: Uint8Array; url: string }>> {
+  /** Returns the English PDF filenames for the current role */
+  private getEnglishPdfFilenamesForRole(): string[] {
+    return this.role === 'defendant' ? DEFENDANT_DOCS_EN : INDEMNITOR_DOCS_EN;
+  }
+
+  /** Generic PDF flattening for any set of doc paths */
+  private async flattenDocuments(docPaths: string[]): Promise<Array<{ name: string; bytes: Uint8Array; url: string }>> {
     const results: Array<{ name: string; bytes: Uint8Array; url: string }> = [];
-    const desiredFontSize = 11; // Standardize font size across all filled fields
-
-    // 1) Retrieve stored values & signature
+    // Get stored values/signature as in flattenAllDocuments
     let storedValues: Record<string, any> = {};
-    const storedSignature = this.getStoredSignature();
+    let storedSignature: string | null = null;
     try {
-      storedValues = JSON.parse(localStorage.getItem(`${this.role}_field_values`) || '{}');
-    } catch { /* ignored */ }
-
-    // Always refresh date placeholders
-    storedValues = { ...storedValues, ...this.getCurrentDateFieldValues() };
-
-    // 2) Iterate documents and build flattened copies
-    for (const docPath of this.docs) {
+      storedSignature = localStorage.getItem(`${this.role}_signature`);
+      const raw = localStorage.getItem(`${this.role}_field_values`);
+      storedValues = raw ? JSON.parse(raw) : {};
+    } catch {}
+    const desiredFontSize = 11;
+    for (const docPath of docPaths) {
       try {
         const response = await fetch(docPath);
         const originalBytes = new Uint8Array(await response.arrayBuffer());
         const pdfDoc = await PDFDocument.load(originalBytes, { ignoreEncryption: true });
-
-        // Apply stored field values
         this.applyFieldValuesToPdf(pdfDoc, storedValues);
-
-        // Harmonise font size & font across all text fields before regenerating appearances
         await this.adjustTextFieldFonts(pdfDoc, desiredFontSize);
-
-        // Apply signature if we have one
         if (storedSignature) {
-          // Temporarily override pdfSrc so getSignatureTargetsFromPdf can compute fallback page correctly
           const prevSrc = this.pdfSrc;
           this.pdfSrc = docPath;
-
           const autoTargets = [
             ...this.getSignatureTargetsFromPdf(pdfDoc, `${this.role}_invisible_signature`),
             ...this.getSignatureTargetsFromPdf(pdfDoc, 'invisible_signature'),
           ];
-          this.pdfSrc = prevSrc; // restore
-
+          this.pdfSrc = prevSrc;
           let targets = autoTargets;
           if (targets.length === 0) {
             targets = [{
@@ -1133,7 +1125,6 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
               height: 48,
             }];
           }
-
           const pngBytes = this.base64ToUint8Array(storedSignature);
           const pngImage = await pdfDoc.embedPng(pngBytes);
           targets.forEach(t => {
@@ -1141,38 +1132,13 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
             page.drawImage(pngImage, { x: t.x, y: t.y, width: t.width, height: t.height });
           });
         }
-
-        // -- Debug: fields before flatten --
         try {
           const form = pdfDoc.getForm();
-          const beforeCount = form.getFields().length;
-          console.log(`[FlattenDebug] ${docPath} – form fields before flatten:`, beforeCount);
-
-          // Regenerate appearances so text is visible once flattened
-          try {
-            const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
-            form.updateFieldAppearances(helvetica);
-          } catch (appearanceErr) {
-            console.warn('[FlattenDebug] Could not update appearances', appearanceErr);
-          }
-
-          // Flatten – convert interactive widgets into static content
+          const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
+          form.updateFieldAppearances(helvetica);
           this.safeFlattenForm(form);
-
-          const afterCount = form.getFields().length;
-          console.log(`[FlattenDebug] ${docPath} – form fields after flatten:`, afterCount);
-
-          // Remove AcroForm to ensure viewer treats PDF as static (prevents parsing errors)
-          try {
-            pdfDoc.catalog.delete(PDFName.of('AcroForm'));
-          } catch (delErr) {
-            console.warn('[FlattenDebug] Failed to delete AcroForm', delErr);
-          }
-        } catch (flattenErr) {
-          console.warn('[FlattenDebug] Unable to flatten form', flattenErr);
-        }
-        
-
+          try { pdfDoc.catalog.delete(PDFName.of('AcroForm')); } catch {}
+        } catch {}
         const outBytes = await pdfDoc.save();
         const url = URL.createObjectURL(new Blob([outBytes], { type: 'application/pdf' }));
         const name = docPath.split('/').pop() ?? `document-${results.length + 1}.pdf`;
@@ -1184,6 +1150,16 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
     return results;
   }
 
+  /** Flatten all main (reviewed) documents */
+  private async flattenAllDocuments(): Promise<Array<{ name: string; bytes: Uint8Array; url: string }>> {
+    return this.flattenDocuments(this.docs);
+  }
+
+  /** Flatten English PDFs for dual upload (Spanish flow) */
+  private async flattenEnglishPdfs(): Promise<Array<{ name: string; bytes: Uint8Array; url: string }>> {
+    return this.flattenDocuments(this.getEnglishPdfFilenamesForRole());
+  }
+
   /** Prepares flattened documents and switches view to review step */
   private async finalizeDocuments(): Promise<void> {
     this.isLoading = true;
@@ -1191,9 +1167,14 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
       const flattened = await this.flattenAllDocuments();
       this.flattenedDocs = flattened.map(f => ({ name: f.name, url: f.url, bytes: f.bytes }));
       this.finalDocsData = flattened.map(f => ({ name: f.name, bytes: f.bytes }));
+      // If Spanish, also flatten English PDFs (but don't show in review)
+      if (this.lang === 'es') {
+        this.flattenedEnglishDocs = await this.flattenEnglishPdfs();
+      } else {
+        this.flattenedEnglishDocs = [];
+      }
       this.reviewIndex = 0;
       this.inReviewStep = true;
-      // Show introductory info modal once review step visible
       const msgIntro = this.lang === 'es'
         ? `¡Perfecto! Has completado toda la información para tu solicitud de fianza.\n\nRevisa los documentos y pulsa "Enviar documentos" para confirmar el envío a Affordable Bail Bonds, o "Editar información" si detectas algún dato erróneo.`
         : `Great! You have completed all the information for your bail bond application.\n\nReview the documents and press "Send Documents" to confirm sending them to Affordable Bail Bonds, or "Edit information" if you spot any mistakes.`;
@@ -1203,59 +1184,106 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
     }
   }
 
-  /** Helper: Get the filenames of all flattened PDFs for submission */
+  /** Helper: Get the filenames of all flattened PDFs for submission (including English if lang==='es') */
   private getPdfFilenames(): string[] {
-    return this.flattenedDocs.map(doc => doc.name);
+    const main = this.flattenedDocs.map(doc => doc.name);
+    if (this.lang === 'es') {
+      const english = this.flattenedEnglishDocs.map(doc => doc.name);
+      return [...main, ...english];
+    }
+    return main;
   }
 
-  /** Helper: Get the photo keys/filenames based on the selected role and available sides */
-  private getPhotoKeys(): string[] {
+  /** Modular file lookup for upload service (searches both Spanish and English flattened docs) */
+  private findFileByName(filename: string): Blob | File | null {
+    // Buscar en PDFs (Spanish)
+    const pdf = this.flattenedDocs.find(doc => doc.name === filename);
+    if (pdf) {
+      return new Blob([pdf.bytes], { type: 'application/pdf' });
+    }
+    // Buscar en PDFs (English, if present)
+    const pdfEn = this.flattenedEnglishDocs.find(doc => doc.name === filename);
+    if (pdfEn) {
+      return new Blob([pdfEn.bytes], { type: 'application/pdf' });
+    }
+    // Buscar en fotos
     const photoControl = this.idPhotoControl?.value;
-    const keys: string[] = [];
-    if (photoControl?.front) {
-      keys.push(`front-${this.role}.jpg`);
+    if (photoControl?.front && filename.startsWith('front-')) {
+      return photoControl.front;
     }
-    if (photoControl?.back) {
-      keys.push(`back-${this.role}.jpg`);
+    if (photoControl?.back && filename.startsWith('back-')) {
+      return photoControl.back;
     }
-    return keys;
+    return null;
   }
 
-  /** Sends the flattened documents to the backend (calls initProcess first) */
+  /** Gets the form data object from localStorage for the current role */
+  private getFormDataFromLocalStorage(): any {
+    const raw = localStorage.getItem(`${this.role}_field_values`);
+    return raw ? JSON.parse(raw) : {};
+  }
+
+  /** Sends the flattened documents to the backend (calls initProcess first, then uploads files, then completes submission) */
   sendDocuments(): void {
     this.isLoading = true;
     const pdfFilenames = this.getPdfFilenames();
     const photoKeys = this.getPhotoKeys();
-    const payload = { files: [...pdfFilenames, ...photoKeys] };
+    const files = [...pdfFilenames, ...photoKeys];
+    const payload = { files };
 
     this.apiService.initProcess(payload).subscribe({
       next: (response) => {
-        // TODO: handle presigned URLs from response, then continue with your existing logic
-        this.isLoading = false;
-        // Existing modal logic (simulate for now)
-        const msg = this.lang==='es'
-          ? '¡Enhorabuena! Has enviado los documentos a Affordable Bail Bonds. Si lo deseas, puedes llamar al número de contacto +1 956-867-9269 para avisar; de cualquier manera nos pondremos en contacto contigo.'
-          : 'Congratulations! Your documents have been sent to Affordable Bail Bonds. Feel free to call us at +1 956-867-9269 to let us know; otherwise we will contact you shortly.';
-        if (this.successModal) {
-          this.successModal.primaryLabel = this.lang==='es' ? 'Ir a la página principal' : 'Go to main page';
-          this.successModal.secondaryLabel = this.lang==='es' ? 'Completar nuevos documentos' : 'Fill new documents';
-          this.successModal.open(msg);
-          // Subscribe once
-          const sub = this.successModal.choice.subscribe((c) => {
-            this.clearLocalData();
-            if (c === 'primary') {
-              this.router.navigateByUrl('/');
-            } else {
-              this.router.navigateByUrl('/wizard');
+        const uploadId = response.uploadId;
+        // Upload all files using the presigned URLs
+        this.apiService.uploadFilesToPresignedUrls(response.urls, this.findFileByName.bind(this)).subscribe({
+          next: (uploadResults) => {
+            const allOk = uploadResults.every(r => r.success);
+            if (!allOk) {
+              this.isLoading = false;
+              window.alert('Ocurrió un error al subir uno o más archivos. Intenta de nuevo.');
+              return;
             }
-            sub.unsubscribe();
-          });
-        } else {
-          // Fallback
-          window.alert('Documents sent successfully');
-          this.clearLocalData();
-          this.router.navigateByUrl('/');
-        }
+            // All uploads OK, now call completeDocuments
+            const formData = this.getFormDataFromLocalStorage();
+            this.apiService.completeDocuments({ uploadId, files, formData, lang: this.lang, role: this.role }).subscribe({
+              next: () => {
+                this.isLoading = false;
+                // Existing modal logic (solo si todo salió bien)
+                const msg = this.lang==='es'
+                  ? '¡Enhorabuena! Has enviado los documentos a Affordable Bail Bonds. Si lo deseas, puedes llamar al número de contacto +1 956-867-9269 para avisar; de cualquier manera nos pondremos en contacto contigo.'
+                  : 'Congratulations! Your documents have been sent to Affordable Bail Bonds. Feel free to call us at +1 956-867-9269 to let us know; otherwise we will contact you shortly.';
+                if (this.successModal) {
+                  this.successModal.primaryLabel = this.lang==='es' ? 'Ir a la página principal' : 'Go to main page';
+                  this.successModal.secondaryLabel = this.lang==='es' ? 'Completar nuevos documentos' : 'Fill new documents';
+                  this.successModal.open(msg);
+                  // Subscribe once
+                  const sub = this.successModal.choice.subscribe((c) => {
+                    this.clearLocalData();
+                    if (c === 'primary') {
+                      this.router.navigateByUrl('/');
+                    } else {
+                      this.router.navigateByUrl('/wizard');
+                    }
+                    sub.unsubscribe();
+                  });
+                } else {
+                  // Fallback
+                  window.alert('Documents sent successfully');
+                  this.clearLocalData();
+                  this.router.navigateByUrl('/');
+                }
+              },
+              error: () => {
+                this.isLoading = false;
+                window.alert('Ocurrió un error al finalizar el proceso. Intenta de nuevo.');
+              }
+            });
+          },
+          error: (err) => {
+            this.isLoading = false;
+            window.alert('Failed to upload documents. Please try again.');
+          }
+        });
       },
       error: (err) => {
         this.isLoading = false;
@@ -1631,5 +1659,18 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
 
     // Use setTimeout to ensure the modal is opened after view initialisation
     setTimeout(() => this.introModal?.open(msgIntro));
+  }
+
+  /** Helper: Get the photo keys/filenames based on the selected role and available sides */
+  private getPhotoKeys(): string[] {
+    const photoControl = this.idPhotoControl?.value;
+    const keys: string[] = [];
+    if (photoControl?.front) {
+      keys.push(`front-${this.role}.jpg`);
+    }
+    if (photoControl?.back) {
+      keys.push(`back-${this.role}.jpg`);
+    }
+    return keys;
   }
 }
