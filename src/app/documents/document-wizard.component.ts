@@ -1275,20 +1275,46 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
               },
               error: () => {
                 this.isLoading = false;
-                window.alert('Ocurrió un error al finalizar el proceso. Intenta de nuevo.');
+                const errorMsg = this.lang === 'es'
+                  ? 'Lo sentimos, hubo un error al enviar los documentos. No te preocupes, tus datos siguen guardados. Puedes intentar de nuevo o llamar al número +1 956-867-9269 para asistencia.'
+                  : 'We apologize, there was an error sending the documents. Don\'t worry, your data is still saved. You can try again or call +1 956-867-9269 for assistance.';
+                
+                if (this.warningModal) {
+                  this.warningModal.open(errorMsg);
+                } else {
+                  // Fallback
+                  window.alert(errorMsg);
+                }
               }
             });
           },
           error: (err) => {
             this.isLoading = false;
-            window.alert('Failed to upload documents. Please try again.');
+            const errorMsg = this.lang === 'es'
+              ? 'Lo sentimos, hubo un error al enviar los documentos. No te preocupes, tus datos siguen guardados. Puedes intentar de nuevo o llamar al número +1 956-867-9269 para asistencia.'
+              : 'We apologize, there was an error sending the documents. Don\'t worry, your data is still saved. You can try again or call +1 956-867-9269 for assistance.';
+            
+            if (this.warningModal) {
+              this.warningModal.open(errorMsg);
+            } else {
+              // Fallback
+              window.alert(errorMsg);
+            }
           }
         });
       },
       error: (err) => {
         this.isLoading = false;
-        // Handle error (show error modal or alert)
-        window.alert('Failed to send documents. Please try again.');
+        const errorMsg = this.lang === 'es'
+          ? 'Lo sentimos, hubo un error al enviar los documentos. No te preocupes, tus datos siguen guardados. Puedes intentar de nuevo o llamar al número +1 956-867-9269 para asistencia.'
+          : 'We apologize, there was an error sending the documents. Don\'t worry, your data is still saved. You can try again or call +1 956-867-9269 for assistance.';
+        
+        if (this.warningModal) {
+          this.warningModal.open(errorMsg);
+        } else {
+          // Fallback
+          window.alert(errorMsg);
+        }
       }
     });
   }

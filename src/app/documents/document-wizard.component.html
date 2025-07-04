@@ -84,7 +84,6 @@
 
     <!-- Signature modal instance -->
     <app-signature-modal #signatureModal [lang]="lang" (saved)="onSignatureSaved($event)"></app-signature-modal>
-    <app-alert-modal #warningModal></app-alert-modal>
   </div>
 
   <!-- ID Photo Step -->
@@ -187,3 +186,6 @@
 
 <!-- Global loading modal -->
 <app-loading-modal [show]="isLoading" [lang]="lang"></app-loading-modal>
+
+<!-- Mueve el modal aquí, fuera del div condicional -->
+<app-alert-modal #warningModal></app-alert-modal>
