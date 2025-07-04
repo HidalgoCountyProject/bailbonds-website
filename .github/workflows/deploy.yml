@@ -37,6 +37,9 @@ jobs:
       - name: Deploy to S3
         run: aws s3 sync dist/affordable-site/browser s3://${{ secrets.S3_BUCKET }} --delete
 
+      - name: Fix MJS content types
+        run: aws s3 cp s3://${{ secrets.S3_BUCKET }}/assets/ s3://${{ secrets.S3_BUCKET }}/assets/ --recursive --exclude "*" --include "*.mjs" --content-type "application/javascript" --metadata-directive REPLACE
+
       - name: Invalidate CloudFront
         run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
 
