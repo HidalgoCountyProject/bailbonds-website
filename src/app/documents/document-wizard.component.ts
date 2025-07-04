@@ -11,6 +11,7 @@ import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors }
 import { ReactiveFormsModule } from '@angular/forms';
 import { PDFDocument, StandardFonts, PDFName } from 'pdf-lib';
 import { LoadingModalComponent } from '../shared/loading-modal/loading-modal.component';
+import { ApiService } from '../services/api.service';
 
 
 @Component({
@@ -127,7 +128,8 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
     private router: Router,
     private route: ActivatedRoute,
     private fb: FormBuilder,
-    private meta: Meta
+    private meta: Meta,
+    private apiService: ApiService
   ) {
     // Configure PDF.js paths for S3 deployment
     this.configurePdfPaths();
@@ -1201,36 +1203,66 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
     }
   }
 
-  /** Sends the flattened documents to the backend (stub implementation) */
+  /** Helper: Get the filenames of all flattened PDFs for submission */
+  private getPdfFilenames(): string[] {
+    return this.flattenedDocs.map(doc => doc.name);
+  }
+
+  /** Helper: Get the photo keys/filenames based on the selected role and available sides */
+  private getPhotoKeys(): string[] {
+    const photoControl = this.idPhotoControl?.value;
+    const keys: string[] = [];
+    if (photoControl?.front) {
+      keys.push(`front-${this.role}.jpg`);
+    }
+    if (photoControl?.back) {
+      keys.push(`back-${this.role}.jpg`);
+    }
+    return keys;
+  }
+
+  /** Sends the flattened documents to the backend (calls initProcess first) */
   sendDocuments(): void {
     this.isLoading = true;
-    // Simulate backend call with timeout for demo
-    setTimeout(() => {
-      this.isLoading = false;
-      const msg = this.lang==='es'
-        ? '¡Enhorabuena! Has enviado los documentos a Affordable Bail Bonds. Si lo deseas, puedes llamar al número de contacto +1 956-867-9269 para avisar; de cualquier manera nos pondremos en contacto contigo.'
-        : 'Congratulations! Your documents have been sent to Affordable Bail Bonds. Feel free to call us at +1 956-867-9269 to let us know; otherwise we will contact you shortly.';
-      if (this.successModal) {
-        this.successModal.primaryLabel = this.lang==='es' ? 'Ir a la página principal' : 'Go to main page';
-        this.successModal.secondaryLabel = this.lang==='es' ? 'Completar nuevos documentos' : 'Fill new documents';
-        this.successModal.open(msg);
-        // Subscribe once
-        const sub = this.successModal.choice.subscribe((c) => {
+    const pdfFilenames = this.getPdfFilenames();
+    const photoKeys = this.getPhotoKeys();
+    const payload = { files: [...pdfFilenames, ...photoKeys] };
+
+    this.apiService.initProcess(payload).subscribe({
+      next: (response) => {
+        // TODO: handle presigned URLs from response, then continue with your existing logic
+        this.isLoading = false;
+        // Existing modal logic (simulate for now)
+        const msg = this.lang==='es'
+          ? '¡Enhorabuena! Has enviado los documentos a Affordable Bail Bonds. Si lo deseas, puedes llamar al número de contacto +1 956-867-9269 para avisar; de cualquier manera nos pondremos en contacto contigo.'
+          : 'Congratulations! Your documents have been sent to Affordable Bail Bonds. Feel free to call us at +1 956-867-9269 to let us know; otherwise we will contact you shortly.';
+        if (this.successModal) {
+          this.successModal.primaryLabel = this.lang==='es' ? 'Ir a la página principal' : 'Go to main page';
+          this.successModal.secondaryLabel = this.lang==='es' ? 'Completar nuevos documentos' : 'Fill new documents';
+          this.successModal.open(msg);
+          // Subscribe once
+          const sub = this.successModal.choice.subscribe((c) => {
+            this.clearLocalData();
+            if (c === 'primary') {
+              this.router.navigateByUrl('/');
+            } else {
+              this.router.navigateByUrl('/wizard');
+            }
+            sub.unsubscribe();
+          });
+        } else {
+          // Fallback
+          window.alert('Documents sent successfully');
           this.clearLocalData();
-          if (c === 'primary') {
-            this.router.navigateByUrl('/');
-          } else {
-            this.router.navigateByUrl('/wizard');
-          }
-          sub.unsubscribe();
-        });
-      } else {
-        // Fallback
-        window.alert('Documents sent successfully');
-        this.clearLocalData();
-        this.router.navigateByUrl('/');
+          this.router.navigateByUrl('/');
+        }
+      },
+      error: (err) => {
+        this.isLoading = false;
+        // Handle error (show error modal or alert)
+        window.alert('Failed to send documents. Please try again.');
       }
-    }, 600);
+    });
   }
 
   /** Navigates back to the editable wizard retaining the local storage data */

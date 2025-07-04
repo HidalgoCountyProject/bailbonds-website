@@ -18,4 +18,12 @@ export class ApiService {
 
     return this.http.post<any>(environment.apiUrl, formData, { headers });
   }
+
+  // Calls the /initprocess endpoint to initiate the document upload process
+  initProcess(payload: { files: string[] }): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    return this.http.post<any>(environment.endpointInitProcess, payload, { headers });
+  }
 } 
