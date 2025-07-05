@@ -626,10 +626,30 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
       const pngBytes = this.base64ToUint8Array(dataUrl);
       const pngImage = await pdfDoc.embedPng(pngBytes);
 
-      // 3) Draw image in every target rectangle
+      // 3) Draw image in every target rectangle with aspect ratio preservation
       targets.forEach(t => {
         const page = pdfDoc.getPage(t.page - 1);
-        page.drawImage(pngImage, { x: t.x, y: t.y, width: t.width, height: t.height });
+        
+        // Get the original image dimensions
+        const imageWidth = pngImage.width;
+        const imageHeight = pngImage.height;
+        
+        // Calculate the target dimensions while preserving aspect ratio
+        const { drawWidth, drawHeight, drawX, drawY } = this.calculateAspectRatioFit(
+          imageWidth, 
+          imageHeight, 
+          t.width, 
+          t.height, 
+          t.x, 
+          t.y
+        );
+        
+        page.drawImage(pngImage, { 
+          x: drawX, 
+          y: drawY, 
+          width: drawWidth, 
+          height: drawHeight 
+        });
       });
 
       // 4) Re-apply previously captured field values so they persist in the final PDF
@@ -669,6 +689,49 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
     } catch (error) {
       console.error('Error while inserting signature into PDF', error);
     }
+  }
+
+  /**
+   * Calculates the dimensions and position to fit an image within a target rectangle
+   * while preserving its aspect ratio. The image will be positioned at the bottom of the target area
+   * to align with the signature line. Uses 90% of available space to make signatures larger and more visible.
+   */
+  private calculateAspectRatioFit(
+    imageWidth: number,
+    imageHeight: number,
+    targetWidth: number,
+    targetHeight: number,
+    targetX: number,
+    targetY: number
+  ): { drawWidth: number; drawHeight: number; drawX: number; drawY: number } {
+    console.log('imageWidth', imageWidth);
+    console.log('imageHeight', imageHeight);
+    console.log('targetWidth', targetWidth);
+    console.log('targetHeight', targetHeight);
+    console.log('targetX', targetX);
+    console.log('targetY', targetY);
+    // Use 90% of the target area to make signatures larger
+    const availableWidth = targetWidth;
+    const availableHeight = targetHeight;
+    
+    // Calculate the scaling factor to fit the image within the available area
+    const scaleX = availableWidth / imageWidth;
+    const scaleY = availableHeight / imageHeight;
+    const scale = Math.min(scaleX, scaleY); // Use the smaller scale to ensure the image fits
+    
+    // Calculate the new dimensions
+    const drawWidth = imageWidth * scale;
+    const drawHeight = imageHeight * scale;
+    
+    // Position the image at the exact widget coordinates (no centering)
+    const drawX = targetX;
+    const drawY = targetY;
+    console.log('drawX', drawX);
+    console.log('drawY', drawY);  
+    console.log('drawWidth', drawWidth);
+    console.log('drawHeight', drawHeight);
+
+    return { drawWidth, drawHeight, drawX, drawY };
   }
 
   /** Converts a Data URL (base64 PNG) to Uint8Array */
@@ -1129,7 +1192,27 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
           const pngImage = await pdfDoc.embedPng(pngBytes);
           targets.forEach(t => {
             const page = pdfDoc.getPage(t.page - 1);
-            page.drawImage(pngImage, { x: t.x, y: t.y, width: t.width, height: t.height });
+            
+            // Get the original image dimensions
+            const imageWidth = pngImage.width;
+            const imageHeight = pngImage.height;
+            
+            // Calculate the target dimensions while preserving aspect ratio
+            const { drawWidth, drawHeight, drawX, drawY } = this.calculateAspectRatioFit(
+              imageWidth, 
+              imageHeight, 
+              t.width, 
+              t.height, 
+              t.x, 
+              t.y
+            );
+            
+            page.drawImage(pngImage, { 
+              x: drawX, 
+              y: drawY, 
+              width: drawWidth, 
+              height: drawHeight 
+            });
           });
         }
         try {

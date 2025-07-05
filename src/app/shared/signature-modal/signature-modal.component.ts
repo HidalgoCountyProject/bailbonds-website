@@ -105,7 +105,51 @@ export class SignatureModalComponent {
     let dataUrl = '';
 
     if (this.activeTab === 'draw' && this.canvasRef) {
-      dataUrl = this.canvasRef.nativeElement.toDataURL('image/png');
+      const canvas = this.canvasRef.nativeElement;
+      const ctx = canvas.getContext('2d')!;
+      const width = canvas.width;
+      const height = canvas.height;
+      const imageData = ctx.getImageData(0, 0, width, height);
+      const data = imageData.data;
+      let minY = height, maxY = 0, minX = width, maxX = 0;
+      let found = false;
+      // Buscar el bounding box de la tinta
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const idx = (y * width + x) * 4;
+          if (data[idx + 3] > 0) { // alpha > 0
+            found = true;
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
+          }
+        }
+      }
+      if (found) {
+        const signWidth = maxX - minX + 1;
+        const signHeight = maxY - minY + 1;
+        // Nuevo canvas del mismo ancho, pero solo tan alto como la firma
+        const out = document.createElement('canvas');
+        out.width = width;
+        out.height = signHeight;
+        const outCtx = out.getContext('2d')!;
+        // Fondo transparente
+        outCtx.clearRect(0, 0, out.width, out.height);
+        // Pegar la firma alineada abajo
+        outCtx.drawImage(canvas, 0, minY, width, signHeight, 0, 0, width, signHeight);
+        // Ahora crear un canvas final del tamaño original, pero con la firma pegada abajo
+        const final = document.createElement('canvas');
+        final.width = width;
+        final.height = height;
+        const finalCtx = final.getContext('2d')!;
+        finalCtx.clearRect(0, 0, width, height);
+        finalCtx.drawImage(out, 0, height - signHeight);
+        dataUrl = final.toDataURL('image/png');
+      } else {
+        // Si no hay tinta, exportar el canvas normal
+        dataUrl = canvas.toDataURL('image/png');
+      }
     }
 
     if (this.activeTab === 'type' && this.typedName.trim()) {
@@ -116,9 +160,9 @@ export class SignatureModalComponent {
       const offCtx = off.getContext('2d')!;
       offCtx.fillStyle = '#000';
       offCtx.textAlign = 'center';
-      offCtx.textBaseline = 'middle';
-      offCtx.font = `72px '${this.fontFamily}', sans-serif`;
-      offCtx.fillText(this.typedName.trim(), off.width / 2, off.height / 2);
+      offCtx.textBaseline = 'bottom';
+      offCtx.font = `140px '${this.fontFamily}', sans-serif`;
+      offCtx.fillText(this.typedName.trim(), off.width / 2, off.height);
       dataUrl = off.toDataURL('image/png');
     }
 
