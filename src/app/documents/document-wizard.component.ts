@@ -13,26 +13,29 @@ import { PDFDocument, StandardFonts, PDFName } from 'pdf-lib';
 import { LoadingModalComponent } from '../shared/loading-modal/loading-modal.component';
 import { ApiService } from '../services/api.service';
 
+
 // --- PDF Manifest Constants ---
 const DEFENDANT_DOCS_EN = [
   'assets/pdfs/defendant/defendant-application-and-agreement-en.pdf',
-  'assets/pdfs/defendant/texas-addendum-en.pdf',
-  'assets/pdfs/defendant/supreme-court-opinion-en.pdf'
+  'assets/pdfs/defendant/supreme-court-opinion-en.pdf',
+  'assets/pdfs/defendant/rules-and-regulations-en.pdf'
 ];
 const DEFENDANT_DOCS_ES = [
   'assets/pdfs/defendant/defendant-application-and-agreement-es.pdf',
-  'assets/pdfs/defendant/texas-addendum-es.pdf',
-  'assets/pdfs/defendant/supreme-court-opinion-es.pdf'
+  'assets/pdfs/defendant/supreme-court-opinion-es.pdf',
+  'assets/pdfs/defendant/rules-and-regulations-es.pdf'
 ];
 const INDEMNITOR_DOCS_EN = [
   'assets/pdfs/indemnitor/indemnitor-application-and-agreement-en.pdf',
   'assets/pdfs/indemnitor/plain-talk-contract-en.pdf',
-  'assets/pdfs/indemnitor/rules-and-regulations-en.pdf'
+  'assets/pdfs/indemnitor/rules-and-regulations-en.pdf',
+  'assets/pdfs/indemnitor/texas-addendum-en.pdf'
 ];
 const INDEMNITOR_DOCS_ES = [
   'assets/pdfs/indemnitor/indemnitor-application-and-agreement-es.pdf',
   'assets/pdfs/indemnitor/plain-talk-contract-es.pdf',
-  'assets/pdfs/indemnitor/rules-and-regulations-es.pdf'
+  'assets/pdfs/indemnitor/rules-and-regulations-es.pdf',
+  'assets/pdfs/indemnitor/texas-addendum-es.pdf'
 ];
 
 @Component({
@@ -96,19 +99,22 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
   /** Hard-coded page numbers (1-based) where the signature debe ir for each PDF filename */
   private readonly SIGN_PAGES: Record<string, number> = {
     'assets/pdfs/defendant/defendant-application-and-agreement-en.pdf': 4,
-    'assets/pdfs/defendant/texas-addendum-en.pdf': 1,
+    'assets/pdfs/indemnitor/texas-addendum-en.pdf': 1,
     'assets/pdfs/defendant/defendant-application-and-agreement-es.pdf': 5,
-    'assets/pdfs/defendant/texas-addendum-es.pdf': 1,
+    'assets/pdfs/indemnitor/texas-addendum-es.pdf': 1,
     'assets/pdfs/indemnitor/indemnitor-application-and-agreement-en.pdf': 4,
     'assets/pdfs/indemnitor/plain-talk-contract-en.pdf': 1,
     'assets/pdfs/indemnitor/rules-and-regulations-en.pdf': 1,
-    'assets/pdfs/indemnitor/supreme-court-opinion-en.pdf': 1,
+    'assets/pdfs/defendant/rules-and-regulations-en.pdf': 1,
+    'assets/pdfs/defendant/supreme-court-opinion-en.pdf': 1,
     'assets/pdfs/indemnitor/indemnitor-application-and-agreement-es.pdf': 5,
     'assets/pdfs/indemnitor/plain-talk-contract-es.pdf': 1,
     'assets/pdfs/indemnitor/rules-and-regulations-es.pdf': 1,
-    'assets/pdfs/indemnitor/supreme-court-opinion-es.pdf': 1,
+    'assets/pdfs/defendant/rules-and-regulations-es.pdf': 1,
+    'assets/pdfs/defendant/supreme-court-opinion-es.pdf': 1,
     // TODO: añade los restantes documentos y su página correspondiente
   };
+
 
   signedDocs: boolean[] = [];
 
@@ -605,10 +611,22 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
       console.log('pdfDoc');
       // 1b) Try to calculate the signature rectangle dynamically.
       //     First look for a role-specific field like "indemnitor_invisible_signature" or "defendant_invisible_signature".
-      const autoTargets = [
-        ...this.getSignatureTargetsFromPdf(pdfDoc, `${this.role}_invisible_signature`),
-        ...this.getSignatureTargetsFromPdf(pdfDoc, 'invisible_signature'),
-      ];
+      //     Si es supreme-court-opinion, usar el campo con sufijo de idioma
+      const cleanSrc = this.pdfSrc.startsWith('blob:') ? this.docs[this.currentIndex] : this.pdfSrc.split(/[?#]/)[0];
+      const isSupremeCourtOpinion =
+        cleanSrc.includes('supreme-court-opinion-en.pdf') || cleanSrc.includes('supreme-court-opinion-es.pdf');
+      let autoTargets: Array<{ page: number; x: number; y: number; width: number; height: number }> = [];
+      if (isSupremeCourtOpinion) {
+        // Solo buscar el campo de firma con sufijo de idioma
+        autoTargets = [
+          ...this.getSignatureTargetsFromPdf(pdfDoc, `${this.role}_invisible_signature_${this.lang}`)
+        ];
+      } else {
+        autoTargets = [
+          ...this.getSignatureTargetsFromPdf(pdfDoc, `${this.role}_invisible_signature`),
+          ...this.getSignatureTargetsFromPdf(pdfDoc, 'invisible_signature'),
+        ];
+      }
 
       let targets: Array<{ page: number; x: number; y: number; width: number; height: number }> = [];
       if (autoTargets.length > 0) {
@@ -954,28 +972,40 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
       /* --------------------------------------------------------------
        * Auto-populate initials for the "rules and regulations" PDF
        * --------------------------------------------------------------
-       * Only applies to the Indemnitor flow and to the documents:
+       * Applies to both Defendant and Indemnitor flows for the documents:
+       *   – assets/pdfs/defendant/rules-and-regulations-en.pdf
+       *   – assets/pdfs/defendant/rules-and-regulations-es.pdf
        *   – assets/pdfs/indemnitor/rules-and-regulations-en.pdf
        *   – assets/pdfs/indemnitor/rules-and-regulations-es.pdf
-       * We derive the initials from the previously stored first/ full names
-       * (defendant_first_name, indemnitor_full_name) and inject them into
+       * We derive the initials from the role's own full name and inject them into
        * the field values as defendant_initial / indemnitor_initial.
        */
-      if (this.role === 'indemnitor') {
-        const rulesDocs = [
-          'assets/pdfs/indemnitor/rules-and-regulations-en.pdf',
-          'assets/pdfs/indemnitor/rules-and-regulations-es.pdf',
-        ];
-        const currentDoc = this.docs[this.currentIndex];
-        if (rulesDocs.includes(currentDoc)) {
-          const defFirst = (storedValues['defendant_first_name'] ?? '').trim();
-          const indFull  = (storedValues['indemnitor_full_name'] ?? '').trim();
-
-          if (defFirst.length > 0) {
-            storedValues['defendant_initial'] = defFirst.charAt(0).toUpperCase();
-          }
-          if (indFull.length > 0) {
-            storedValues['indemnitor_initial'] = indFull.charAt(0).toUpperCase();
+      const rulesDocs = [
+        'assets/pdfs/defendant/rules-and-regulations-en.pdf',
+        'assets/pdfs/defendant/rules-and-regulations-es.pdf',
+        'assets/pdfs/indemnitor/rules-and-regulations-en.pdf',
+        'assets/pdfs/indemnitor/rules-and-regulations-es.pdf',
+      ];
+      const currentDoc = this.docs[this.currentIndex];
+      if (rulesDocs.includes(currentDoc)) {
+        // Get the full name for the current role
+        const fullNameKey = `${this.role}_full_name`;
+        const fullName = (storedValues[fullNameKey] ?? '').trim();
+        
+        if (fullName.length > 0) {
+          // Parse the full name and extract initials
+          const initials = this.parseNameAndGetInitials(fullName);
+          
+          // Set the initial field for the current role
+          const initialKey = `${this.role}_initial`;
+          storedValues[initialKey] = initials.first;
+          
+          // If there are middle and last name initials, combine them
+          if (initials.middle || initials.last) {
+            const combinedInitials = [initials.first, initials.middle, initials.last]
+              .filter(initial => initial.length > 0)
+              .join('');
+            storedValues[initialKey] = combinedInitials;
           }
         }
       }
@@ -1173,10 +1203,20 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
         if (storedSignature) {
           const prevSrc = this.pdfSrc;
           this.pdfSrc = docPath;
-          const autoTargets = [
-            ...this.getSignatureTargetsFromPdf(pdfDoc, `${this.role}_invisible_signature`),
-            ...this.getSignatureTargetsFromPdf(pdfDoc, 'invisible_signature'),
-          ];
+          // Lógica de idioma para supreme-court-opinion
+          const isSupremeCourtOpinion =
+            docPath.includes('supreme-court-opinion-en.pdf') || docPath.includes('supreme-court-opinion-es.pdf');
+          let autoTargets: Array<{ page: number; x: number; y: number; width: number; height: number }> = [];
+          if (isSupremeCourtOpinion) {
+            autoTargets = [
+              ...this.getSignatureTargetsFromPdf(pdfDoc, `${this.role}_invisible_signature_${this.lang}`)
+            ];
+          } else {
+            autoTargets = [
+              ...this.getSignatureTargetsFromPdf(pdfDoc, `${this.role}_invisible_signature`),
+              ...this.getSignatureTargetsFromPdf(pdfDoc, 'invisible_signature'),
+            ];
+          }
           this.pdfSrc = prevSrc;
           let targets = autoTargets;
           if (targets.length === 0) {
@@ -1781,5 +1821,48 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
       keys.push(`back-${this.role}.jpg`);
     }
     return keys;
+  }
+
+  /**
+   * Parses a full name string and extracts initials from first, middle, and last names.
+   * Handles cases where middle name might be optional.
+   * 
+   * @param fullName - The full name string to parse
+   * @returns Object with first, middle, and last initials (empty string if not present)
+   */
+  private parseNameAndGetInitials(fullName: string): { first: string; middle: string; last: string } {
+    const trimmed = fullName.trim();
+    if (!trimmed) {
+      return { first: '', middle: '', last: '' };
+    }
+
+    // Split by spaces and filter out empty strings
+    const parts = trimmed.split(/\s+/).filter(part => part.length > 0);
+    
+    if (parts.length === 1) {
+      // Only one name provided - treat as first name
+      return {
+        first: parts[0].charAt(0).toUpperCase(),
+        middle: '',
+        last: ''
+      };
+    } else if (parts.length === 2) {
+      // Two names - first and last
+      return {
+        first: parts[0].charAt(0).toUpperCase(),
+        middle: '',
+        last: parts[1].charAt(0).toUpperCase()
+      };
+    } else if (parts.length >= 3) {
+      // Three or more names - first, middle, last
+      // For last name, take the first letter of the third space (start of last name)
+      const first = parts[0].charAt(0).toUpperCase();
+      const middle = parts[1].charAt(0).toUpperCase();
+      const last = parts[2].charAt(0).toUpperCase(); // First letter of third space
+      
+      return { first, middle, last };
+    }
+
+    return { first: '', middle: '', last: '' };
   }
 }
