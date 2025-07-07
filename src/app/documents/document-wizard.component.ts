@@ -785,6 +785,7 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
   /** Writes the key/value pairs into the provided PDF using pdf-lib utilities. */
   private applyFieldValuesToPdf(pdfDoc: PDFDocument, fieldValues: Record<string, any>): void {
     try {
+      console.log('Try apply values', fieldValues);
       const form = pdfDoc.getForm();
 
       // Debug: list all field names present in the PDF once per save cycle
