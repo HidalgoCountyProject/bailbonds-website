@@ -830,6 +830,9 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
           } else if (ctorName.includes('PDFDropdown') || ctorName.includes('PDFOptionList')) {
             field.select(String(value));
           } else if (ctorName.includes('PDFCheckBox')) {
+            console.log('field', field);
+            console.log('value', value);
+            console.log('ctorName', ctorName);
             value ? field.check() : field.uncheck();
           } else if (ctorName.includes('PDFRadioGroup')) {
             field.select(String(value));

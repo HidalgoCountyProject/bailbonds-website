@@ -28,6 +28,24 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
 
   onLanguageSelect(lang: 'en' | 'es') {
     if (this.selectedRole) {
+      // List all possible roles here
+      const roles = ['defendant', 'indemnitor'];
+      const roleKey = `${this.selectedRole}_field_values`;
+      let foundRoleKey = null;
+      // Check if any role key exists in localStorage
+      for (const role of roles) {
+        if (localStorage.getItem(`${role}_field_values`)) {
+          foundRoleKey = `${role}_field_values`;
+          break;
+        }
+      }
+      // If the stored role is different from the selected role, clear all role-related data
+      if (foundRoleKey && foundRoleKey !== roleKey) {
+        for (const role of roles) {
+          localStorage.removeItem(`${role}_field_values`);
+          localStorage.removeItem(`${role}_signature`);
+        }
+      }
       this.router.navigate(['/wizard', this.selectedRole, lang]);
     }
   }
