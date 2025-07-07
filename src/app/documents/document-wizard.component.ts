@@ -818,6 +818,13 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
             }
           }
 
+          console.log('field', field);
+          console.log('fieldName', fieldName);
+          console.log('value', value);
+          console.log('constructor name',  field?.constructor?.name);
+
+
+
 
           const ctorName = field?.constructor?.name || '';
 
