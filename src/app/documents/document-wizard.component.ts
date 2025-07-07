@@ -823,26 +823,19 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
           console.log('value', value);
           console.log('constructor name',  field?.constructor?.name);
 
-
-
-
-          const ctorName = field?.constructor?.name || '';
-
           if (!field) {
             this.logDebug(`Field not found in PDF: ${fieldName}`);
             return;
           }
 
-          if (ctorName.includes('PDFTextField')) {
+          // Detect field type by available methods (works in prod and dev)
+          if (typeof field.setText === 'function') {
             field.setText(String(value));
-          } else if (ctorName.includes('PDFDropdown') || ctorName.includes('PDFOptionList')) {
-            field.select(String(value));
-          } else if (ctorName.includes('PDFCheckBox')) {
-            console.log('field', field);
-            console.log('value', value);
-            console.log('ctorName', ctorName);
-            value ? field.check() : field.uncheck();
-          } else if (ctorName.includes('PDFRadioGroup')) {
+          } else if (typeof field.check === 'function' && typeof field.uncheck === 'function') {
+            // Checkbox
+            const isChecked = value === true || value === 'true' || value === 1 || value === '1';
+            isChecked ? field.check() : field.uncheck();
+          } else if (typeof field.select === 'function') {
             field.select(String(value));
           } else {
             // Fallback – try to call setText on unknown field types
