@@ -763,6 +763,7 @@
     transform: translateX(0); /* Reset transform */
     scroll-snap-type: none; /* Disable snap scrolling on desktop */
     width: 100% !important; /* Ensure width is properly set */
+    justify-content: center;
   }
   
   .service-card {

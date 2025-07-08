@@ -98,12 +98,6 @@ export const translations: Record<Language, TranslationSet> = {
     'service_local_text': 'Fast, reliable bail bonds service throughout Hidalgo County, Texas. We understand the local courts and can expedite the release process.',
     
     // Service Types
-    'service_appearance_title': 'Appearance Bonds',
-    'service_appearance_text': 'A type of bail bond that requires a defendant to appear in court at specific times and dates as ordered by the court.',
-    
-    'service_appeal_title': 'Appeal Bonds',
-    'service_appeal_text': 'A type of bond that allows a defendant to be released from custody while appealing a conviction or sentence.',
-    
     'service_more_title': 'More Bond Types',
     'service_more_text': 'We offer many more bond types. Call us at 956-867-9269 for information about our complete range of services.',
     
@@ -344,12 +338,6 @@ export const translations: Record<Language, TranslationSet> = {
     'service_local_text': 'Servicio de fianzas rápido y confiable en todo el Condado de Hidalgo, Texas. Entendemos los tribunales locales y podemos acelerar el proceso de liberación.',
     
     // Service Types
-    'service_appearance_title': 'Fianzas de comparecencia (Appearance Bonds)',
-    'service_appearance_text': 'Un tipo de fianza que requiere que un acusado comparezca en la corte en horarios y fechas específicas según lo ordenado por la corte.',
-    
-    'service_appeal_title': 'Fianzas de apelación (Appeal Bonds)',
-    'service_appeal_text': 'Un tipo de fianza que permite a un acusado ser liberado de la custodia mientras apela una condena o sentencia.',
-    
     'service_more_title': 'Más Tipos de Fianzas',
     'service_more_text': 'Ofrecemos muchos más tipos de fianzas. Llámenos al 956-867-9269 para información sobre nuestra gama completa de servicios.',
     
