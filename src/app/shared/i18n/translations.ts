@@ -96,7 +96,15 @@ export const translations: Record<Language, TranslationSet> = {
     // First three service cards
     'service_local_title': 'Local Bail Bonds',
     'service_local_text': 'Fast, reliable bail bonds service throughout Hidalgo County, Texas. We understand the local courts and can expedite the release process.',
-    
+
+    // Service: Cash Bond
+    'service_cash_title': 'Cash Bond',
+    'service_cash_text': 'Pay the full bail amount directly to secure release quickly. We provide reliable guidance through every step.',
+
+    // Service: PR Bond
+    'service_pr_title': 'PR Bond (Personal Recognizance)',
+    'service_pr_text': 'Qualify for release without payment under personal recognizance. Call us to see if you or your loved one is eligible.',
+
     // Service Types
     'service_more_title': 'More Bond Types',
     'service_more_text': 'We offer many more bond types. Call us at 956-867-9269 for information about our complete range of services.',
@@ -336,7 +344,15 @@ export const translations: Record<Language, TranslationSet> = {
     // First three service cards
     'service_local_title': 'Fianzas Locales',
     'service_local_text': 'Servicio de fianzas rápido y confiable en todo el Condado de Hidalgo, Texas. Entendemos los tribunales locales y podemos acelerar el proceso de liberación.',
-    
+
+    // Service: Cash Bond
+    'service_cash_title': 'Fianza en Efectivo',
+    'service_cash_text': 'Pague el monto completo de la fianza directamente para asegurar una liberación rápida. Brindamos orientación confiable en cada paso.',
+
+    // Service: PR Bond
+    'service_pr_title': 'Fianza PR (Reconocimiento Personal)',
+    'service_pr_text': 'Califique para la liberación sin pago bajo reconocimiento personal. Llámenos para saber si usted o su ser querido es elegible.',
+
     // Service Types
     'service_more_title': 'Más Tipos de Fianzas',
     'service_more_text': 'Ofrecemos muchos más tipos de fianzas. Llámenos al 956-867-9269 para información sobre nuestra gama completa de servicios.',

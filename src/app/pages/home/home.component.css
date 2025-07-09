@@ -527,6 +527,7 @@
   /* Improve rendering performance */
   backface-visibility: hidden;
   transform: translateZ(0);
+  text-align: center; /* Center align titles and descriptions */
 }
 
 .service-card:hover {
@@ -554,6 +555,7 @@
   font-weight: 600;
   color: var(--primary-color);
   margin-bottom: 1rem;
+  text-align: center; /* Ensure titles are centered */
 }
 
 .service-card p {
@@ -561,6 +563,7 @@
   line-height: 1.6;
   margin-bottom: 0;
   flex-grow: 1; /* Allow description to push content down */
+  text-align: center; /* Ensure text is centered */
 }
 
 .carousel-controls {
