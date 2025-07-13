@@ -10,8 +10,9 @@
     
     <!-- Toolbar controls -->
     <div *ngIf="!inReviewStep" class="toolbar-nav-group">
-      <button *ngIf="!isFirstDoc || inIdPhotoStep" class="toolbar-btn prev-btn" (click)="prevDoc()" aria-label="Previous document">
-        ◀
+      <button *ngIf="!isFirstDoc || inIdPhotoStep" class="toolbar-btn prev-btn nav-btn" (click)="prevDoc()" aria-label="Previous document">
+        <div class="nav-icon">◀</div>
+        <div class="nav-label">{{ lang==='es' ? 'Anterior' : 'Prev' }}</div>
       </button>
 
       <!-- Sign button visible on every PDF step (first and subsequent docs) -->
@@ -23,32 +24,39 @@
         <span>{{ lang==='es' ? 'Firmar' : 'Sign' }}</span>
       </button>
 
-      <button *ngIf="!inIdPhotoStep" class="toolbar-btn next-btn" (click)="nextDoc()" aria-label="Next document">
-        ▶
+      <button *ngIf="!inIdPhotoStep" class="toolbar-btn next-btn nav-btn" (click)="nextDoc()" aria-label="Next document">
+        <div class="nav-icon">▶</div>
+        <div class="nav-label">{{ lang==='es' ? 'Siguiente' : 'Next' }}</div>
       </button>
     </div>
 
     <!-- Review step toolbar -->
     <div *ngIf="inReviewStep" class="toolbar-nav-group review-group">
-      <button *ngIf="!isFirstReview" class="toolbar-btn prev-btn" (click)="prevFlattened()" aria-label="Previous document">◀</button>
+      <button *ngIf="!isFirstReview" class="toolbar-btn prev-btn nav-btn" (click)="prevFlattened()" aria-label="Previous document">
+        <div class="nav-icon">◀</div>
+        <div class="nav-label">{{ lang==='es' ? 'Anterior' : 'Prev' }}</div>
+      </button>
 
-      <button class="toolbar-btn back-btn" (click)="goBackToEdit()">
+      <button class="toolbar-btn back-btn edit-info-btn" (click)="goBackToEdit()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 20H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8" />
           <polyline points="15 3 21 3 21 9" />
           <line x1="10" y1="14" x2="21" y2="3" />
         </svg>
-        <span>{{ lang==='es' ? 'Editar información' : 'Edit information' }}</span>
+        <span class="edit-info-label">{{ lang==='es' ? 'Editar información' : 'Edit information' }}</span>
       </button>
       <button class="toolbar-btn send-toolbar-btn" (click)="sendDocuments()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="22" y1="2" x2="11" y2="13"></line>
           <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
         </svg>
-        <span>{{ lang==='es' ? 'Enviar documentos' : 'Send Documents' }}</span>
+        <span class="send-docs-label">{{ lang==='es' ? 'Enviar documentos' : 'Send Documents' }}</span>
       </button>
 
-      <button *ngIf="!isLastReview" class="toolbar-btn next-btn" (click)="nextFlattened()" aria-label="Next document">▶</button>
+      <button *ngIf="!isLastReview" class="toolbar-btn next-btn nav-btn" (click)="nextFlattened()" aria-label="Next document">
+        <div class="nav-icon">▶</div>
+        <div class="nav-label">{{ lang==='es' ? 'Siguiente' : 'Next' }}</div>
+      </button>
     </div>
   </header>
 
