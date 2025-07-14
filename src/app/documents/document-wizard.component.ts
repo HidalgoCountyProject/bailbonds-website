@@ -1279,6 +1279,8 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
 
   /** Flatten all main (reviewed) documents */
   private async flattenAllDocuments(): Promise<Array<{ name: string; bytes: Uint8Array; url: string }>> {
+    console.log('flattenAllDocuments');
+    console.log(this.docs);
     return this.flattenDocuments(this.docs);
   }
 
