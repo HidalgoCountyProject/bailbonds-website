@@ -65,4 +65,25 @@ export class ApiService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post<any>(environment.endpointCompleteDocuments, payload, { headers });
   }
+
+  /**
+   * Lists files for a given uploadId
+   */
+  listFiles(uploadId: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    return this.http.get<any>(`${environment.endpointListFiles}?uploadId=${uploadId}`, { headers });
+  }
+
+  /**
+   * Generates a download link for a specific file
+   */
+  generateDownloadLink(uploadId: string, filename: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'x-api-key': environment.apiKey
+    });
+    return this.http.get<any>(`${environment.endpointGenerateDownloadLink}?uploadId=${uploadId}&filename=${encodeURIComponent(filename)}`, { headers });
+  }
 } 

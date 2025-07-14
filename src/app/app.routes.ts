@@ -21,5 +21,10 @@ export const routes: Routes = [
     redirectTo: 'wizard/:role/en',
     pathMatch: 'full' 
   },
+  { 
+    path: 'download', 
+    loadComponent: () => import('./pages/download/download.component').then(m => m.DownloadComponent), 
+    title: 'Descargar Documentos - Affordable Bail Bonds' 
+  },
   { path: '**', redirectTo: '', pathMatch: 'full' } // Redirección para rutas no encontradas
 ];

@@ -252,6 +252,16 @@ export const translations: Record<Language, TranslationSet> = {
     'role.language.subtitle': 'Please select the language in which you would like to complete the documents:',
     'role.language.english': 'English',
     'role.language.spanish': 'Español',
+    
+    // Download Component
+    'download.title': 'Available Documents',
+    'download.loading': 'Loading documents...',
+    'download.error': 'Error loading files. Please try again.',
+    'download.retry': 'Try Again',
+    'download.no_files': 'No documents found for this upload ID.',
+    'download.download': 'Download',
+    'download.downloading': 'Downloading...',
+    'download.footer': 'If you have problems downloading the documents, contact our support team.',
   },
   es: {
     // Header
@@ -500,5 +510,15 @@ export const translations: Record<Language, TranslationSet> = {
     'role.language.subtitle': 'Por favor seleccione el idioma en el que desea completar los documentos:',
     'role.language.english': 'Inglés',
     'role.language.spanish': 'Español',
+    
+    // Download Component
+    'download.title': 'Documentos Disponibles',
+    'download.loading': 'Cargando documentos...',
+    'download.error': 'Error al cargar los archivos. Por favor, inténtalo de nuevo.',
+    'download.retry': 'Intentar de nuevo',
+    'download.no_files': 'No se encontraron documentos para este ID de carga.',
+    'download.download': 'Descargar',
+    'download.downloading': 'Descargando...',
+    'download.footer': 'Si tienes problemas para descargar los documentos, contacta con nuestro equipo de soporte.',
   }
 }; 

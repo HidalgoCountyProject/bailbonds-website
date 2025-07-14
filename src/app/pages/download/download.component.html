@@ -1,0 +1,50 @@
+<div class="download-container">
+  <div class="download-header">
+    <h1>{{ 'download.title' | translate }}</h1>
+    <div *ngIf="uploaderName || uploaderRole" class="uploader-info">
+      <span *ngIf="uploaderName" class="uploader-name">{{ uploaderName }}</span>
+      <span *ngIf="uploaderRole" class="uploader-role">({{ uploaderRole }})</span>
+    </div>
+    <p class="upload-id">ID: {{ uploadId }}</p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>{{ 'download.loading' | translate }}</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-container">
+    <p class="error-message">{{ error | translate }}</p>
+    <button class="retry-button" (click)="loadFiles()">{{ 'download.retry' | translate }}</button>
+  </div>
+
+  <!-- Files List -->
+  <div *ngIf="!loading && !error" class="files-container">
+    <div *ngIf="files.length === 0" class="no-files">
+      <p>{{ 'download.no_files' | translate }}</p>
+    </div>
+
+    <div *ngIf="files.length > 0">
+      <div class="file-item" *ngFor="let file of files">
+        <div class="file-info">
+          <div class="file-name">{{ file.filename }}</div>
+        </div>
+        
+        <button 
+          class="download-button"
+          (click)="downloadFile(file.filename)"
+          [disabled]="downloadingFiles.has(file.filename)"
+          [class.downloading]="downloadingFiles.has(file.filename)">
+          {{ downloadingFiles.has(file.filename) ? ('download.downloading' | translate) : ('download.download' | translate) }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="download-footer">
+    <p>{{ 'download.footer' | translate }}</p>
+  </div>
+</div> 
