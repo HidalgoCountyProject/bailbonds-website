@@ -162,7 +162,7 @@
   </div>
 
   <!-- Review Step (flattened PDFs) -->
-  <div *ngIf="inReviewStep" class="review-step">
+  <div *ngIf="inReviewStep" class="review-step" class="pdf-step">
     <div class="pdf-overlay" [class.show]="isLoading"></div>
     <div class="pdf-container" *ngIf="flattenedDocs.length">
       <ngx-extended-pdf-viewer
