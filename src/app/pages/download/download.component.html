@@ -14,24 +14,13 @@
     <p>{{ 'download.loading' | translate }}</p>
   </div>
 
-  <!-- Error State -->
-  <div *ngIf="error && !loading" class="error-container">
-    <p class="error-message">{{ error | translate }}</p>
-    <button class="retry-button" (click)="loadFiles()">{{ 'download.retry' | translate }}</button>
-  </div>
-
   <!-- Files List -->
-  <div *ngIf="!loading && !error" class="files-container">
-    <div *ngIf="files.length === 0" class="no-files">
-      <p>{{ 'download.no_files' | translate }}</p>
-    </div>
-
-    <div *ngIf="files.length > 0">
+  <div *ngIf="!loading" class="files-container">
+    <ng-container *ngIf="files.length > 0; else noFilesBlock">
       <div class="file-item" *ngFor="let file of files">
         <div class="file-info">
           <div class="file-name">{{ file.filename }}</div>
         </div>
-        
         <button 
           class="download-button"
           (click)="downloadFile(file.filename)"
@@ -40,7 +29,12 @@
           {{ downloadingFiles.has(file.filename) ? ('download.downloading' | translate) : ('download.download' | translate) }}
         </button>
       </div>
-    </div>
+    </ng-container>
+    <ng-template #noFilesBlock>
+      <div class="no-files">
+        <p>{{ 'download.no_files' | translate }}</p>
+      </div>
+    </ng-template>
   </div>
 
   <!-- Footer -->

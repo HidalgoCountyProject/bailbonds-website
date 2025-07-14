@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../services/api.service';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
+import { take } from 'rxjs/operators';
 
 interface FileItem {
   filename: string;
@@ -19,7 +20,7 @@ export class DownloadComponent implements OnInit {
   uploadId: string = '';
   files: FileItem[] = [];
   loading: boolean = true;
-  error: string = '';
+  error: string | null = null;
   downloadingFiles: Set<string> = new Set();
   uploaderName: string = '';
   uploaderRole: string = '';
@@ -30,9 +31,11 @@ export class DownloadComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
+    console.log('DownloadComponent ngOnInit');
+    this.route.queryParams.pipe(take(1)).subscribe(params => {
       this.uploadId = params['uploadId'] || '';
       if (this.uploadId) {
+        console.log('Calling loadFiles from ngOnInit');
         this.loadFiles();
       } else {
         this.error = 'download.error';
@@ -42,15 +45,17 @@ export class DownloadComponent implements OnInit {
   }
 
   loadFiles(): void {
+    console.log('loadFiles called');
     this.loading = true;
-    this.error = '';
+    this.error = null;
     this.apiService.listFiles(this.uploadId).subscribe({
       next: (response: any) => {
+        console.log('API response:', response);
         this.files = (response.files || []).map((filename: string) => ({ filename }));
         this.uploaderName = response.uploaderName || '';
         this.uploaderRole = response.uploaderRole || '';
         this.loading = false;
-        this.error = '';
+        this.error = null;
       },
       error: (error: any) => {
         console.error('Error loading files:', error);
@@ -83,10 +88,5 @@ export class DownloadComponent implements OnInit {
         this.downloadingFiles.delete(filename);
       }
     });
-    // Si quieres dejar la simulación como fallback, descomenta esto:
-    // setTimeout(() => {
-    //   alert(`Descarga simulada de: ${filename}`);
-    //   this.downloadingFiles.delete(filename);
-    // }, 1000);
   }
 } 
