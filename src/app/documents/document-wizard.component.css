@@ -24,10 +24,6 @@
   right: 0;
   z-index: 1000;
   width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-  white-space: nowrap;
-  -webkit-overflow-scrolling: touch;
 }
 
 .document-title {
@@ -168,7 +164,7 @@
 @media (max-width: 768px) {
   .document-toolbar {
     min-height: 56px;
-    padding: 0 8px;
+    padding: 0 12px;
   }
   
   .document-title {
@@ -537,8 +533,6 @@
   gap: 16px;
   flex: 1;
   justify-content: center;
-  min-width: 0;
-  flex-shrink: 0;
 }
 
 .sign-toolbar-btn {
@@ -663,21 +657,19 @@
 @media (max-width: 768px) {
   .document-toolbar {
     min-height: 56px;
-    padding: 0 8px;
+    padding: 0 12px;
   }
   
   .document-toolbar .close-btn {
     min-width: 40px;
     height: 40px;
-    margin-right: 12px;
-    flex-shrink: 0;
+    margin-right: 16px;
   }
   
   .nav-btn {
     width: 44px;
     min-height: 40px;
     padding: 4px 0 2px 0;
-    flex-shrink: 0;
   }
   
   .nav-icon {
@@ -693,7 +685,6 @@
     font-size: 11px;
     height: 32px;
     padding: 0 6px;
-    flex-shrink: 0;
   }
   
   .send-docs-label, .edit-info-label {
@@ -708,7 +699,6 @@
   .sign-toolbar-btn {
     min-width: 90px;
     padding: 0 10px;
-    flex-shrink: 0;
   }
 }
 
@@ -721,7 +711,7 @@
   .document-toolbar .close-btn {
     min-width: 36px;
     height: 36px;
-    margin-right: 15px;
+    margin-right: 12px;
   }
   
   .nav-btn {
@@ -757,57 +747,6 @@
   .sign-toolbar-btn {
     min-width: 80px;
     padding: 0 8px;
-  }
-}
-
-/* Para pantallas muy pequeñas (menos de 360px) */
-@media (max-width: 360px) {
-  .document-toolbar {
-    min-height: 48px;
-    padding: 0 4px;
-  }
-  
-  .document-toolbar .close-btn {
-    min-width: 32px;
-    height: 32px;
-    margin-right: 15px;
-  }
-  
-  .nav-btn {
-    width: 36px;
-    min-height: 32px;
-    padding: 2px 0 0 0;
-  }
-  
-  .nav-icon {
-    font-size: 1rem;
-  }
-  
-  .nav-label {
-    font-size: 6px;
-  }
-  
-  .send-toolbar-btn, .edit-info-btn {
-    min-width: 50px;
-    font-size: 9px;
-    height: 24px;
-    padding: 0 3px;
-  }
-  
-  .send-docs-label, .edit-info-label {
-    font-size: 8px;
-    margin-left: 0;
-  }
-  
-  .toolbar-nav-group {
-    gap: 6px;
-  }
-  
-  .sign-toolbar-btn {
-    min-width: 70px;
-    padding: 0 6px;
-    font-size: 10px;
-    height: 28px;
   }
 }
 

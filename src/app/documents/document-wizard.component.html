@@ -34,7 +34,7 @@
     <div *ngIf="inReviewStep" class="toolbar-nav-group review-group">
       <button *ngIf="!isFirstReview" class="toolbar-btn prev-btn nav-btn" (click)="prevFlattened()" aria-label="Previous document">
         <div class="nav-icon">◀</div>
-        <div class="nav-label">{{ lang==='es' ? 'Anterior' : 'Prev' }}</div>
+        <div class="nav-label">{{ lang==='es' ? 'Ant.' : 'Prev' }}</div>
       </button>
 
       <button class="toolbar-btn back-btn edit-info-btn" (click)="goBackToEdit()">
@@ -55,7 +55,7 @@
 
       <button *ngIf="!isLastReview" class="toolbar-btn next-btn nav-btn" (click)="nextFlattened()" aria-label="Next document">
         <div class="nav-icon">▶</div>
-        <div class="nav-label">{{ lang==='es' ? 'Siguiente' : 'Next' }}</div>
+        <div class="nav-label">{{ lang==='es' ? 'Sig.' : 'Next' }}</div>
       </button>
     </div>
   </header>
