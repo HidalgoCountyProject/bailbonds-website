@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ApiService } from '../../services/api.service';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { Location } from '@angular/common';
@@ -16,7 +16,7 @@ interface FileItem {
   templateUrl: './download.component.html',
   styleUrls: ['./download.component.css']
 })
-export class DownloadComponent implements OnInit {
+export class DownloadComponent implements OnInit, OnDestroy {
   uploadId: string = '';
   files: FileItem[] = [];
   loading: boolean = true;
@@ -25,16 +25,23 @@ export class DownloadComponent implements OnInit {
   viewingFiles: Set<string> = new Set();
   uploaderName: string = '';
   uploaderRole: string = '';
+  
+  // Properties for header/footer hiding
+  private isBrowser: boolean;
+  private originalHeaderHeight: string = '';
+  private originalFooterDisplay: string = '';
 
   constructor(
     private route: ActivatedRoute,
     private apiService: ApiService,
-    private location: Location
+    private location: Location,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     console.log('DownloadComponent constructor called');
     console.log('Route object:', this.route);
     console.log('ApiService object:', this.apiService);
     console.log('Location object:', this.location);
+    this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
   ngOnInit(): void {
@@ -46,6 +53,9 @@ export class DownloadComponent implements OnInit {
       files: this.files
     });
     console.log('Route params subscription starting...');
+    
+    // Hide header and footer
+    this.hideHeaderAndFooter();
     
     // Verificar el estado completo de la ruta (solo en navegador)
     if (typeof window !== 'undefined') {
@@ -324,5 +334,51 @@ export class DownloadComponent implements OnInit {
     });
     
     console.log('viewFile() - SUBSCRIPTION SETUP COMPLETE');
+  }
+
+  private hideHeaderAndFooter(): void {
+    if (this.isBrowser) {
+      // Hide global header
+      const headerEl = document.querySelector('header.header') as HTMLElement | null;
+      if (headerEl) {
+        headerEl.style.display = 'none';
+      }
+
+      // Store and override CSS variable so <main> loses top padding
+      this.originalHeaderHeight = getComputedStyle(document.documentElement).getPropertyValue('--header-height');
+      document.documentElement.style.setProperty('--header-height', '0px');
+
+      // Hide global footer
+      const footerEl = document.querySelector('footer.footer') as HTMLElement | null;
+      if (footerEl) {
+        this.originalFooterDisplay = footerEl.style.display;
+        footerEl.style.display = 'none';
+      }
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.restoreHeaderAndFooter();
+  }
+
+  private restoreHeaderAndFooter(): void {
+    if (this.isBrowser) {
+      // Restore global header
+      const headerEl = document.querySelector('header.header') as HTMLElement | null;
+      if (headerEl) {
+        headerEl.style.display = '';
+      }
+
+      // Restore original CSS var
+      if (this.originalHeaderHeight) {
+        document.documentElement.style.setProperty('--header-height', this.originalHeaderHeight);
+      }
+
+      // Restore global footer
+      const footerEl = document.querySelector('footer.footer') as HTMLElement | null;
+      if (footerEl) {
+        footerEl.style.display = this.originalFooterDisplay ?? '';
+      }
+    }
   }
 } 

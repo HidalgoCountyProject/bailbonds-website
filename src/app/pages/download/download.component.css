@@ -15,9 +15,12 @@
 .download-container {
   max-width: 600px;
   margin: 0 auto;
-  padding: 1rem 1rem;
+  padding: 2rem 1rem;
   min-height: 100vh;
   background-color: var(--background-light);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
 /* Header */
@@ -124,27 +127,6 @@
   padding: 0.8rem;
   box-shadow: none;
   border: 1px solid transparent;
-  max-height: 60vh;
-  overflow-y: auto;
-}
-
-/* Custom scrollbar */
-.files-container::-webkit-scrollbar {
-  width: 6px;
-}
-
-.files-container::-webkit-scrollbar-track {
-  background: var(--gray-light);
-  border-radius: 3px;
-}
-
-.files-container::-webkit-scrollbar-thumb {
-  background: var(--text-muted);
-  border-radius: 3px;
-}
-
-.files-container::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-color);
 }
 
 .no-files {
