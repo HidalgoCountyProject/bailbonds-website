@@ -33,6 +33,7 @@ export class DownloadComponent implements OnInit {
   ngOnInit(): void {
     console.log('DownloadComponent ngOnInit');
     this.route.queryParams.pipe(take(1)).subscribe(params => {
+      console.log('params', params);
       this.uploadId = params['uploadId'] || '';
       if (this.uploadId) {
         console.log('Calling loadFiles from ngOnInit');
