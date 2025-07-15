@@ -85,7 +85,9 @@ export class ApiService {
       'Content-Type': 'application/json',
     });
     
-    const url = `${environment.endpointListFiles}?uploadId=${uploadId}`;
+    // Usar path parameter en lugar de query parameter
+    const url = `${environment.endpointListFiles}/${uploadId}`;
+    console.log('Environment endpointListFiles:', environment.endpointListFiles);
     console.log('Making HTTP GET request to:', url);
     console.log('Headers:', headers);
     console.log('HttpClient available:', !!this.http);
