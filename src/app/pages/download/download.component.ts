@@ -22,6 +22,7 @@ export class DownloadComponent implements OnInit {
   loading: boolean = true;
   error: string | null = null;
   downloadingFiles: Set<string> = new Set();
+  viewingFiles: Set<string> = new Set();
   uploaderName: string = '';
   uploaderRole: string = '';
 
@@ -147,8 +148,43 @@ export class DownloadComponent implements OnInit {
         console.log('Response URL:', response.url);
         
         if (response.url) {
-          console.log('Opening URL in new tab:', response.url);
-          window.open(response.url, '_blank');
+          console.log('Fetching file as blob for download:', response.url);
+          
+          // Use fetch to get the file as a blob for cross-origin download
+          fetch(response.url)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+              }
+              return response.blob();
+            })
+            .then(blob => {
+              console.log('Successfully fetched blob:', blob);
+              
+              // Create a temporary URL for the blob
+              const blobUrl = URL.createObjectURL(blob);
+              
+              // Create a temporary anchor element to trigger download
+              const link = document.createElement('a');
+              link.href = blobUrl;
+              link.download = filename;
+              link.style.display = 'none';
+              document.body.appendChild(link);
+              
+              // Trigger the download
+              link.click();
+              
+              // Clean up after download
+              setTimeout(() => {
+                document.body.removeChild(link);
+                URL.revokeObjectURL(blobUrl);
+                console.log('Cleaned up download link and blob URL');
+              }, 100);
+            })
+            .catch(error => {
+              console.error('Error fetching file as blob:', error);
+              this.error = 'download.error';
+            });
         } else {
           console.log('No URL in response, setting error');
           this.error = 'download.error';
@@ -171,5 +207,52 @@ export class DownloadComponent implements OnInit {
     });
     
     console.log('downloadFile() - SUBSCRIPTION SETUP COMPLETE');
+  }
+
+  viewFile(filename: string): void {
+    console.log('viewFile() - START');
+    console.log('Filename to view:', filename);
+    console.log('Current uploadId:', this.uploadId);
+    console.log('Currently viewing files:', Array.from(this.viewingFiles));
+    
+    if (this.viewingFiles.has(filename)) {
+      console.log('File already being viewed, skipping');
+      return; // Prevent multiple clicks
+    }
+    
+    this.viewingFiles.add(filename);
+    console.log('Added to viewing set:', filename);
+    
+    console.log('About to call apiService.generateDownloadLink for viewing');
+    this.apiService.generateDownloadLink(this.uploadId, filename).subscribe({
+      next: (response: any) => {
+        console.log('API generateDownloadLink SUCCESS for viewing - response:', response);
+        console.log('Response URL:', response.url);
+        
+        if (response.url) {
+          console.log('Opening URL in new tab for viewing:', response.url);
+          window.open(response.url, '_blank');
+        } else {
+          console.log('No URL in response for viewing, setting error');
+          this.error = 'download.error';
+        }
+        this.viewingFiles.delete(filename);
+        console.log('Removed from viewing set:', filename);
+        console.log('viewFile() - SUCCESS END');
+      },
+      error: (error: any) => {
+        console.error('API generateDownloadLink ERROR for viewing - error details:', error);
+        console.error('Error status:', error.status);
+        console.error('Error message:', error.message);
+        console.error('Error body:', error.error);
+        
+        this.error = 'download.error';
+        this.viewingFiles.delete(filename);
+        console.log('Removed from viewing set:', filename);
+        console.log('viewFile() - ERROR END');
+      }
+    });
+    
+    console.log('viewFile() - SUBSCRIPTION SETUP COMPLETE');
   }
 } 

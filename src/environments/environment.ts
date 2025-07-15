@@ -4,6 +4,6 @@ export const environment = {
   apiKey: 'EdO0tvAuBC5raGnj0Ubhq4zs3fKmxCLw6RKMUoCz',
   endpointInitProcess: 'https://94eflft0ie.execute-api.us-east-1.amazonaws.com/dev/submission-init',
   endpointCompleteDocuments: 'https://94eflft0ie.execute-api.us-east-1.amazonaws.com/dev/submission-done',
-  endpointListFiles: 'https://3rlvd3x9a3.execute-api.us-east-1.amazonaws.com/prod/download',
+  endpointListFiles: 'https://94eflft0ie.execute-api.us-east-1.amazonaws.com/dev/download',
   endpointGenerateDownloadLink: 'https://94eflft0ie.execute-api.us-east-1.amazonaws.com/dev/generate-download-link'
 }; 

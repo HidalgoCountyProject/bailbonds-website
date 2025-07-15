@@ -5,7 +5,6 @@
       <span *ngIf="uploaderName" class="uploader-name">{{ uploaderName }}</span>
       <span *ngIf="uploaderRole" class="uploader-role">({{ uploaderRole }})</span>
     </div>
-    <p class="upload-id">ID: {{ uploadId }}</p>
   </div>
 
   <!-- Loading State -->
@@ -21,13 +20,30 @@
         <div class="file-info">
           <div class="file-name">{{ file.filename }}</div>
         </div>
-        <button 
-          class="download-button"
-          (click)="downloadFile(file.filename)"
-          [disabled]="downloadingFiles.has(file.filename)"
-          [class.downloading]="downloadingFiles.has(file.filename)">
-          {{ downloadingFiles.has(file.filename) ? ('download.downloading' | translate) : ('download.download' | translate) }}
-        </button>
+        <div class="file-actions">
+          <button 
+            class="view-button"
+            (click)="viewFile(file.filename)"
+            [disabled]="viewingFiles.has(file.filename)"
+            [class.viewing]="viewingFiles.has(file.filename)"
+            title="View file">
+            <svg class="eye-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+            </svg>
+            {{ viewingFiles.has(file.filename) ? ('download.viewing' | translate) : ('download.view' | translate) }}
+          </button>
+          <button 
+            class="download-button"
+            (click)="downloadFile(file.filename)"
+            [disabled]="downloadingFiles.has(file.filename)"
+            [class.downloading]="downloadingFiles.has(file.filename)"
+            title="Download file">
+            <svg class="download-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+            </svg>
+            {{ downloadingFiles.has(file.filename) ? ('download.downloading' | translate) : ('download.download' | translate) }}
+          </button>
+        </div>
       </div>
     </ng-container>
     <ng-template #noFilesBlock>

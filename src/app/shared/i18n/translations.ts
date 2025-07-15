@@ -261,6 +261,8 @@ export const translations: Record<Language, TranslationSet> = {
     'download.no_files': 'No documents found for this upload ID.',
     'download.download': 'Download',
     'download.downloading': 'Downloading...',
+    'download.view': 'View',
+    'download.viewing': 'Viewing...',
     'download.footer': 'If you have problems downloading the documents, contact our support team.',
   },
   es: {
@@ -519,6 +521,8 @@ export const translations: Record<Language, TranslationSet> = {
     'download.no_files': 'No se encontraron documentos para este ID de carga.',
     'download.download': 'Descargar',
     'download.downloading': 'Descargando...',
+    'download.view': 'Ver',
+    'download.viewing': 'Viendo...',
     'download.footer': 'Si tienes problemas para descargar los documentos, contacta con nuestro equipo de soporte.',
   }
 }; 
