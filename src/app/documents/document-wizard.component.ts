@@ -18,12 +18,14 @@ import { ApiService } from '../services/api.service';
 const DEFENDANT_DOCS_EN = [
   'assets/pdfs/defendant/defendant-application-and-agreement-en.pdf',
   'assets/pdfs/defendant/supreme-court-opinion-en.pdf',
-  'assets/pdfs/defendant/rules-and-regulations-en.pdf'
+  'assets/pdfs/defendant/rules-and-regulations-en.pdf',
+  'assets/pdfs/defendant/plain-talk-contract-en.pdf'
 ];
 const DEFENDANT_DOCS_ES = [
   'assets/pdfs/defendant/defendant-application-and-agreement-es.pdf',
   'assets/pdfs/defendant/supreme-court-opinion-es.pdf',
-  'assets/pdfs/defendant/rules-and-regulations-es.pdf'
+  'assets/pdfs/defendant/rules-and-regulations-es.pdf',
+  'assets/pdfs/defendant/plain-talk-contract-es.pdf'
 ];
 const INDEMNITOR_DOCS_EN = [
   'assets/pdfs/indemnitor/indemnitor-application-and-agreement-en.pdf',
@@ -112,6 +114,8 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
     'assets/pdfs/indemnitor/rules-and-regulations-es.pdf': 1,
     'assets/pdfs/defendant/rules-and-regulations-es.pdf': 1,
     'assets/pdfs/defendant/supreme-court-opinion-es.pdf': 1,
+    'assets/pdfs/defendant/plain-talk-contract-en.pdf': 1,
+    'assets/pdfs/defendant/plain-talk-contract-es.pdf': 1
     // TODO: añade los restantes documentos y su página correspondiente
   };
 
