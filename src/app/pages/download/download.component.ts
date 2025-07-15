@@ -127,6 +127,10 @@ export class DownloadComponent implements OnInit {
     console.log('loadFiles() - SUBSCRIPTION SETUP COMPLETE');
   }
 
+  private isMobileDevice(): boolean {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  }
+
   downloadFile(filename: string): void {
     console.log('downloadFile() - START');
     console.log('Filename to download:', filename);
@@ -141,6 +145,9 @@ export class DownloadComponent implements OnInit {
     this.downloadingFiles.add(filename);
     console.log('Added to downloading set:', filename);
     
+    const isMobile = this.isMobileDevice();
+    console.log('Is mobile device:', isMobile);
+    
     console.log('About to call apiService.generateDownloadLink');
     this.apiService.generateDownloadLink(this.uploadId, filename).subscribe({
       next: (response: any) => {
@@ -148,43 +155,52 @@ export class DownloadComponent implements OnInit {
         console.log('Response URL:', response.url);
         
         if (response.url) {
-          console.log('Fetching file as blob for download:', response.url);
-          
-          // Use fetch to get the file as a blob for cross-origin download
-          fetch(response.url)
-            .then(response => {
-              if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-              }
-              return response.blob();
-            })
-            .then(blob => {
-              console.log('Successfully fetched blob:', blob);
-              
-              // Create a temporary URL for the blob
-              const blobUrl = URL.createObjectURL(blob);
-              
-              // Create a temporary anchor element to trigger download
-              const link = document.createElement('a');
-              link.href = blobUrl;
-              link.download = filename;
-              link.style.display = 'none';
-              document.body.appendChild(link);
-              
-              // Trigger the download
-              link.click();
-              
-              // Clean up after download
-              setTimeout(() => {
-                document.body.removeChild(link);
-                URL.revokeObjectURL(blobUrl);
-                console.log('Cleaned up download link and blob URL');
-              }, 100);
-            })
-            .catch(error => {
-              console.error('Error fetching file as blob:', error);
-              this.error = 'download.error';
-            });
+          if (isMobile) {
+            // For mobile devices, use direct URL opening as fallback
+            console.log('Mobile device detected, opening URL directly for download');
+            window.open(response.url, '_blank');
+          } else {
+            // For desktop, use blob method
+            console.log('Desktop device detected, fetching file as blob for download:', response.url);
+            
+            // Use fetch to get the file as a blob for cross-origin download
+            fetch(response.url)
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.blob();
+              })
+              .then(blob => {
+                console.log('Successfully fetched blob:', blob);
+                
+                // Create a temporary URL for the blob
+                const blobUrl = URL.createObjectURL(blob);
+                
+                // Create a temporary anchor element to trigger download
+                const link = document.createElement('a');
+                link.href = blobUrl;
+                link.download = filename;
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                
+                // Trigger the download
+                link.click();
+                
+                // Clean up after download
+                setTimeout(() => {
+                  document.body.removeChild(link);
+                  URL.revokeObjectURL(blobUrl);
+                  console.log('Cleaned up download link and blob URL');
+                }, 100);
+              })
+              .catch(error => {
+                console.error('Error fetching file as blob:', error);
+                console.log('Blob method failed, falling back to direct URL');
+                // Fallback to direct URL if blob method fails
+                window.open(response.url, '_blank');
+              });
+          }
         } else {
           console.log('No URL in response, setting error');
           this.error = 'download.error';
