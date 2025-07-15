@@ -8,7 +8,15 @@ import { catchError, map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class ApiService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { 
+    console.log('ApiService constructor called');
+    console.log('HttpClient object:', this.http);
+    console.log('Environment endpoints:', {
+      endpointListFiles: environment.endpointListFiles,
+      endpointGenerateDownloadLink: environment.endpointGenerateDownloadLink
+    });
+    console.log('Environment object:', environment);
+  }
   
   // Método para enviar el formulario de contacto
   sendContactForm(formData: any): Observable<any> {
@@ -70,20 +78,45 @@ export class ApiService {
    * Lists files for a given uploadId
    */
   listFiles(uploadId: string): Observable<any> {
+    console.log('ApiService.listFiles() - START');
+    console.log('uploadId parameter:', uploadId);
+    
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     });
-    return this.http.get<any>(`${environment.endpointListFiles}?uploadId=${uploadId}`, { headers });
+    
+    const url = `${environment.endpointListFiles}?uploadId=${uploadId}`;
+    console.log('Making HTTP GET request to:', url);
+    console.log('Headers:', headers);
+    console.log('HttpClient available:', !!this.http);
+    
+    const observable = this.http.get<any>(url, { headers });
+    
+    console.log('ApiService.listFiles() - returning observable');
+    console.log('Observable type:', typeof observable);
+    return observable;
   }
 
   /**
    * Generates a download link for a specific file
    */
   generateDownloadLink(uploadId: string, filename: string): Observable<any> {
+    console.log('ApiService.generateDownloadLink() - START');
+    console.log('uploadId parameter:', uploadId);
+    console.log('filename parameter:', filename);
+    
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'x-api-key': environment.apiKey
     });
-    return this.http.get<any>(`${environment.endpointGenerateDownloadLink}?uploadId=${uploadId}&filename=${encodeURIComponent(filename)}`, { headers });
+    
+    const url = `${environment.endpointGenerateDownloadLink}?uploadId=${uploadId}&filename=${encodeURIComponent(filename)}`;
+    console.log('Making HTTP GET request to:', url);
+    console.log('Headers:', headers);
+    
+    const observable = this.http.get<any>(url, { headers });
+    
+    console.log('ApiService.generateDownloadLink() - returning observable');
+    return observable;
   }
 } 
