@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../services/api.service';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
-import { take } from 'rxjs/operators';
 import { Location } from '@angular/common';
 
 interface FileItem {
@@ -60,35 +59,22 @@ export class DownloadComponent implements OnInit {
     console.log('Angular route object:', this.route);
     console.log('Route snapshot:', this.route.snapshot);
     console.log('Route snapshot params:', this.route.snapshot.params);
-    console.log('Route snapshot query params:', this.route.snapshot.queryParams);
+    console.log('Route snapshot paramMap:', this.route.snapshot.paramMap);
     
-    this.route.queryParams.pipe(take(1)).subscribe(params => {
-      console.log('Route params received:', params);
-      console.log('All route params keys:', Object.keys(params));
-      console.log('uploadId from params:', params['uploadId']);
-      console.log('uploadId type:', typeof params['uploadId']);
-      
-      this.uploadId = params['uploadId'] || '';
-      console.log('Final uploadId value:', this.uploadId);
-      
-      // FALLBACK TEMPORAL PARA TESTING - Extraer uploadId de la URL directamente
-      if (!this.uploadId) {
-        const urlParams = new URLSearchParams(window.location.search);
-        this.uploadId = urlParams.get('uploadId') || '';
-        console.log('Fallback - uploadId from URLSearchParams:', this.uploadId);
-      }
-      
-      if (this.uploadId) {
-        console.log('uploadId is valid, calling loadFiles()');
-        this.loadFiles();
-      } else {
-        console.log('uploadId is empty or invalid, setting error');
-        this.error = 'download.error';
-        this.loading = false;
-      }
-    });
+    // Obtener uploadId del path parameter (como en tu proyecto)
+    this.uploadId = this.route.snapshot.paramMap.get('uploadId') || '';
+    console.log('uploadId from paramMap:', this.uploadId);
+    console.log('uploadId type:', typeof this.uploadId);
     
-    console.log('Subscription setup completed - waiting for params...');
+    if (this.uploadId) {
+      console.log('uploadId is valid, calling loadFiles()');
+      this.loadFiles();
+    } else {
+      console.log('uploadId is empty or invalid, setting error');
+      this.error = 'download.error';
+      this.loading = false;
+    }
+    
     console.log('DownloadComponent ngOnInit - END');
   }
 

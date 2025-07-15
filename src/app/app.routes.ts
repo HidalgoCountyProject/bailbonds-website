@@ -22,7 +22,7 @@ export const routes: Routes = [
     pathMatch: 'full' 
   },
   { 
-    path: 'download', 
+    path: 'download/:uploadId', 
     loadComponent: () => import('./pages/download/download.component').then(m => m.DownloadComponent), 
     title: 'Descargar Documentos - Affordable Bail Bonds' 
   },
