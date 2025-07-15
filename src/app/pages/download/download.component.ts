@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ApiService } from '../../services/api.service';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { take } from 'rxjs/operators';
+import { Location } from '@angular/common';
 
 interface FileItem {
   filename: string;
@@ -27,11 +28,13 @@ export class DownloadComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private location: Location
   ) {
     console.log('DownloadComponent constructor called');
     console.log('Route object:', this.route);
     console.log('ApiService object:', this.apiService);
+    console.log('Location object:', this.location);
   }
 
   ngOnInit(): void {
@@ -44,12 +47,36 @@ export class DownloadComponent implements OnInit {
     });
     console.log('Route params subscription starting...');
     
+    // Verificar el estado completo de la ruta
+    console.log('Current route URL:', window.location.href);
+    console.log('Current route pathname:', window.location.pathname);
+    console.log('Current route search:', window.location.search);
+    console.log('Current route hash:', window.location.hash);
+    
+    // Verificar usando Angular Location service
+    console.log('Angular Location path:', this.location.path());
+    
+    // Verificar si Angular está funcionando correctamente
+    console.log('Angular route object:', this.route);
+    console.log('Route snapshot:', this.route.snapshot);
+    console.log('Route snapshot params:', this.route.snapshot.params);
+    console.log('Route snapshot query params:', this.route.snapshot.queryParams);
+    
     this.route.queryParams.pipe(take(1)).subscribe(params => {
       console.log('Route params received:', params);
+      console.log('All route params keys:', Object.keys(params));
       console.log('uploadId from params:', params['uploadId']);
+      console.log('uploadId type:', typeof params['uploadId']);
       
       this.uploadId = params['uploadId'] || '';
       console.log('Final uploadId value:', this.uploadId);
+      
+      // FALLBACK TEMPORAL PARA TESTING - Extraer uploadId de la URL directamente
+      if (!this.uploadId) {
+        const urlParams = new URLSearchParams(window.location.search);
+        this.uploadId = urlParams.get('uploadId') || '';
+        console.log('Fallback - uploadId from URLSearchParams:', this.uploadId);
+      }
       
       if (this.uploadId) {
         console.log('uploadId is valid, calling loadFiles()');
@@ -61,6 +88,7 @@ export class DownloadComponent implements OnInit {
       }
     });
     
+    console.log('Subscription setup completed - waiting for params...');
     console.log('DownloadComponent ngOnInit - END');
   }
 
