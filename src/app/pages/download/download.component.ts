@@ -47,11 +47,13 @@ export class DownloadComponent implements OnInit {
     });
     console.log('Route params subscription starting...');
     
-    // Verificar el estado completo de la ruta
-    console.log('Current route URL:', window.location.href);
-    console.log('Current route pathname:', window.location.pathname);
-    console.log('Current route search:', window.location.search);
-    console.log('Current route hash:', window.location.hash);
+    // Verificar el estado completo de la ruta (solo en navegador)
+    if (typeof window !== 'undefined') {
+      console.log('Current route URL:', window.location.href);
+      console.log('Current route pathname:', window.location.pathname);
+      console.log('Current route search:', window.location.search);
+      console.log('Current route hash:', window.location.hash);
+    }
     
     // Verificar usando Angular Location service
     console.log('Angular Location path:', this.location.path());
@@ -97,7 +99,11 @@ export class DownloadComponent implements OnInit {
         console.log('Response keys:', Object.keys(response));
         
         this.files = (response.files || []).map((filename: string) => ({ filename }));
-        console.log('Processed files array:', this.files);
+        console.log('Processed files array before sorting:', this.files);
+        
+        // Ordenar los archivos
+        this.files = this.sortFiles(this.files);
+        console.log('Processed files array after sorting:', this.files);
         
         this.uploaderName = response.uploaderName || '';
         this.uploaderRole = response.uploaderRole || '';
@@ -125,6 +131,48 @@ export class DownloadComponent implements OnInit {
     
     console.log('Subscription created:', subscription);
     console.log('loadFiles() - SUBSCRIPTION SETUP COMPLETE');
+  }
+
+  private getFileTypePriority(filename: string): number {
+    const extension = filename.toLowerCase().split('.').pop() || '';
+    
+    // Orden de prioridad: PDFs primero, luego JPGs, luego otros
+    switch (extension) {
+      case 'pdf':
+        return 1;
+      case 'jpg':
+      case 'jpeg':
+        return 2;
+      case 'png':
+        return 3;
+      case 'gif':
+        return 4;
+      case 'doc':
+      case 'docx':
+        return 5;
+      case 'xls':
+      case 'xlsx':
+        return 6;
+      case 'txt':
+        return 7;
+      default:
+        return 8; // Otros tipos al final
+    }
+  }
+
+  private sortFiles(files: FileItem[]): FileItem[] {
+    return files.sort((a, b) => {
+      // Primero ordenar por tipo de archivo
+      const priorityA = this.getFileTypePriority(a.filename);
+      const priorityB = this.getFileTypePriority(b.filename);
+      
+      if (priorityA !== priorityB) {
+        return priorityA - priorityB;
+      }
+      
+      // Si son del mismo tipo, ordenar alfabéticamente
+      return a.filename.toLowerCase().localeCompare(b.filename.toLowerCase());
+    });
   }
 
   private isMobileDevice(): boolean {
@@ -158,7 +206,9 @@ export class DownloadComponent implements OnInit {
           if (isMobile) {
             // For mobile devices, use direct URL opening as fallback
             console.log('Mobile device detected, opening URL directly for download');
-            window.open(response.url, '_blank');
+            if (typeof window !== 'undefined') {
+              window.open(response.url, '_blank');
+            }
           } else {
             // For desktop, use blob method
             console.log('Desktop device detected, fetching file as blob for download:', response.url);
@@ -198,7 +248,9 @@ export class DownloadComponent implements OnInit {
                 console.error('Error fetching file as blob:', error);
                 console.log('Blob method failed, falling back to direct URL');
                 // Fallback to direct URL if blob method fails
-                window.open(response.url, '_blank');
+                if (typeof window !== 'undefined') {
+                  window.open(response.url, '_blank');
+                }
               });
           }
         } else {
@@ -247,7 +299,9 @@ export class DownloadComponent implements OnInit {
         
         if (response.url) {
           console.log('Opening URL in new tab for viewing:', response.url);
-          window.open(response.url, '_blank');
+          if (typeof window !== 'undefined') {
+            window.open(response.url, '_blank');
+          }
         } else {
           console.log('No URL in response for viewing, setting error');
           this.error = 'download.error';

@@ -254,7 +254,6 @@ export const translations: Record<Language, TranslationSet> = {
     'role.language.spanish': 'Español',
     
     // Download Component
-    'download.title': 'Available Documents',
     'download.loading': 'Loading documents...',
     'download.error': 'Error loading files. Please try again.',
     'download.retry': 'Try Again',
@@ -263,7 +262,6 @@ export const translations: Record<Language, TranslationSet> = {
     'download.downloading': 'Downloading...',
     'download.view': 'View',
     'download.viewing': 'Viewing...',
-    'download.footer': 'If you have problems downloading the documents, contact our support team. On mobile devices, files will open in a new tab for manual download.',
   },
   es: {
     // Header
@@ -523,6 +521,5 @@ export const translations: Record<Language, TranslationSet> = {
     'download.downloading': 'Descargando...',
     'download.view': 'Ver',
     'download.viewing': 'Viendo...',
-    'download.footer': 'Si tienes problemas para descargar los documentos, contacta con nuestro equipo de soporte. En dispositivos móviles, los archivos se abren en una nueva pestaña para descarga manual.',
   }
 }; 

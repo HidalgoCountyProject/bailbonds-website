@@ -1,6 +1,5 @@
 <div class="download-container">
   <div class="download-header">
-    <h1>{{ 'download.title' | translate }}</h1>
     <div *ngIf="uploaderName || uploaderRole" class="uploader-info">
       <span *ngIf="uploaderName" class="uploader-name">{{ uploaderName }}</span>
       <span *ngIf="uploaderRole" class="uploader-role">({{ uploaderRole }})</span>
@@ -51,10 +50,5 @@
         <p>{{ 'download.no_files' | translate }}</p>
       </div>
     </ng-template>
-  </div>
-
-  <!-- Footer -->
-  <div class="download-footer">
-    <p>{{ 'download.footer' | translate }}</p>
   </div>
 </div> 
