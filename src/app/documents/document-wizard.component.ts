@@ -627,8 +627,8 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
         ];
       } else {
         autoTargets = [
-          ...this.getSignatureTargetsFromPdf(pdfDoc, `${this.role}_invisible_signature`),
-          ...this.getSignatureTargetsFromPdf(pdfDoc, 'invisible_signature'),
+          ...this.getSignatureTargetsFromPdf(pdfDoc, `${this.role}_invisible_signature`)
+          //...this.getSignatureTargetsFromPdf(pdfDoc, 'invisible_signature'),
         ];
       }
 
@@ -1221,8 +1221,8 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
             ];
           } else {
             autoTargets = [
-              ...this.getSignatureTargetsFromPdf(pdfDoc, `${this.role}_invisible_signature`),
-              ...this.getSignatureTargetsFromPdf(pdfDoc, 'invisible_signature'),
+              ...this.getSignatureTargetsFromPdf(pdfDoc, `${this.role}_invisible_signature`)
+              //...this.getSignatureTargetsFromPdf(pdfDoc, 'invisible_signature'),
             ];
           }
           this.pdfSrc = prevSrc;
