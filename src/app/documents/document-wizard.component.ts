@@ -993,6 +993,10 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
         'assets/pdfs/defendant/rules-and-regulations-es.pdf',
         'assets/pdfs/indemnitor/rules-and-regulations-en.pdf',
         'assets/pdfs/indemnitor/rules-and-regulations-es.pdf',
+        'assets/pdfs/indemnitor/rules-and-regulations-es.pdf',
+        'assets/pdfs/indemnitor/rules-and-regulations-es.pdf',
+        'assets/pdfs/indemnitor/plain-talk-contract-en.pdf',
+        'assets/pdfs/indemnitor/plain-talk-contract-es.pdf'
       ];
       const currentDoc = this.docs[this.currentIndex];
       if (rulesDocs.includes(currentDoc)) {
