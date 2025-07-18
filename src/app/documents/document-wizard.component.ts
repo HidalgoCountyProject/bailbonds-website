@@ -1580,6 +1580,7 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
   /** Global tooltip management - only one tooltip can be active at a time */
   private static activeTooltip: HTMLElement | null = null;
   private static activeHideTimeout: any = null;
+  private static clickOutsideListenerAdded = false;
 
   /** Adds tooltip behavior to an input element */
   private addTooltipBehavior(input: HTMLInputElement | HTMLTextAreaElement, isPersonInJail: boolean): void {
@@ -1618,7 +1619,7 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
       
       // Auto-hide after 5 seconds
       DocumentWizardComponent.activeHideTimeout = setTimeout(() => {
-        this.hideActiveTooltip();
+        DocumentWizardComponent.hideActiveTooltipStatic();
       }, 5000);
     };
 
@@ -1664,14 +1665,24 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
       this.hideActiveTooltip();
     });
     
-    // Close tooltip when clicking outside
-    document.addEventListener('click', (e) => {
-      if (DocumentWizardComponent.activeTooltip && 
-          !DocumentWizardComponent.activeTooltip.contains(e.target as Node) &&
-          !input.contains(e.target as Node)) {
-        this.hideActiveTooltip();
-      }
-    });
+    // Add global click outside listener only once
+    if (!DocumentWizardComponent.clickOutsideListenerAdded) {
+      DocumentWizardComponent.clickOutsideListenerAdded = true;
+      document.addEventListener('click', (e) => {
+        // Small delay to ensure focus event has been processed first
+        setTimeout(() => {
+          if (DocumentWizardComponent.activeTooltip) {
+            const target = e.target as Node;
+            const isInsideTooltip = DocumentWizardComponent.activeTooltip.contains(target);
+            const isInsideInput = document.querySelector('.textWidgetAnnotation input:focus, .textWidgetAnnotation textarea:focus')?.contains(target);
+            
+            if (!isInsideTooltip && !isInsideInput) {
+              DocumentWizardComponent.hideActiveTooltipStatic();
+            }
+          }
+        }, 10);
+      });
+    }
     
     // Add CSS styles if not already added
     this.addTooltipStyles();
@@ -1679,6 +1690,11 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
 
   /** Hides the currently active tooltip */
   private hideActiveTooltip(): void {
+    DocumentWizardComponent.hideActiveTooltipStatic();
+  }
+
+  /** Static method to hide active tooltip */
+  private static hideActiveTooltipStatic(): void {
     if (DocumentWizardComponent.activeTooltip) {
       DocumentWizardComponent.activeTooltip.remove();
       DocumentWizardComponent.activeTooltip = null;
