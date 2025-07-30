@@ -28,25 +28,36 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
 
   onLanguageSelect(lang: 'en' | 'es') {
     if (this.selectedRole) {
-      // List all possible roles here
-      const roles = ['defendant', 'indemnitor'];
-      const roleKey = `${this.selectedRole}_field_values`;
-      let foundRoleKey = null;
-      // Check if any role key exists in localStorage
-      for (const role of roles) {
-        if (localStorage.getItem(`${role}_field_values`)) {
-          foundRoleKey = `${role}_field_values`;
-          break;
-        }
-      }
-      // If the stored role is different from the selected role, clear all role-related data
-      if (foundRoleKey && foundRoleKey !== roleKey) {
+      // Handle localStorage cleanup only in browser environment
+      if (this.isBrowser) {
+        // List all possible roles here
+        const roles = ['defendant', 'indemnitor'];
+        const roleKey = `${this.selectedRole}_field_values`;
+        let foundRoleKey = null;
+        // Check if any role key exists in localStorage
         for (const role of roles) {
-          localStorage.removeItem(`${role}_field_values`);
-          localStorage.removeItem(`${role}_signature`);
+          if (localStorage.getItem(`${role}_field_values`)) {
+            foundRoleKey = `${role}_field_values`;
+            break;
+          }
+        }
+        // If the stored role is different from the selected role, clear all role-related data
+        if (foundRoleKey && foundRoleKey !== roleKey) {
+          for (const role of roles) {
+            localStorage.removeItem(`${role}_field_values`);
+            localStorage.removeItem(`${role}_signature`);
+          }
         }
       }
-      this.router.navigate(['/wizard', this.selectedRole, lang]);
+      
+      // Navigate to defendant info form for indemnitors, directly to document wizard for defendants
+      if (this.selectedRole === 'indemnitor') {
+        console.log('Navigating to defendant info form for indemnitor with language:', lang);
+        this.router.navigate(['/wizard/indemnitor', lang, 'defendant-info']);
+      } else {
+        console.log('Navigating to document wizard for role:', this.selectedRole, 'with language:', lang);
+        this.router.navigate(['/wizard', this.selectedRole, lang]);
+      }
     }
   }
 

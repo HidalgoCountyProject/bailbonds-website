@@ -10,7 +10,7 @@
     
     <!-- Toolbar controls -->
     <div *ngIf="!inReviewStep" class="toolbar-nav-group">
-      <button *ngIf="!isFirstDoc || inIdPhotoStep" class="toolbar-btn prev-btn nav-btn" (click)="prevDoc()" aria-label="Previous document">
+      <button *ngIf="(role === 'indemnitor' && isFirstDoc) || (!isFirstDoc || inIdPhotoStep)" class="toolbar-btn prev-btn nav-btn" (click)="prevDoc()" aria-label="Previous document">
         <div class="nav-icon">◀</div>
         <div class="nav-label">{{ lang==='es' ? 'Anterior' : 'Prev' }}</div>
       </button>

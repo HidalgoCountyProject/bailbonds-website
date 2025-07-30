@@ -36,6 +36,18 @@
   color: #212529;
 }
 
+.warning-section {
+  margin-bottom: 1rem;
+}
+
+.note-section {
+  margin-top: 1rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid #e9ecef;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
 .actions {
   display: flex;
   gap: 1rem;
@@ -52,11 +64,11 @@
 }
 
 .primary-btn {
-  background: var(--secondary-color, #FFCC00);
+  background: #ffffff;
   color: var(--primary-color, #003478);
 }
 
 .secondary-btn {
-  background: #ffffff;
+  background: var(--secondary-color, #FFCC00);
   color: var(--primary-color, #003478);
 } 

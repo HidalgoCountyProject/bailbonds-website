@@ -262,6 +262,80 @@ export const translations: Record<Language, TranslationSet> = {
     'download.downloading': 'Downloading...',
     'download.view': 'View',
     'download.viewing': 'Viewing...',
+    
+    // Defendant Information Form
+    'defendant.form.back': 'Back',
+    'defendant.form.title': 'Defendant Information',
+    'defendant.form.subtitle': 'Please provide the following information about the person who was arrested',
+    'defendant.form.info.title': 'Why do we need this information?',
+    'defendant.form.info.description': 'This information will be automatically filled into the documents, making the process faster and more accurate for you.',
+    
+    // Form sections
+    'defendant.form.name.legend': 'Full Name',
+    'defendant.form.contact.legend': 'Contact Information',
+    'defendant.form.personal.legend': 'Personal Information',
+    'defendant.form.arrest.legend': 'Arrest Information',
+    
+    // Name fields
+    'defendant.form.first_name.label': 'First Name',
+    'defendant.form.first_name.placeholder': 'John',
+    'defendant.form.first_name.help': 'Enter the arrested person\'s legal first name',
+    'defendant.form.middle_name.label': 'Middle Name (Optional)',
+    'defendant.form.middle_name.placeholder': 'Michael',
+    'defendant.form.middle_name.help': 'Enter the arrested person\'s middle name if applicable',
+    'defendant.form.last_name.label': 'Last Name',
+    'defendant.form.last_name.placeholder': 'Smith',
+    'defendant.form.last_name.help': 'Enter the arrested person\'s legal last name',
+    
+    // Contact fields
+    'defendant.form.cell_phone.label': 'Cell Phone Number',
+    'defendant.form.cell_phone.placeholder': '(956) 123-4567',
+    'defendant.form.cell_phone.help': 'Enter the arrested person\'s phone number',
+    'defendant.form.address.label': 'Current Home Address',
+    'defendant.form.address.placeholder': '123 Main St, McAllen, TX 78501',
+    'defendant.form.address.help': 'Enter the arrested person\'s current address',
+    
+    // Personal fields
+    'defendant.form.date_of_birth.label': 'Date of Birth',
+    'defendant.form.date_of_birth.help': 'Enter the arrested person\'s date of birth',
+    'defendant.form.birth_city.label': 'City Born',
+    'defendant.form.birth_city.placeholder': 'McAllen',
+    'defendant.form.birth_city.help': 'Enter the city where the arrested person was born',
+    'defendant.form.birth_state.label': 'State Born',
+    'defendant.form.birth_state.placeholder': 'Texas',
+    'defendant.form.birth_state.help': 'Enter the state where the arrested person was born',
+    
+    // Additional fields
+    'defendant.form.arrest_location.label': 'Where was Arrested',
+    'defendant.form.arrest_location.placeholder': 'McAllen Police Department',
+    'defendant.form.arrest_location.help': 'Enter where the arrest occurred',
+    'defendant.form.nationality.label': 'Nationality',
+    'defendant.form.nationality.placeholder': 'American',
+    'defendant.form.nationality.help': 'Enter the arrested person\'s nationality',
+    
+    // New arrest information fields
+    'defendant.form.probation.label': 'Is on Probation',
+    'defendant.form.probation.help': 'Select whether the arrested person is currently on probation',
+    'defendant.form.probation.yes': 'Yes',
+    'defendant.form.probation.no': 'No',
+    'defendant.form.charges_bonds.label': 'Charges and Bonds',
+    'defendant.form.charges_bonds.help': 'Add the charges and bond amounts for this case',
+    'defendant.form.charges_bonds.add': 'Add Another',
+    'defendant.form.charges_bonds.remove': 'Remove',
+    'defendant.form.charges_bonds.title': 'Charge & Bond #',
+    'defendant.form.charge_name.label': 'Charge Name',
+    'defendant.form.charge_name.placeholder': 'e.g., DUI, Assault, Theft',
+    'defendant.form.charge_name.help': 'Enter the name of the criminal charge',
+    'defendant.form.bond_amount.label': 'Bond Amount ($)',
+    'defendant.form.bond_amount.placeholder': 'e.g., 5000',
+    'defendant.form.bond_amount.help': 'Enter the bond amount set by the court',
+    'defendant.form.workplace.label': 'Place of Work',
+    'defendant.form.workplace.placeholder': 'e.g., Walmart, Construction Company',
+    'defendant.form.workplace.help': 'Enter where the arrested person works',
+    
+    // Form actions
+    'defendant.form.cancel': 'Cancel',
+    'defendant.form.continue': 'Continue to Documents',
   },
   es: {
     // Header
@@ -521,5 +595,79 @@ export const translations: Record<Language, TranslationSet> = {
     'download.downloading': 'Descargando...',
     'download.view': 'Ver',
     'download.viewing': 'Viendo...',
+    
+    // Defendant Information Form
+    'defendant.form.back': 'Regresar',
+    'defendant.form.title': 'Información del Acusado',
+    'defendant.form.subtitle': 'Por favor proporcione la siguiente información sobre la persona que fue arrestada',
+    'defendant.form.info.title': '¿Por qué necesitamos esta información?',
+    'defendant.form.info.description': 'Esta información se completará automáticamente en los documentos, haciendo el proceso más rápido y preciso para usted.',
+    
+    // Form sections
+    'defendant.form.name.legend': 'Nombre Completo',
+    'defendant.form.contact.legend': 'Información de Contacto',
+    'defendant.form.personal.legend': 'Información Personal',
+    'defendant.form.arrest.legend': 'Información del Arresto',
+    
+    // Name fields
+    'defendant.form.first_name.label': 'Primer Nombre',
+    'defendant.form.first_name.placeholder': 'Juan',
+    'defendant.form.first_name.help': 'Ingrese el primer nombre legal de la persona arrestada',
+    'defendant.form.middle_name.label': 'Segundo Nombre (Opcional)',
+    'defendant.form.middle_name.placeholder': 'Miguel',
+    'defendant.form.middle_name.help': 'Ingrese el segundo nombre si aplica',
+    'defendant.form.last_name.label': 'Apellido',
+    'defendant.form.last_name.placeholder': 'Pérez',
+    'defendant.form.last_name.help': 'Ingrese el apellido legal de la persona arrestada',
+    
+    // Contact fields
+    'defendant.form.cell_phone.label': 'Número de Teléfono Celular',
+    'defendant.form.cell_phone.placeholder': '(956) 123-4567',
+    'defendant.form.cell_phone.help': 'Ingrese el número de teléfono de la persona arrestada',
+    'defendant.form.address.label': 'Dirección Actual de Casa',
+    'defendant.form.address.placeholder': '123 Calle Principal, McAllen, TX 78501',
+    'defendant.form.address.help': 'Ingrese la dirección actual de la persona arrestada',
+    
+    // Personal fields
+    'defendant.form.date_of_birth.label': 'Fecha de Nacimiento',
+    'defendant.form.date_of_birth.help': 'Ingrese la fecha de nacimiento de la persona arrestada',
+    'defendant.form.birth_city.label': 'Ciudad de Nacimiento',
+    'defendant.form.birth_city.placeholder': 'McAllen',
+    'defendant.form.birth_city.help': 'Ingrese la ciudad donde nació la persona arrestada',
+    'defendant.form.birth_state.label': 'Estado de Nacimiento',
+    'defendant.form.birth_state.placeholder': 'Texas',
+    'defendant.form.birth_state.help': 'Ingrese el estado donde nació la persona arrestada',
+    
+    // Additional fields
+    'defendant.form.arrest_location.label': 'Donde fue Arrestado',
+    'defendant.form.arrest_location.placeholder': 'Departamento de Policía de McAllen',
+    'defendant.form.arrest_location.help': 'Ingrese donde ocurrió el arresto',
+    'defendant.form.nationality.label': 'Nacionalidad',
+    'defendant.form.nationality.placeholder': 'Estadounidense',
+    'defendant.form.nationality.help': 'Ingrese la nacionalidad de la persona arrestada',
+    
+    // New arrest information fields
+    'defendant.form.probation.label': 'Está en Probación/Libertad Condicional',
+    'defendant.form.probation.help': 'Seleccione si la persona arrestada está actualmente en probación o libertad condicional',
+    'defendant.form.probation.yes': 'Sí',
+    'defendant.form.probation.no': 'No',
+    'defendant.form.charges_bonds.label': 'Cargos y Fianzas',
+    'defendant.form.charges_bonds.help': 'Agregue los cargos y montos de fianza para este caso',
+    'defendant.form.charges_bonds.add': 'Agregar Otro',
+    'defendant.form.charges_bonds.remove': 'Eliminar',
+    'defendant.form.charges_bonds.title': 'Cargo & Fianza #',
+    'defendant.form.charge_name.label': 'Nombre del Cargo',
+    'defendant.form.charge_name.placeholder': 'Ej., DUI, Asalto, Robo',
+    'defendant.form.charge_name.help': 'Ingrese el nombre del cargo penal',
+    'defendant.form.bond_amount.label': 'Monto de la Fianza ($)',
+    'defendant.form.bond_amount.placeholder': 'Ej., 5000',
+    'defendant.form.bond_amount.help': 'Ingrese el monto de la fianza establecido por la corte',
+    'defendant.form.workplace.label': 'Lugar de Trabajo',
+    'defendant.form.workplace.placeholder': 'Ej., Walmart, Compañía de Construcción',
+    'defendant.form.workplace.help': 'Ingrese el lugar donde trabaja la persona arrestada',
+    
+    // Form actions
+    'defendant.form.cancel': 'Cancelar',
+    'defendant.form.continue': 'Continuar a Documentos',
   }
 }; 

@@ -1,0 +1,313 @@
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule, Router, ActivatedRoute } from '@angular/router';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { TranslatePipe } from '../shared/pipes/translate.pipe';
+import { LanguageService } from '../shared/services/language.service';
+import { ConfirmModalComponent } from '../shared/confirm-modal/confirm-modal.component';
+
+@Component({
+  selector: 'app-defendant-info',
+  standalone: true,
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, TranslatePipe, ConfirmModalComponent],
+  templateUrl: './defendant-info.component.html',
+  styleUrls: ['./defendant-info.component.css']
+})
+export class DefendantInfoComponent implements OnInit, OnDestroy {
+  defendantForm!: FormGroup;
+  lang: 'en' | 'es' = 'en';
+  
+  // Detect browser environment
+  isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined';
+  
+  private originalFooterDisplay: string | null = null;
+  private originalHeaderHeight: string | null = null;
+
+  @ViewChild('successModal') successModal?: ConfirmModalComponent;
+
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private fb: FormBuilder,
+    private languageService: LanguageService
+  ) {}
+
+  ngOnInit(): void {
+    // Get language from route params
+    const paramLang = this.route.snapshot.paramMap.get('lang');
+    this.lang = (paramLang === 'es' ? 'es' : 'en');
+    
+    // Update the language service to match the URL language
+    this.languageService.setLanguage(this.lang);
+
+    // Initialize the form
+    this.initializeForm();
+
+    // Load existing data from localStorage if available
+    this.loadExistingData();
+
+    // Hide global header and footer
+    if (this.isBrowser) {
+      // Hide global header
+      const headerEl = document.querySelector('header.header') as HTMLElement | null;
+      if (headerEl) {
+        headerEl.style.display = 'none';
+      }
+
+      // Store and override CSS variable so <main> loses top padding
+      this.originalHeaderHeight = getComputedStyle(document.documentElement).getPropertyValue('--header-height');
+      document.documentElement.style.setProperty('--header-height', '0px');
+
+      // Hide global footer
+      const footerEl = document.querySelector('footer.footer') as HTMLElement | null;
+      if (footerEl) {
+        this.originalFooterDisplay = footerEl.style.display;
+        footerEl.style.display = 'none';
+      }
+    }
+  }
+
+  ngOnDestroy(): void {
+    // Restore global header and footer
+    if (this.isBrowser) {
+      // Restore global header
+      const headerEl = document.querySelector('header.header') as HTMLElement | null;
+      if (headerEl) {
+        headerEl.style.display = '';
+      }
+
+      // Restore original CSS var
+      if (this.originalHeaderHeight) {
+        document.documentElement.style.setProperty('--header-height', this.originalHeaderHeight);
+      }
+
+      // Restore global footer
+      const footerEl = document.querySelector('footer.footer') as HTMLElement | null;
+      if (footerEl) {
+        footerEl.style.display = this.originalFooterDisplay ?? '';
+      }
+    }
+  }
+
+  private initializeForm(): void {
+    this.defendantForm = this.fb.group({
+      defendant_first_name: ['', [Validators.required, Validators.minLength(2)]],
+      defendant_middle_name: [''], // Optional
+      defendant_last_name: ['', [Validators.required, Validators.minLength(2)]],
+      defendant_cell_phone: ['', [Validators.required, Validators.pattern(/^\(?[\d\s\-\+\(\)\.]{10,}$/)]],
+      defendant_address: ['', [Validators.required, Validators.minLength(10)]],
+      defendant_date_of_birth: ['', [Validators.required]],
+      defendant_birth_city: ['', [Validators.required, Validators.minLength(2)]],
+      defendant_birth_state: ['', [Validators.required, Validators.minLength(2)]],
+      defendant_arrest_location: ['', [Validators.required, Validators.minLength(2)]],
+      defendant_nationality: ['', [Validators.required, Validators.minLength(2)]],
+      defendant_probation: ['', [Validators.required]],
+      defendant_charges_bonds: this.fb.array([]),
+      defendant_workplace: ['', [Validators.required, Validators.minLength(2)]]
+    });
+
+    // Add at least one charge/bond by default
+    this.addChargeBond();
+  }
+
+  private loadExistingData(): void {
+    if (!this.isBrowser) return;
+
+    try {
+      const existingData = localStorage.getItem('indemnitor_field_values');
+      if (existingData) {
+        const data = JSON.parse(existingData);
+        
+        // Only populate the defendant-specific fields
+        const defendantFields = [
+          'defendant_first_name', 'defendant_middle_name', 'defendant_last_name',
+          'defendant_cell_phone', 'defendant_address', 'defendant_date_of_birth',
+          'defendant_birth_city', 'defendant_birth_state', 'defendant_arrest_location',
+          'defendant_nationality', 'defendant_probation', 'defendant_workplace'
+        ];
+
+        defendantFields.forEach(field => {
+          if (data[field]) {
+            this.defendantForm.get(field)?.setValue(data[field]);
+          }
+        });
+
+        // Load charges and bonds array
+        if (data.defendant_charges_bonds && Array.isArray(data.defendant_charges_bonds)) {
+          const chargesBondsArray = this.defendantForm.get('defendant_charges_bonds') as FormArray;
+          chargesBondsArray.clear();
+          data.defendant_charges_bonds.forEach((item: any) => {
+            chargesBondsArray.push(this.fb.group({
+              charge_name: [item.charge_name || ''],
+              bond_amount: [item.bond_amount || '']
+            }));
+          });
+        } else {
+          // If no existing charges/bonds data, ensure at least one exists
+          const chargesBondsArray = this.defendantForm.get('defendant_charges_bonds') as FormArray;
+          if (chargesBondsArray.length === 0) {
+            this.addChargeBond();
+          }
+        }
+      }
+    } catch (error) {
+      console.warn('Failed to load existing defendant data:', error);
+    }
+  }
+
+  private saveToStorage(): void {
+    if (!this.isBrowser) return;
+
+    try {
+      const formValues = this.defendantForm.value;
+      
+      // Get existing data from localStorage
+      const existingRaw = localStorage.getItem('indemnitor_field_values') || '{}';
+      const existingData = JSON.parse(existingRaw);
+      
+      // Merge form values with existing data
+      const mergedData = { ...existingData, ...formValues };
+      
+      // Save back to localStorage
+      localStorage.setItem('indemnitor_field_values', JSON.stringify(mergedData));
+    } catch (error) {
+      console.warn('Failed to save defendant data:', error);
+    }
+  }
+
+  onSubmit(): void {
+    if (this.defendantForm.valid) {
+      // Save to localStorage
+      this.saveToStorage();
+      
+      // Navigate to document wizard
+      this.router.navigate(['/wizard', 'indemnitor', this.lang]);
+    } else {
+      // Mark all fields as touched to show validation errors
+      this.markFormGroupTouched(this.defendantForm);
+    }
+  }
+
+  private markFormGroupTouched(formGroup: FormGroup): void {
+    Object.keys(formGroup.controls).forEach(field => {
+      const control = formGroup.get(field);
+      control?.markAsTouched({ onlySelf: true });
+    });
+  }
+
+  goBack(): void {
+    // Show confirmation dialog before clearing data
+    const message = this.lang === 'es' 
+      ? '<div class="warning-section"><strong>¿Estás seguro de que quieres salir?</strong><br><br>Toda la información ingresada será <strong>borrada por completo</strong>.</div><div class="note-section"><small><em>Nota: Si quieres regresar al paso anterior, usa las flechas de la barra del wizard.</em></small></div>'
+      : '<div class="warning-section"><strong>Are you sure you want to exit?</strong><br><br>All entered information will be <strong>completely deleted</strong>.</div><div class="note-section"><small><em>Note: If you want to go back to the previous step, use the arrows in the wizard bar.</em></small></div>';
+    
+    const primaryLabel = this.lang === 'es' ? 'Sí, salir' : 'Yes, exit';
+    const secondaryLabel = this.lang === 'es' ? 'Cancelar' : 'Cancel';
+    
+    if (this.successModal) {
+      this.successModal.primaryLabel = primaryLabel;
+      this.successModal.secondaryLabel = secondaryLabel;
+      this.successModal.open(message);
+      
+      // Subscribe to user choice
+      const sub = this.successModal.choice.subscribe((choice) => {
+        if (choice === 'primary') {
+          // User confirmed - clear data and navigate
+          this.clearLocalData();
+          this.router.navigateByUrl('/wizard');
+        }
+        // If choice === 'secondary', user cancelled - do nothing, stay where they are
+        sub.unsubscribe();
+      });
+    } else {
+      // Fallback if modal is not available
+      const confirmed = window.confirm(message);
+      if (confirmed) {
+        this.clearLocalData();
+        this.router.navigateByUrl('/wizard');
+      }
+    }
+  }
+
+  private clearLocalData(): void {
+    if (!this.isBrowser) { return; }
+    try {
+      localStorage.removeItem('indemnitor_field_values');
+      localStorage.removeItem('indemnitor_signature');
+    } catch {
+      /* ignored – storage may be unavailable */
+    }
+  }
+
+  // Helper methods for template
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.defendantForm.get(fieldName);
+    return !!(field && field.invalid && field.touched);
+  }
+
+  getFieldError(fieldName: string): string {
+    const field = this.defendantForm.get(fieldName);
+    if (field?.errors && field.touched) {
+      if (field.errors['required']) {
+        return this.lang === 'es' ? 'Este campo es obligatorio' : 'This field is required';
+      }
+      if (field.errors['minlength']) {
+        const requiredLength = field.errors['minlength'].requiredLength;
+        return this.lang === 'es' 
+          ? `Mínimo ${requiredLength} caracteres` 
+          : `Minimum ${requiredLength} characters`;
+      }
+      if (field.errors['pattern']) {
+        return this.lang === 'es' 
+          ? 'Formato de teléfono inválido' 
+          : 'Invalid phone format';
+      }
+    }
+    return '';
+  }
+
+  // Methods for charges and bonds array
+  get chargesBondsArray(): FormArray {
+    return this.defendantForm.get('defendant_charges_bonds') as FormArray;
+  }
+
+  addChargeBond(): void {
+    const chargesBondsArray = this.chargesBondsArray;
+    chargesBondsArray.push(this.fb.group({
+      charge_name: [''],
+      bond_amount: ['']
+    }));
+  }
+
+  removeChargeBond(index: number): void {
+    const chargesBondsArray = this.chargesBondsArray;
+    if (chargesBondsArray.length > 0) {
+      chargesBondsArray.removeAt(index);
+    }
+  }
+
+  isChargeBondFieldInvalid(index: number, fieldName: string): boolean {
+    const chargeBondGroup = this.chargesBondsArray.at(index) as FormGroup;
+    const field = chargeBondGroup.get(fieldName);
+    return !!(field && field.invalid && field.touched);
+  }
+
+  getChargeBondFieldError(index: number, fieldName: string): string {
+    const chargeBondGroup = this.chargesBondsArray.at(index) as FormGroup;
+    const field = chargeBondGroup.get(fieldName);
+    if (field?.errors && field.touched) {
+      if (field.errors['minlength']) {
+        const requiredLength = field.errors['minlength'].requiredLength;
+        return this.lang === 'es' 
+          ? `Mínimo ${requiredLength} caracteres` 
+          : `Minimum ${requiredLength} characters`;
+      }
+      if (field.errors['min']) {
+        return this.lang === 'es' 
+          ? 'El monto debe ser mayor a 0' 
+          : 'Amount must be greater than 0';
+      }
+    }
+    return '';
+  }
+}

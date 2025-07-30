@@ -1,0 +1,384 @@
+<div class="defendant-info-container">
+  <div class="form-content">
+    <button class="back-btn" type="button" (click)="goBack()">
+      ← {{ 'defendant.form.back' | translate }}
+    </button>
+    
+    <div class="form-header">
+      <h2 class="title">{{ 'defendant.form.title' | translate }}</h2>
+      <p class="subtitle">{{ 'defendant.form.subtitle' | translate }}</p>
+      <div class="info-box">
+        <div class="info-icon">i</div>
+        <div class="info-text">
+          <strong>{{ 'defendant.form.info.title' | translate }}</strong>
+          <p>{{ 'defendant.form.info.description' | translate }}</p>
+        </div>
+      </div>
+    </div>
+
+    <form [formGroup]="defendantForm" (ngSubmit)="onSubmit()" class="defendant-form">
+      <!-- Full Name Section -->
+      <fieldset class="form-section">
+      <legend>{{ 'defendant.form.name.legend' | translate }}</legend>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="defendant_first_name" class="required">
+            {{ 'defendant.form.first_name.label' | translate }}
+            <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.first_name.help' | translate">
+              ?
+              <span class="tooltip-content">{{ 'defendant.form.first_name.help' | translate }}</span>
+            </button>
+          </label>
+          <input
+            type="text"
+            id="defendant_first_name"
+            formControlName="defendant_first_name"
+            [placeholder]="'defendant.form.first_name.placeholder' | translate"
+            [class.error]="isFieldInvalid('defendant_first_name')"
+            autocomplete="given-name"
+          />
+          <div class="error-message" *ngIf="isFieldInvalid('defendant_first_name')">
+            {{ getFieldError('defendant_first_name') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="defendant_middle_name">
+            {{ 'defendant.form.middle_name.label' | translate }}
+            <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.middle_name.help' | translate">
+              ?
+              <span class="tooltip-content">{{ 'defendant.form.middle_name.help' | translate }}</span>
+            </button>
+          </label>
+          <input
+            type="text"
+            id="defendant_middle_name"
+            formControlName="defendant_middle_name"
+            [placeholder]="'defendant.form.middle_name.placeholder' | translate"
+            autocomplete="additional-name"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="defendant_last_name" class="required">
+            {{ 'defendant.form.last_name.label' | translate }}
+            <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.last_name.help' | translate">
+              ?
+              <span class="tooltip-content">{{ 'defendant.form.last_name.help' | translate }}</span>
+            </button>
+          </label>
+          <input
+            type="text"
+            id="defendant_last_name"
+            formControlName="defendant_last_name"
+            [placeholder]="'defendant.form.last_name.placeholder' | translate"
+            [class.error]="isFieldInvalid('defendant_last_name')"
+            autocomplete="family-name"
+          />
+          <div class="error-message" *ngIf="isFieldInvalid('defendant_last_name')">
+            {{ getFieldError('defendant_last_name') }}
+          </div>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Contact Information Section -->
+    <fieldset class="form-section">
+      <legend>{{ 'defendant.form.contact.legend' | translate }}</legend>
+      
+      <div class="form-group">
+        <label for="defendant_cell_phone" class="required">
+          {{ 'defendant.form.cell_phone.label' | translate }}
+          <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.cell_phone.help' | translate">
+            ?
+            <span class="tooltip-content">{{ 'defendant.form.cell_phone.help' | translate }}</span>
+          </button>
+        </label>
+        <input
+          type="tel"
+          id="defendant_cell_phone"
+          formControlName="defendant_cell_phone"
+          [placeholder]="'defendant.form.cell_phone.placeholder' | translate"
+          [class.error]="isFieldInvalid('defendant_cell_phone')"
+          autocomplete="tel"
+        />
+        <div class="error-message" *ngIf="isFieldInvalid('defendant_cell_phone')">
+          {{ getFieldError('defendant_cell_phone') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="defendant_address" class="required">
+          {{ 'defendant.form.address.label' | translate }}
+          <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.address.help' | translate">
+            ?
+            <span class="tooltip-content">{{ 'defendant.form.address.help' | translate }}</span>
+          </button>
+        </label>
+        <textarea
+          id="defendant_address"
+          formControlName="defendant_address"
+          [placeholder]="'defendant.form.address.placeholder' | translate"
+          [class.error]="isFieldInvalid('defendant_address')"
+          rows="3"
+          autocomplete="street-address"
+        ></textarea>
+        <div class="error-message" *ngIf="isFieldInvalid('defendant_address')">
+          {{ getFieldError('defendant_address') }}
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Personal Information Section -->
+    <fieldset class="form-section">
+      <legend>{{ 'defendant.form.personal.legend' | translate }}</legend>
+      
+      <div class="form-group">
+        <label for="defendant_date_of_birth" class="required">
+          {{ 'defendant.form.date_of_birth.label' | translate }}
+          <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.date_of_birth.help' | translate">
+            ?
+            <span class="tooltip-content">{{ 'defendant.form.date_of_birth.help' | translate }}</span>
+          </button>
+        </label>
+        <input
+          type="date"
+          id="defendant_date_of_birth"
+          formControlName="defendant_date_of_birth"
+          [class.error]="isFieldInvalid('defendant_date_of_birth')"
+          autocomplete="bday"
+        />
+        <div class="error-message" *ngIf="isFieldInvalid('defendant_date_of_birth')">
+          {{ getFieldError('defendant_date_of_birth') }}
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="defendant_birth_city" class="required">
+            {{ 'defendant.form.birth_city.label' | translate }}
+            <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.birth_city.help' | translate">
+              ?
+              <span class="tooltip-content">{{ 'defendant.form.birth_city.help' | translate }}</span>
+            </button>
+          </label>
+          <input
+            type="text"
+            id="defendant_birth_city"
+            formControlName="defendant_birth_city"
+            [placeholder]="'defendant.form.birth_city.placeholder' | translate"
+            [class.error]="isFieldInvalid('defendant_birth_city')"
+            autocomplete="off"
+          />
+          <div class="error-message" *ngIf="isFieldInvalid('defendant_birth_city')">
+            {{ getFieldError('defendant_birth_city') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="defendant_birth_state" class="required">
+            {{ 'defendant.form.birth_state.label' | translate }}
+            <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.birth_state.help' | translate">
+              ?
+              <span class="tooltip-content">{{ 'defendant.form.birth_state.help' | translate }}</span>
+            </button>
+          </label>
+          <input
+            type="text"
+            id="defendant_birth_state"
+            formControlName="defendant_birth_state"
+            [placeholder]="'defendant.form.birth_state.placeholder' | translate"
+            [class.error]="isFieldInvalid('defendant_birth_state')"
+            autocomplete="off"
+          />
+          <div class="error-message" *ngIf="isFieldInvalid('defendant_birth_state')">
+            {{ getFieldError('defendant_birth_state') }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="defendant_nationality" class="required">
+          {{ 'defendant.form.nationality.label' | translate }}
+          <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.nationality.help' | translate">
+            ?
+            <span class="tooltip-content">{{ 'defendant.form.nationality.help' | translate }}</span>
+          </button>
+        </label>
+        <input
+          type="text"
+          id="defendant_nationality"
+          formControlName="defendant_nationality"
+          [placeholder]="'defendant.form.nationality.placeholder' | translate"
+          [class.error]="isFieldInvalid('defendant_nationality')"
+          autocomplete="off"
+        />
+        <div class="error-message" *ngIf="isFieldInvalid('defendant_nationality')">
+          {{ getFieldError('defendant_nationality') }}
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Arrest Information Section -->
+    <fieldset class="form-section">
+      <legend>{{ 'defendant.form.arrest.legend' | translate }}</legend>
+      
+      <div class="form-group">
+        <label for="defendant_arrest_location" class="required">
+          {{ 'defendant.form.arrest_location.label' | translate }}
+          <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.arrest_location.help' | translate">
+            ?
+            <span class="tooltip-content">{{ 'defendant.form.arrest_location.help' | translate }}</span>
+          </button>
+        </label>
+        <input
+          type="text"
+          id="defendant_arrest_location"
+          formControlName="defendant_arrest_location"
+          [placeholder]="'defendant.form.arrest_location.placeholder' | translate"
+          [class.error]="isFieldInvalid('defendant_arrest_location')"
+          autocomplete="off"
+        />
+        <div class="error-message" *ngIf="isFieldInvalid('defendant_arrest_location')">
+          {{ getFieldError('defendant_arrest_location') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="required">
+          {{ 'defendant.form.probation.label' | translate }}
+          <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.probation.help' | translate">
+            ?
+            <span class="tooltip-content">{{ 'defendant.form.probation.help' | translate }}</span>
+          </button>
+        </label>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input
+              type="radio"
+              formControlName="defendant_probation"
+              value="yes"
+              [class.error]="isFieldInvalid('defendant_probation')"
+            />
+            <span class="radio-label">{{ 'defendant.form.probation.yes' | translate }}</span>
+          </label>
+          <label class="radio-option">
+            <input
+              type="radio"
+              formControlName="defendant_probation"
+              value="no"
+              [class.error]="isFieldInvalid('defendant_probation')"
+            />
+            <span class="radio-label">{{ 'defendant.form.probation.no' | translate }}</span>
+          </label>
+        </div>
+        <div class="error-message" *ngIf="isFieldInvalid('defendant_probation')">
+          {{ getFieldError('defendant_probation') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>
+          {{ 'defendant.form.charges_bonds.label' | translate }}
+          <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.charges_bonds.help' | translate">
+            ?
+            <span class="tooltip-content">{{ 'defendant.form.charges_bonds.help' | translate }}</span>
+          </button>
+        </label>
+        
+        <div class="charges-bonds-container">
+          <div class="charges-bonds-list" formArrayName="defendant_charges_bonds">
+            <div class="charge-bond-item" *ngFor="let chargeBond of chargesBondsArray.controls; let i = index" [formGroupName]="i">
+              <div class="charge-bond-header">
+                <h4>{{ 'defendant.form.charges_bonds.title' | translate }}{{ i + 1 }}</h4>
+                <button type="button" class="remove-btn" (click)="removeChargeBond(i)" *ngIf="chargesBondsArray.length > 1">
+                  {{ 'defendant.form.charges_bonds.remove' | translate }}
+                </button>
+              </div>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label [for]="'charge_name_' + i">
+                    {{ 'defendant.form.charge_name.label' | translate }}
+                    <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.charge_name.help' | translate">
+                      ?
+                      <span class="tooltip-content">{{ 'defendant.form.charge_name.help' | translate }}</span>
+                    </button>
+                  </label>
+                  <input
+                    type="text"
+                    [id]="'charge_name_' + i"
+                    formControlName="charge_name"
+                    [placeholder]="'defendant.form.charge_name.placeholder' | translate"
+                    autocomplete="off"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label [for]="'bond_amount_' + i">
+                    {{ 'defendant.form.bond_amount.label' | translate }}
+                    <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.bond_amount.help' | translate">
+                      ?
+                      <span class="tooltip-content">{{ 'defendant.form.bond_amount.help' | translate }}</span>
+                    </button>
+                  </label>
+                  <input
+                    type="number"
+                    [id]="'bond_amount_' + i"
+                    formControlName="bond_amount"
+                    [placeholder]="'defendant.form.bond_amount.placeholder' | translate"
+                    autocomplete="off"
+                    min="0"
+                    step="0.01"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <button type="button" class="add-btn" (click)="addChargeBond()">
+            {{ 'defendant.form.charges_bonds.add' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="defendant_workplace" class="required">
+          {{ 'defendant.form.workplace.label' | translate }}
+          <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.workplace.help' | translate">
+            ?
+            <span class="tooltip-content">{{ 'defendant.form.workplace.help' | translate }}</span>
+          </button>
+        </label>
+        <input
+          type="text"
+          id="defendant_workplace"
+          formControlName="defendant_workplace"
+          [placeholder]="'defendant.form.workplace.placeholder' | translate"
+          [class.error]="isFieldInvalid('defendant_workplace')"
+          autocomplete="organization"
+        />
+        <div class="error-message" *ngIf="isFieldInvalid('defendant_workplace')">
+          {{ getFieldError('defendant_workplace') }}
+        </div>
+      </div>
+    </fieldset>
+  </form>
+</div>
+
+<!-- Fixed bottom actions -->
+<div class="form-actions-container">
+  <div class="form-actions">
+    <button type="button" class="btn-secondary" (click)="goBack()">
+      {{ 'defendant.form.cancel' | translate }}
+    </button>
+    <button type="button" class="btn-primary" [disabled]="defendantForm.invalid" (click)="onSubmit()">
+      {{ 'defendant.form.continue' | translate }}
+    </button>
+  </div>
+</div>
+
+<!-- Confirmation Modal -->
+<app-confirm-modal #successModal></app-confirm-modal>
+</div> 

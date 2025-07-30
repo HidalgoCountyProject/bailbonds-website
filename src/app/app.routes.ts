@@ -12,6 +12,11 @@ export const routes: Routes = [
   { path: 'documents', redirectTo: 'wizard', pathMatch: 'full' },
   { path: 'wizard', loadComponent: () => import('./documents/role-selection.component').then(m => m.RoleSelectionComponent), title: 'Select Role - Affordable Bail Bonds' },
   { 
+    path: 'wizard/indemnitor/:lang/defendant-info', 
+    loadComponent: () => import('./documents/defendant-info.component').then(m => m.DefendantInfoComponent),
+    title: 'Defendant Information - Affordable Bail Bonds'
+  },
+  { 
     path: 'wizard/:role/:lang', 
     loadComponent: () => import('./documents/document-wizard.component').then(m => m.DocumentWizardComponent),
     title: 'Complete Documents - Affordable Bail Bonds'
