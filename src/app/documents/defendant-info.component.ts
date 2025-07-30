@@ -94,15 +94,15 @@ export class DefendantInfoComponent implements OnInit, OnDestroy {
       defendant_first_name: ['', [Validators.required, Validators.minLength(2)]],
       defendant_middle_name: [''], // Optional
       defendant_last_name: ['', [Validators.required, Validators.minLength(2)]],
-      defendant_cell_phone: ['', [Validators.required, Validators.pattern(/^\(?[\d\s\-\+\(\)\.]{10,}$/)]],
+      defendant_cell_phone: [''], // Optional - removed required validator
       defendant_email: ['', [Validators.required, Validators.email]],
       defendant_address: ['', [Validators.required, Validators.minLength(10)]],
-      defendant_date_of_birth: ['', [Validators.required, Validators.pattern(/^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/\d{4}$/)]],
-      defendant_birth_city: ['', [Validators.required, Validators.minLength(2)]],
-      defendant_birth_state: ['', [Validators.required, Validators.minLength(2)]],
-      defendant_arrest_location: ['', [Validators.required, Validators.minLength(2)]],
-      defendant_nationality: ['', [Validators.required, Validators.minLength(2)]],
-      defendant_probation: ['', [Validators.required]],
+      defendant_date_of_birth: [''], // Optional - removed required validator
+      defendant_birth_city: [''], // Optional - removed required validator
+      defendant_birth_state: [''], // Optional - removed required validator
+      defendant_arrest_location: [''], // Optional - removed required validator
+      defendant_nationality: [''], // Optional - removed required validator
+      defendant_probation: [''], // Optional - removed required validator
       defendant_charges_bonds: this.fb.array([]),
       defendant_workplace: ['', [Validators.required, Validators.minLength(2)]]
     });
@@ -215,8 +215,8 @@ export class DefendantInfoComponent implements OnInit, OnDestroy {
   goBack(): void {
     // Show confirmation dialog before clearing data
     const message = this.lang === 'es' 
-      ? '<div class="warning-section"><strong>¿Estás seguro de que quieres salir?</strong><br><br>Toda la información ingresada será <strong>borrada por completo</strong>.</div><div class="note-section"><small><em>Nota: Si quieres regresar al paso anterior, usa las flechas de la barra del wizard.</em></small></div>'
-      : '<div class="warning-section"><strong>Are you sure you want to exit?</strong><br><br>All entered information will be <strong>completely deleted</strong>.</div><div class="note-section"><small><em>Note: If you want to go back to the previous step, use the arrows in the wizard bar.</em></small></div>';
+      ? '<div class="warning-section"><strong>¿Estás seguro de que quieres salir?</strong><br><br>Toda la información ingresada será <strong>borrada por completo</strong>.</div><div class="note-section"></div>'
+      : '<div class="warning-section"><strong>Are you sure you want to exit?</strong><br><br>All entered information will be <strong>completely deleted</strong>.</div><div class="note-section"></div>';
     
     const primaryLabel = this.lang === 'es' ? 'Sí, salir' : 'Yes, exit';
     const secondaryLabel = this.lang === 'es' ? 'Cancelar' : 'Cancel';

@@ -265,16 +265,14 @@ export const translations: Record<Language, TranslationSet> = {
     
     // Defendant Information Form
     'defendant.form.back': 'Back',
-    'defendant.form.title': 'Defendant Information',
-    'defendant.form.subtitle': 'Please provide the following information about the person who was arrested',
-    'defendant.form.info.title': 'Why do we need this information?',
-    'defendant.form.info.description': 'This information will be automatically filled into the documents, making the process faster and more accurate for you.',
-    
+    'defendant.form.title': 'Arrested Person Information',
+    'defendant.form.subtitle': 'Please provide the following information about the person who was arrested (defendant)',
+   
     // Form sections
-    'defendant.form.name.legend': 'Full Name',
-    'defendant.form.contact.legend': 'Contact Information',
-    'defendant.form.personal.legend': 'Personal Information',
-    'defendant.form.arrest.legend': 'Arrest Information',
+    'defendant.form.name.legend': 'Full Name of the Arrested Person',
+    'defendant.form.contact.legend': 'Contact Information of the Arrested Person',
+    'defendant.form.personal.legend': 'Personal Information of the Arrested Person',
+    'defendant.form.arrest.legend': 'Arrest Information of the Person',
     
     // Name fields
     'defendant.form.first_name.label': 'First Name',
@@ -295,7 +293,7 @@ export const translations: Record<Language, TranslationSet> = {
     'defendant.form.email.placeholder': 'john.smith@email.com',
     'defendant.form.email.help': 'Enter the arrested person\'s email address',
     'defendant.form.address.label': 'Current Home Address',
-    'defendant.form.address.placeholder': '123 Main St, McAllen, TX 78501',
+    'defendant.form.address.placeholder': '123 Main St McAllen TX 78501',
     'defendant.form.address.help': 'Enter the arrested person\'s current address',
     
     // Personal fields
@@ -601,16 +599,14 @@ export const translations: Record<Language, TranslationSet> = {
     
     // Defendant Information Form
     'defendant.form.back': 'Regresar',
-    'defendant.form.title': 'Información del Acusado',
-    'defendant.form.subtitle': 'Por favor proporcione la siguiente información sobre la persona que fue arrestada',
-    'defendant.form.info.title': '¿Por qué necesitamos esta información?',
-    'defendant.form.info.description': 'Esta información se completará automáticamente en los documentos, haciendo el proceso más rápido y preciso para usted.',
+    'defendant.form.title': 'Información de la Persona Arrestada',
+    'defendant.form.subtitle': 'Por favor proporcione la siguiente información sobre la persona que fue arrestada (acusado)',
     
     // Form sections
-    'defendant.form.name.legend': 'Nombre Completo',
-    'defendant.form.contact.legend': 'Información de Contacto',
-    'defendant.form.personal.legend': 'Información Personal',
-    'defendant.form.arrest.legend': 'Información del Arresto',
+    'defendant.form.name.legend': 'Nombre Completo de la Persona Arrestada',
+    'defendant.form.contact.legend': 'Información de Contacto de la Persona Arrestada',
+    'defendant.form.personal.legend': 'Información Personal de la Persona Arrestada',
+    'defendant.form.arrest.legend': 'Información del Arresto de la Persona',
     
     // Name fields
     'defendant.form.first_name.label': 'Primer Nombre',
@@ -631,7 +627,7 @@ export const translations: Record<Language, TranslationSet> = {
     'defendant.form.email.placeholder': 'juan.perez@email.com',
     'defendant.form.email.help': 'Ingrese la dirección de correo electrónico de la persona arrestada',
     'defendant.form.address.label': 'Dirección Actual de Casa',
-    'defendant.form.address.placeholder': '123 Calle Principal, McAllen, TX 78501',
+    'defendant.form.address.placeholder': '123 Main St McAllen TX 78501',
     'defendant.form.address.help': 'Ingrese la dirección actual de la persona arrestada',
     
     // Personal fields

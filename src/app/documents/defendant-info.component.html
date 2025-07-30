@@ -7,13 +7,6 @@
     <div class="form-header">
       <h2 class="title">{{ 'defendant.form.title' | translate }}</h2>
       <p class="subtitle">{{ 'defendant.form.subtitle' | translate }}</p>
-      <div class="info-box">
-        <div class="info-icon">i</div>
-        <div class="info-text">
-          <strong>{{ 'defendant.form.info.title' | translate }}</strong>
-          <p>{{ 'defendant.form.info.description' | translate }}</p>
-        </div>
-      </div>
     </div>
 
     <form [formGroup]="defendantForm" (ngSubmit)="onSubmit()" class="defendant-form">
@@ -88,7 +81,7 @@
       <legend>{{ 'defendant.form.contact.legend' | translate }}</legend>
       
       <div class="form-group">
-        <label for="defendant_cell_phone" class="required">
+        <label for="defendant_cell_phone">
           {{ 'defendant.form.cell_phone.label' | translate }}
           <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.cell_phone.help' | translate">
             ?
@@ -149,6 +142,27 @@
           {{ getFieldError('defendant_address') }}
         </div>
       </div>
+
+      <div class="form-group">
+        <label for="defendant_workplace" class="required">
+          {{ 'defendant.form.workplace.label' | translate }}
+          <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.workplace.help' | translate">
+            ?
+            <span class="tooltip-content">{{ 'defendant.form.workplace.help' | translate }}</span>
+          </button>
+        </label>
+        <input
+          type="text"
+          id="defendant_workplace"
+          formControlName="defendant_workplace"
+          [placeholder]="'defendant.form.workplace.placeholder' | translate"
+          [class.error]="isFieldInvalid('defendant_workplace')"
+          autocomplete="organization"
+        />
+        <div class="error-message" *ngIf="isFieldInvalid('defendant_workplace')">
+          {{ getFieldError('defendant_workplace') }}
+        </div>
+      </div>
     </fieldset>
 
     <!-- Personal Information Section -->
@@ -156,7 +170,7 @@
       <legend>{{ 'defendant.form.personal.legend' | translate }}</legend>
       
       <div class="form-group">
-        <label for="defendant_date_of_birth" class="required">
+        <label for="defendant_date_of_birth">
           {{ 'defendant.form.date_of_birth.label' | translate }}
           <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.date_of_birth.help' | translate">
             ?
@@ -180,7 +194,7 @@
 
       <div class="form-row">
         <div class="form-group">
-          <label for="defendant_birth_city" class="required">
+          <label for="defendant_birth_city">
             {{ 'defendant.form.birth_city.label' | translate }}
             <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.birth_city.help' | translate">
               ?
@@ -201,7 +215,7 @@
         </div>
 
         <div class="form-group">
-          <label for="defendant_birth_state" class="required">
+          <label for="defendant_birth_state">
             {{ 'defendant.form.birth_state.label' | translate }}
             <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.birth_state.help' | translate">
               ?
@@ -223,7 +237,7 @@
       </div>
 
       <div class="form-group">
-        <label for="defendant_nationality" class="required">
+        <label for="defendant_nationality">
           {{ 'defendant.form.nationality.label' | translate }}
           <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.nationality.help' | translate">
             ?
@@ -249,7 +263,7 @@
       <legend>{{ 'defendant.form.arrest.legend' | translate }}</legend>
       
       <div class="form-group">
-        <label for="defendant_arrest_location" class="required">
+        <label for="defendant_arrest_location">
           {{ 'defendant.form.arrest_location.label' | translate }}
           <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.arrest_location.help' | translate">
             ?
@@ -270,7 +284,7 @@
       </div>
 
       <div class="form-group">
-        <label class="required">
+        <label>
           {{ 'defendant.form.probation.label' | translate }}
           <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.probation.help' | translate">
             ?
@@ -364,27 +378,6 @@
           <button type="button" class="add-btn" (click)="addChargeBond()">
             {{ 'defendant.form.charges_bonds.add' | translate }}
           </button>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="defendant_workplace" class="required">
-          {{ 'defendant.form.workplace.label' | translate }}
-          <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.workplace.help' | translate">
-            ?
-            <span class="tooltip-content">{{ 'defendant.form.workplace.help' | translate }}</span>
-          </button>
-        </label>
-        <input
-          type="text"
-          id="defendant_workplace"
-          formControlName="defendant_workplace"
-          [placeholder]="'defendant.form.workplace.placeholder' | translate"
-          [class.error]="isFieldInvalid('defendant_workplace')"
-          autocomplete="organization"
-        />
-        <div class="error-message" *ngIf="isFieldInvalid('defendant_workplace')">
-          {{ getFieldError('defendant_workplace') }}
         </div>
       </div>
     </fieldset>
