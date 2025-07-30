@@ -95,8 +95,9 @@ export class DefendantInfoComponent implements OnInit, OnDestroy {
       defendant_middle_name: [''], // Optional
       defendant_last_name: ['', [Validators.required, Validators.minLength(2)]],
       defendant_cell_phone: ['', [Validators.required, Validators.pattern(/^\(?[\d\s\-\+\(\)\.]{10,}$/)]],
+      defendant_email: ['', [Validators.required, Validators.email]],
       defendant_address: ['', [Validators.required, Validators.minLength(10)]],
-      defendant_date_of_birth: ['', [Validators.required]],
+      defendant_date_of_birth: ['', [Validators.required, Validators.pattern(/^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/\d{4}$/)]],
       defendant_birth_city: ['', [Validators.required, Validators.minLength(2)]],
       defendant_birth_state: ['', [Validators.required, Validators.minLength(2)]],
       defendant_arrest_location: ['', [Validators.required, Validators.minLength(2)]],
@@ -121,14 +122,24 @@ export class DefendantInfoComponent implements OnInit, OnDestroy {
         // Only populate the defendant-specific fields
         const defendantFields = [
           'defendant_first_name', 'defendant_middle_name', 'defendant_last_name',
-          'defendant_cell_phone', 'defendant_address', 'defendant_date_of_birth',
+          'defendant_cell_phone', 'defendant_email', 'defendant_address', 'defendant_date_of_birth',
           'defendant_birth_city', 'defendant_birth_state', 'defendant_arrest_location',
           'defendant_nationality', 'defendant_probation', 'defendant_workplace'
         ];
 
         defendantFields.forEach(field => {
           if (data[field]) {
-            this.defendantForm.get(field)?.setValue(data[field]);
+            // Special validation for date of birth field
+            if (field === 'defendant_date_of_birth') {
+              if (this.validateDateFormat(data[field])) {
+                this.defendantForm.get(field)?.setValue(data[field]);
+              } else {
+                console.warn('Invalid date format in localStorage, clearing field');
+                this.defendantForm.get(field)?.setValue('');
+              }
+            } else {
+              this.defendantForm.get(field)?.setValue(data[field]);
+            }
           }
         });
 
@@ -160,6 +171,12 @@ export class DefendantInfoComponent implements OnInit, OnDestroy {
 
     try {
       const formValues = this.defendantForm.value;
+      
+      // Validate date format before saving
+      if (formValues.defendant_date_of_birth && !this.validateDateFormat(formValues.defendant_date_of_birth)) {
+        console.warn('Invalid date format detected, not saving to localStorage');
+        return;
+      }
       
       // Get existing data from localStorage
       const existingRaw = localStorage.getItem('indemnitor_field_values') || '{}';
@@ -258,12 +275,64 @@ export class DefendantInfoComponent implements OnInit, OnDestroy {
           : `Minimum ${requiredLength} characters`;
       }
       if (field.errors['pattern']) {
+        if (fieldName === 'defendant_date_of_birth') {
+          return this.lang === 'es' 
+            ? 'Formato de fecha inválido. Use MM/DD/YYYY' 
+            : 'Invalid date format. Use MM/DD/YYYY';
+        }
         return this.lang === 'es' 
           ? 'Formato de teléfono inválido' 
           : 'Invalid phone format';
       }
+      if (field.errors['email']) {
+        return this.lang === 'es' 
+          ? 'Formato de correo electrónico inválido' 
+          : 'Invalid email format';
+      }
     }
     return '';
+  }
+
+  formatDateOfBirth(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    let value = input.value.replace(/\D/g, ''); // Remove non-digits
+    
+    // Format as MM/DD/YYYY
+    if (value.length >= 2) {
+      value = value.substring(0, 2) + '/' + value.substring(2);
+    }
+    if (value.length >= 5) {
+      value = value.substring(0, 5) + '/' + value.substring(5, 9);
+    }
+    
+    // Limit to 10 characters (MM/DD/YYYY)
+    value = value.substring(0, 10);
+    
+    input.value = value;
+    
+    // Update the form control
+    this.defendantForm.get('defendant_date_of_birth')?.setValue(value);
+  }
+
+  private validateDateFormat(dateString: string): boolean {
+    // Check if the format matches MM/DD/YYYY
+    const dateRegex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/\d{4}$/;
+    if (!dateRegex.test(dateString)) {
+      return false;
+    }
+
+    // Parse the date to validate it's a real date
+    const parts = dateString.split('/');
+    const month = parseInt(parts[0], 10);
+    const day = parseInt(parts[1], 10);
+    const year = parseInt(parts[2], 10);
+
+    // Create a Date object and check if it's valid
+    const date = new Date(year, month - 1, day);
+    return date.getFullYear() === year && 
+           date.getMonth() === month - 1 && 
+           date.getDate() === day &&
+           year >= 1900 && year <= 2100; // Reasonable year range
   }
 
   // Methods for charges and bonds array

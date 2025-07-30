@@ -109,6 +109,27 @@
       </div>
 
       <div class="form-group">
+        <label for="defendant_email" class="required">
+          {{ 'defendant.form.email.label' | translate }}
+          <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.email.help' | translate">
+            ?
+            <span class="tooltip-content">{{ 'defendant.form.email.help' | translate }}</span>
+          </button>
+        </label>
+        <input
+          type="email"
+          id="defendant_email"
+          formControlName="defendant_email"
+          [placeholder]="'defendant.form.email.placeholder' | translate"
+          [class.error]="isFieldInvalid('defendant_email')"
+          autocomplete="email"
+        />
+        <div class="error-message" *ngIf="isFieldInvalid('defendant_email')">
+          {{ getFieldError('defendant_email') }}
+        </div>
+      </div>
+
+      <div class="form-group">
         <label for="defendant_address" class="required">
           {{ 'defendant.form.address.label' | translate }}
           <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.address.help' | translate">
@@ -143,11 +164,14 @@
           </button>
         </label>
         <input
-          type="date"
+          type="text"
           id="defendant_date_of_birth"
           formControlName="defendant_date_of_birth"
+          [placeholder]="'MM/DD/YYYY'"
           [class.error]="isFieldInvalid('defendant_date_of_birth')"
-          autocomplete="bday"
+          autocomplete="off"
+          (input)="formatDateOfBirth($event)"
+          maxlength="10"
         />
         <div class="error-message" *ngIf="isFieldInvalid('defendant_date_of_birth')">
           {{ getFieldError('defendant_date_of_birth') }}
