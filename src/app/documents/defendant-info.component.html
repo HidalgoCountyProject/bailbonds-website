@@ -1,16 +1,24 @@
 <div class="defendant-info-container">
   <!-- Fake wizard bar -->
   <header class="document-toolbar">
-    <button class="toolbar-btn back-btn" type="button" (click)="goBack()" aria-label="Go back">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <line x1="19" y1="12" x2="5" y2="12"></line>
-        <polyline points="12 19 5 12 12 5"></polyline>
-      </svg>
-    </button>
+    <div class="toolbar-left">
+      <button class="toolbar-btn back-btn" type="button" (click)="goBack()" aria-label="Go back">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </button>
+    </div>
     
-    <button class="toolbar-btn continue-btn" type="button" [disabled]="defendantForm.invalid" (click)="onSubmit()" aria-label="Continue to documents">
-      {{ 'defendant.form.continue' | translate }}
-    </button>
+    <div class="toolbar-center">
+      <button class="toolbar-btn continue-btn" type="button" [disabled]="defendantForm.invalid" (click)="onSubmit()" aria-label="Continue to documents">
+        {{ 'defendant.form.continue' | translate }}
+      </button>
+    </div>
+    
+    <div class="toolbar-right">
+      <!-- Empty div for balance -->
+    </div>
   </header>
 
   <div class="form-content">
