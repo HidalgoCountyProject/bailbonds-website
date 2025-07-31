@@ -954,6 +954,42 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
     const file  = input.files?.[0];
     if (!file) { return; }
 
+    // Validate file size (max 10MB for photos)
+    const maxSizeInBytes = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSizeInBytes) {
+      const errorMsg = this.lang === 'es' 
+        ? `La foto es demasiado grande (${(file.size / 1024 / 1024).toFixed(1)}MB). Por favor selecciona una foto más pequeña (máximo 10MB) o toma una nueva foto con menor resolución.`
+        : `The photo is too large (${(file.size / 1024 / 1024).toFixed(1)}MB). Please select a smaller photo (maximum 10MB) or take a new photo with lower resolution.`;
+      
+      if (this.warningModal) {
+        this.warningModal.open(errorMsg);
+      } else {
+        window.alert(errorMsg);
+      }
+      
+      // Reset the input
+      input.value = '';
+      return;
+    }
+
+    // Validate file type (only images)
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+    if (!allowedTypes.includes(file.type)) {
+      const errorMsg = this.lang === 'es'
+        ? 'Por favor selecciona solo archivos de imagen (JPG, PNG, GIF).'
+        : 'Please select only image files (JPG, PNG, GIF).';
+      
+      if (this.warningModal) {
+        this.warningModal.open(errorMsg);
+      } else {
+        window.alert(errorMsg);
+      }
+      
+      // Reset the input
+      input.value = '';
+      return;
+    }
+
     const control = this.currentForm.get(questionId);
     if (!control) { return; }
 
