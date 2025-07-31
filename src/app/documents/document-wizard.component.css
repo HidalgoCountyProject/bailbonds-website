@@ -48,18 +48,16 @@
   border-radius: 8px;
   cursor: pointer;
   color: #4a5568;
-  transition: all 0.2s ease;
   padding: 0;
 }
 
 .toolbar-btn:hover {
   background-color: #f7fafc;
   color: #2d3748;
-  transform: scale(1.05);
 }
 
 .toolbar-btn:active {
-  transform: scale(0.95);
+  /* No animation */
 }
 
 .close-btn:hover {

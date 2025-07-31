@@ -200,9 +200,56 @@ export class DefendantInfoComponent implements OnInit, OnDestroy {
       // Navigate to document wizard
       this.router.navigate(['/wizard', 'indemnitor', this.lang]);
     } else {
-      // Mark all fields as touched to show validation errors
-      this.markFormGroupTouched(this.defendantForm);
+      // Show tooltip for required fields without highlighting fields
+      this.showRequiredFieldsTooltip();
     }
+  }
+
+  private showRequiredFieldsTooltip(): void {
+    // Create tooltip element
+    const tooltip = document.createElement('div');
+    tooltip.className = 'continue-tooltip';
+    tooltip.textContent = this.lang === 'es' ? 'Complete los campos para continuar' : 'Fill the fields to continue';
+    
+    // Add styles
+    tooltip.style.cssText = `
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 10001;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      animation: tooltipFadeIn 0.3s ease;
+    `;
+    
+    // Add animation styles
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes tooltipFadeIn {
+        from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+        to { opacity: 1; transform: translateX(-50%) translateY(0); }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    // Add to DOM
+    document.body.appendChild(tooltip);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+      if (tooltip.parentNode) {
+        tooltip.parentNode.removeChild(tooltip);
+      }
+      if (style.parentNode) {
+        style.parentNode.removeChild(style);
+      }
+    }, 3000);
   }
 
   private markFormGroupTouched(formGroup: FormGroup): void {

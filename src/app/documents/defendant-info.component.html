@@ -4,16 +4,14 @@
     <div class="toolbar-left">
       <button class="toolbar-btn back-btn" type="button" (click)="goBack()" aria-label="Go back">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="19" y1="12" x2="5" y2="12"></line>
-          <polyline points="12 19 5 12 12 5"></polyline>
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
       </button>
     </div>
     
     <div class="toolbar-center">
-      <button class="toolbar-btn continue-btn" type="button" [disabled]="defendantForm.invalid" (click)="onSubmit()" aria-label="Continue to documents">
-        {{ 'defendant.form.continue' | translate }}
-      </button>
+      <!-- Removed continue button from here -->
     </div>
     
     <div class="toolbar-right">
@@ -409,7 +407,12 @@
   </form>
 </div>
 
-
+<!-- Floating continue button bar -->
+<div class="floating-continue-bar">
+  <button class="floating-continue-btn" type="button" (click)="onSubmit()" aria-label="Continue to documents">
+    {{ 'defendant.form.continue' | translate }}
+  </button>
+</div>
 
 <!-- Confirmation Modal -->
 <app-confirm-modal #successModal></app-confirm-modal>

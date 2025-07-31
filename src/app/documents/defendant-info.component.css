@@ -57,11 +57,10 @@
 .toolbar-btn:hover {
   background-color: #f7fafc;
   color: #2d3748;
-  transform: scale(1.05);
 }
 
 .toolbar-btn:active {
-  transform: scale(0.95);
+  /* No animation */
 }
 
 /* Back button specific styles */
@@ -75,7 +74,6 @@
   font-weight: 600;
   border-radius: 8px;
   z-index: 2;
-  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -84,111 +82,81 @@
 
 .document-toolbar .back-btn:hover {
   background-color: #e6b800;
-  transform: scale(1.05);
 }
 
 .document-toolbar .back-btn:active {
-  transform: scale(0.95);
+  /* No animation */
 }
 
-/* Continue button specific styles */
-.document-toolbar .continue-btn {
+/* Floating continue button bar styles */
+.floating-continue-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border-top: 2px solid #f0f0f0;
+  padding: 16px;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.floating-continue-btn {
   background-color: var(--secondary-color, #FFCC00);
   color: var(--primary-color, #000000);
   border: 2px solid var(--secondary-color, #FFCC00);
-  min-width: 180px;
-  height: 44px;
-  padding: 0 20px;
+  min-width: 200px;
+  height: 48px;
+  padding: 0 24px;
   font-weight: 600;
   border-radius: 8px;
-  z-index: 2;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  transform: translateY(-1px);
-  font-size: 14px;
+  font-size: 16px;
+  cursor: pointer;
 }
 
-.document-toolbar .continue-btn:hover:not(:disabled) {
+.floating-continue-btn:hover {
   background-color: #e6b800;
-  transform: translateY(-1px) scale(1.05);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 204, 0, 0.3);
 }
 
-.document-toolbar .continue-btn:active {
-  transform: translateY(-1px) scale(0.95);
+.floating-continue-btn:active {
+  transform: translateY(0px) scale(0.98);
 }
 
-.document-toolbar .continue-btn:disabled {
-  background-color: #e0e0e0;
-  border-color: #e0e0e0;
-  color: #999;
-  cursor: not-allowed;
-  transform: translateY(-1px);
-}
+/* Removed disabled styles to keep button always yellow */
 
-/* Mobile responsive adjustments for toolbar */
+/* Mobile responsive adjustments for floating continue bar */
 @media (max-width: 768px) {
-  .document-toolbar {
-    min-height: 56px;
-    padding: 0 12px;
+  .floating-continue-bar {
+    padding: 12px;
   }
   
-  .document-toolbar .back-btn {
-    min-width: 40px;
-    height: 40px;
-  }
-  
-  .document-toolbar .continue-btn {
-    min-width: 140px;
-    height: 40px;
-    padding: 0 16px;
-    font-size: 13px;
-    transform: translateY(-1px);
-  }
-  
-  .document-toolbar .continue-btn:hover:not(:disabled) {
-    transform: translateY(-1px) scale(1.05);
-  }
-  
-  .document-toolbar .continue-btn:active {
-    transform: translateY(-1px) scale(0.95);
-  }
-  
-  .document-toolbar .continue-btn:disabled {
-    transform: translateY(-1px);
+  .floating-continue-btn {
+    min-width: 160px;
+    height: 44px;
+    padding: 0 20px;
+    font-size: 15px;
   }
 }
 
 @media (max-width: 480px) {
-  .document-toolbar {
-    min-height: 52px;
-    padding: 0 8px;
+  .floating-continue-bar {
+    padding: 10px;
   }
   
-  .document-toolbar .back-btn {
-    min-width: 36px;
-    height: 36px;
-  }
-  
-  .document-toolbar .continue-btn {
-    min-width: 120px;
-    height: 36px;
-    padding: 0 12px;
-    font-size: 12px;
-    transform: translateY(0px);
-  }
-  
-  .document-toolbar .continue-btn:hover:not(:disabled) {
-    transform: translateY(0px) scale(1.05);
-  }
-  
-  .document-toolbar .continue-btn:active {
-    transform: translateY(0px) scale(0.95);
-  }
-  
-  .document-toolbar .continue-btn:disabled {
-    transform: translateY(0px);
+  .floating-continue-btn {
+    min-width: 140px;
+    height: 40px;
+    padding: 0 16px;
+    font-size: 14px;
   }
 }
 
@@ -304,7 +272,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   padding: 16px;
-  padding-bottom: 20px;
+  padding-bottom: 80px; /* Increased padding to account for floating button */
   margin-top: 80px;
   /* Custom scrollbar for better UX */
   scrollbar-width: thin;
@@ -419,6 +387,7 @@
   content: " *";
   color: #d32f2f;
   font-weight: bold;
+  font-size: 1.2em;
 }
 
 .help-tooltip {
@@ -589,7 +558,7 @@
 
   .form-content {
     padding: 12px;
-    padding-bottom: 16px;
+    padding-bottom: 80px; /* Keep space for floating button */
     margin-top: 76px;
     overflow-x: hidden;
   }
