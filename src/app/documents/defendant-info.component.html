@@ -25,6 +25,13 @@
     <div class="form-header">
       <h2 class="title">{{ 'defendant.form.title' | translate }}</h2>
       <p class="subtitle">{{ 'defendant.form.subtitle' | translate }}</p>
+      <div class="info-box">
+        <div class="info-icon">i</div>
+        <div class="info-text">
+          <strong>{{ 'defendant.form.info.title' | translate }}</strong>
+          <p>{{ 'defendant.form.info.description' | translate }}</p>
+        </div>
+      </div>
     </div>
 
     <form [formGroup]="defendantForm" (ngSubmit)="onSubmit()" class="defendant-form">
