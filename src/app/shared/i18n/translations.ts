@@ -269,7 +269,7 @@ export const translations: Record<Language, TranslationSet> = {
     'defendant.form.title': 'Arrested Person Information',
     'defendant.form.subtitle': 'Please provide the following information about the person who was arrested (defendant)',
     'defendant.form.info.title': 'Important Information About the Defendant',
-    'defendant.form.info.description': 'This information is about the defendant. It is crucial that you provide only real and accurate information, as this will be used to process the bail bond for the arrested person. Providing false information may delay or prevent the bail process.',
+    'defendant.form.info.description': 'This information is about the defendant. It is crucial that you provide only real and accurate information, as this will be used to process the bail bond for the arrested person. <strong>Providing false information may delay or prevent the bail process.</strong>',
     
 
     // Form sections
@@ -609,7 +609,7 @@ export const translations: Record<Language, TranslationSet> = {
     'defendant.form.title': 'Información de la Persona Arrestada',
     'defendant.form.subtitle': 'Por favor proporcione la siguiente información sobre la persona que fue arrestada (acusado)',
     'defendant.form.info.title': 'Información Importante Sobre el Acusado',
-    'defendant.form.info.description': 'Esta información es sobre el acusado. Es crucial que proporcione únicamente información real y precisa, ya que será utilizada para procesar la fianza de la persona arrestada. Proporcionar información falsa puede retrasar o impedir el proceso de fianza.',
+    'defendant.form.info.description': 'Esta información es sobre el acusado. Es crucial que proporcione únicamente información real y precisa, ya que será utilizada para procesar la fianza de la persona arrestada. <strong>Proporcionar información falsa puede retrasar o impedir el proceso de fianza.</strong>',
 
     // Form sections
     'defendant.form.name.legend': 'Nombre Completo de la Persona Arrestada',
