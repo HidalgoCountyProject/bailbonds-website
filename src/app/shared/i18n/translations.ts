@@ -267,8 +267,8 @@ export const translations: Record<Language, TranslationSet> = {
     'defendant.form.back': 'Back',
     'defendant.form.title': 'Defendant Information',
     'defendant.form.subtitle': 'Please provide the following information about the person who was arrested',
-    'defendant.form.info.title': 'Why do we need this information?',
-    'defendant.form.info.description': 'This information will be automatically filled into the documents, making the process faster and more accurate for you.',
+    'defendant.form.info.title': 'Important Information About the Defendant',
+    'defendant.form.info.description': 'This information is about the defendant. It is crucial that you provide only real and accurate information, as this will be used to process the bail bond for the arrested person. Providing false information may delay or prevent the bail process.',
     
     // Form sections
     'defendant.form.name.legend': 'Full Name',
@@ -290,17 +290,17 @@ export const translations: Record<Language, TranslationSet> = {
     // Contact fields
     'defendant.form.cell_phone.label': 'Cell Phone Number',
     'defendant.form.cell_phone.placeholder': '(956) 123-4567',
-    'defendant.form.cell_phone.help': 'Enter the arrested person\'s phone number',
+    'defendant.form.cell_phone.help': 'The defendant\'s cell phone number where we will communicate and receive court notifications',
     'defendant.form.email.label': 'Email Address',
     'defendant.form.email.placeholder': 'john.smith@email.com',
-    'defendant.form.email.help': 'Enter the arrested person\'s email address',
+    'defendant.form.email.help': 'The defendant\'s email where court notifications will be sent',
     'defendant.form.address.label': 'Current Home Address',
     'defendant.form.address.placeholder': '123 Main St, McAllen, TX 78501',
-    'defendant.form.address.help': 'Enter the arrested person\'s current address',
+    'defendant.form.address.help': 'The defendant\'s address where they live and where court letters will be sent',
     
     // Personal fields
     'defendant.form.date_of_birth.label': 'Date of Birth',
-    'defendant.form.date_of_birth.help': 'Enter the arrested person\'s date of birth',
+    'defendant.form.date_of_birth.help': 'The defendant\'s date of birth. If you don\'t know it, leave it blank.',
     'defendant.form.birth_city.label': 'City Born',
     'defendant.form.birth_city.placeholder': 'McAllen',
     'defendant.form.birth_city.help': 'Enter the city where the arrested person was born',
@@ -603,8 +603,8 @@ export const translations: Record<Language, TranslationSet> = {
     'defendant.form.back': 'Regresar',
     'defendant.form.title': 'Información del Acusado',
     'defendant.form.subtitle': 'Por favor proporcione la siguiente información sobre la persona que fue arrestada',
-    'defendant.form.info.title': '¿Por qué necesitamos esta información?',
-    'defendant.form.info.description': 'Esta información se completará automáticamente en los documentos, haciendo el proceso más rápido y preciso para usted.',
+    'defendant.form.info.title': 'Información Importante Sobre el Acusado',
+    'defendant.form.info.description': 'Esta información es sobre el acusado. Es crucial que proporcione únicamente información real y precisa, ya que será utilizada para procesar la fianza de la persona arrestada. Proporcionar información falsa puede retrasar o impedir el proceso de fianza.',
     
     // Form sections
     'defendant.form.name.legend': 'Nombre Completo',
@@ -626,17 +626,17 @@ export const translations: Record<Language, TranslationSet> = {
     // Contact fields
     'defendant.form.cell_phone.label': 'Número de Teléfono Celular',
     'defendant.form.cell_phone.placeholder': '(956) 123-4567',
-    'defendant.form.cell_phone.help': 'Ingrese el número de teléfono de la persona arrestada',
+    'defendant.form.cell_phone.help': 'El número de celular del acusado donde nos vamos a comunicar y recibir notificaciones de corte',
     'defendant.form.email.label': 'Dirección de Correo Electrónico',
     'defendant.form.email.placeholder': 'juan.perez@email.com',
-    'defendant.form.email.help': 'Ingrese la dirección de correo electrónico de la persona arrestada',
+    'defendant.form.email.help': 'El correo del acusado donde llegarán las notificaciones de la corte',
     'defendant.form.address.label': 'Dirección Actual de Casa',
     'defendant.form.address.placeholder': '123 Calle Principal, McAllen, TX 78501',
-    'defendant.form.address.help': 'Ingrese la dirección actual de la persona arrestada',
+    'defendant.form.address.help': 'Dirección del acusado donde vive el acusado y donde llegarán las cartas de corte',
     
     // Personal fields
     'defendant.form.date_of_birth.label': 'Fecha de Nacimiento',
-    'defendant.form.date_of_birth.help': 'Ingrese la fecha de nacimiento de la persona arrestada',
+    'defendant.form.date_of_birth.help': 'La fecha de nacimiento del acusado. Si no la sabes, déjala en blanco.',
     'defendant.form.birth_city.label': 'Ciudad de Nacimiento',
     'defendant.form.birth_city.placeholder': 'McAllen',
     'defendant.form.birth_city.help': 'Ingrese la ciudad donde nació la persona arrestada',
