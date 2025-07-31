@@ -94,9 +94,9 @@ export class DefendantInfoComponent implements OnInit, OnDestroy {
       defendant_first_name: ['', [Validators.required, Validators.minLength(2)]],
       defendant_middle_name: [''], // Optional
       defendant_last_name: ['', [Validators.required, Validators.minLength(2)]],
-      defendant_cell_phone: [''], // Optional - removed required validator
+      defendant_cell_phone: ['', [Validators.required]], // Required
       defendant_email: ['', [Validators.required, Validators.email]],
-      defendant_address: ['', [Validators.required, Validators.minLength(10)]],
+      defendant_address: ['', [Validators.required, Validators.minLength(8)]],
       defendant_date_of_birth: [''], // Optional - removed required validator
       defendant_birth_city: [''], // Optional - removed required validator
       defendant_birth_state: [''], // Optional - removed required validator

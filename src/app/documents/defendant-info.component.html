@@ -1,9 +1,19 @@
 <div class="defendant-info-container">
-  <div class="form-content">
-    <button class="back-btn" type="button" (click)="goBack()">
-      ← {{ 'defendant.form.back' | translate }}
+  <!-- Fake wizard bar -->
+  <header class="document-toolbar">
+    <button class="toolbar-btn back-btn" type="button" (click)="goBack()" aria-label="Go back">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
     </button>
     
+    <button class="toolbar-btn continue-btn" type="button" [disabled]="defendantForm.invalid" (click)="onSubmit()" aria-label="Continue to documents">
+      {{ 'defendant.form.continue' | translate }}
+    </button>
+  </header>
+
+  <div class="form-content">
     <div class="form-header">
       <h2 class="title">{{ 'defendant.form.title' | translate }}</h2>
       <p class="subtitle">{{ 'defendant.form.subtitle' | translate }}</p>
@@ -81,7 +91,7 @@
       <legend>{{ 'defendant.form.contact.legend' | translate }}</legend>
       
       <div class="form-group">
-        <label for="defendant_cell_phone">
+        <label for="defendant_cell_phone" class="required">
           {{ 'defendant.form.cell_phone.label' | translate }}
           <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.cell_phone.help' | translate">
             ?
@@ -384,17 +394,7 @@
   </form>
 </div>
 
-<!-- Fixed bottom actions -->
-<div class="form-actions-container">
-  <div class="form-actions">
-    <button type="button" class="btn-secondary" (click)="goBack()">
-      {{ 'defendant.form.cancel' | translate }}
-    </button>
-    <button type="button" class="btn-primary" [disabled]="defendantForm.invalid" (click)="onSubmit()">
-      {{ 'defendant.form.continue' | translate }}
-    </button>
-  </div>
-</div>
+
 
 <!-- Confirmation Modal -->
 <app-confirm-modal #successModal></app-confirm-modal>
