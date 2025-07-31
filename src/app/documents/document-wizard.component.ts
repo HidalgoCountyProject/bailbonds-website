@@ -1433,11 +1433,12 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
         this.apiService.uploadFilesToPresignedUrls(response.urls, this.findFileByName.bind(this)).subscribe({
           next: (uploadResults) => {
             const allOk = uploadResults.every(r => r.success);
-            if (!allOk) {
-              this.isLoading = false;
-              window.alert('Ocurrió un error al subir uno o más archivos. Intenta de nuevo.');
-              return;
-            }
+            // Continue with logic even if some uploads failed
+            // if (!allOk) {
+            //   this.isLoading = false;
+            //   window.alert('Ocurrió un error al subir uno o más archivos. Intenta de nuevo.');
+            //   return;
+            // }
             // All uploads OK, now call completeDocuments
             const formData = this.getFormDataFromLocalStorage();
             this.apiService.completeDocuments({ uploadId, files, formData, lang: this.lang, role: this.role }).subscribe({
