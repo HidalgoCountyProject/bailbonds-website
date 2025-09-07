@@ -317,7 +317,7 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
       }
     }
 
-    // NEW: Validate that addresses don't conflict between defendant, indemnitor, and references
+    /* NEW: Validate that addresses don't conflict between defendant, indemnitor, and references
     if (this.isBrowser && this.role === 'indemnitor') {
       const addressConflict = this.validateAddressConflict();
       if (addressConflict) {
@@ -327,7 +327,7 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
         this.warningModal?.open(msg);
         return; // Abort navigation
       }
-    }
+    }*/
 
     // ------------------------------------------------------------------
     // Persist the field values of the PDF we are leaving (for ALL docs)
