@@ -1737,7 +1737,7 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
       const tooltipType = isPersonInJail ? 'person-in-jail' : 'person-bailing-out';
       const tooltipText = isPersonInJail 
         ? (this.lang === 'es' ? 'Persona en la cárcel' : 'Person in Jail')
-        : (this.lang === 'es' ? 'Persona que paga la fianza' : 'Person bailing out');
+        : (this.lang === 'es' ? 'Persona que paga la fianza' : 'Person paying bond');
       const tooltipIcon = isPersonInJail ? '🔒' : '👤';
       
       const tooltipElement = document.createElement('div');
