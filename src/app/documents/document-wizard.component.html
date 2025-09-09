@@ -8,6 +8,11 @@
       </svg>
     </button>
     
+    <!-- Document counter -->
+    <div *ngIf="!inReviewStep && !inIdPhotoStep" class="document-counter">
+      <span class="counter-text">{{ currentIndex + 1 }}/{{ docs.length }}</span>
+    </div>
+
     <!-- Toolbar controls -->
     <div *ngIf="!inReviewStep" class="toolbar-nav-group">
       <button *ngIf="(role === 'indemnitor' && isFirstDoc) || (!isFirstDoc || inIdPhotoStep)" class="toolbar-btn prev-btn nav-btn" (click)="prevDoc()" aria-label="Previous document">

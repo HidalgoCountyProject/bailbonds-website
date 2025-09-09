@@ -297,9 +297,7 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
     if (this.isBrowser) {
       const missing = this.getMissingRequiredFields();
       if (missing.length > 0) {
-        const msg = this.lang === 'es'
-          ? 'Por favor completa los campos que son requeridos (se marcan en color rojo).'
-          : 'Please fill out all required fields marked in red before continuing.';
+        const msg = this.buildMissingFieldsMessage(missing);
         this.warningModal?.open(msg);
         return; // Abort navigation
       }
@@ -1263,11 +1261,71 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
       }
 
       if (!filled) {
-        missing.push(''); // value doesn't matter; we only need count
+        // Get the user-friendly field name from the parent section's title attribute
+        const fieldName = this.getFieldDisplayName(el);
+        // Only add fields that have a title (user-friendly name)
+        if (fieldName) {
+          missing.push(fieldName);
+        }
       }
     });
 
     return missing;
+  }
+
+  /**
+   * Extracts a user-friendly field name from the PDF field
+   * Only uses the title from the parent section, returns null if no title found
+   */
+  private getFieldDisplayName(element: Element): string | null {
+    // Look for the parent section with title attribute
+    const parentSection = element.closest('section[title]');
+    if (parentSection) {
+      const title = parentSection.getAttribute('title');
+      if (title && title.trim()) {
+        return title.trim();
+      }
+    }
+
+    // Return null if no title found - this field will be omitted from the message
+    return null;
+  }
+
+  /**
+   * Builds a user-friendly message listing the missing required fields
+   */
+  private buildMissingFieldsMessage(missingFields: string[]): string {
+    if (missingFields.length === 0) {
+      // If no fields with titles are missing, show generic message
+      return this.lang === 'es' 
+        ? 'Por favor completa los campos requeridos (se marcan en color rojo).'
+        : 'Please fill out all required fields marked in red before continuing.';
+    }
+
+    // Remove duplicates and sort alphabetically
+    const uniqueFields = [...new Set(missingFields)].sort();
+
+    if (this.lang === 'es') {
+      if (uniqueFields.length === 1) {
+        return `Por favor completa el campo requerido: ${uniqueFields[0]}`;
+      } else if (uniqueFields.length === 2) {
+        return `Por favor completa los campos requeridos: ${uniqueFields[0]} y ${uniqueFields[1]}`;
+      } else {
+        const lastField = uniqueFields.pop();
+        const otherFields = uniqueFields.join(', ');
+        return `Por favor completa los campos requeridos: ${otherFields} y ${lastField}`;
+      }
+    } else {
+      if (uniqueFields.length === 1) {
+        return `Please complete the required field: ${uniqueFields[0]}`;
+      } else if (uniqueFields.length === 2) {
+        return `Please complete the required fields: ${uniqueFields[0]} and ${uniqueFields[1]}`;
+      } else {
+        const lastField = uniqueFields.pop();
+        const otherFields = uniqueFields.join(', ');
+        return `Please complete the required fields: ${otherFields} and ${lastField}`;
+      }
+    }
   }
 
   /** ------------------------------------------------------------
