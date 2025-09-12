@@ -94,9 +94,17 @@ export class DefendantInfoComponent implements OnInit, OnDestroy {
       defendant_first_name: ['', [Validators.required, Validators.minLength(2)]],
       defendant_middle_name: [''], // Optional
       defendant_last_name: ['', [Validators.required, Validators.minLength(2)]],
-      defendant_cell_phone: ['', [Validators.required]], // Required
+      // Phone number fields (split into 3 parts)
+      defendant_phone_area: ['', [Validators.required, Validators.pattern(/^\d{3}$/)]],
+      defendant_phone_prefix: ['', [Validators.required, Validators.pattern(/^\d{3}$/)]],
+      defendant_phone_line: ['', [Validators.required, Validators.pattern(/^\d{4}$/)]],
       defendant_email: ['', [Validators.required, Validators.email]],
-      defendant_address: ['', [Validators.required, Validators.minLength(8)]],
+      // Address fields (split into 5 parts)
+      defendant_address_house: ['', [Validators.required, Validators.minLength(1)]],
+      defendant_address_street: ['', [Validators.required, Validators.minLength(2)]],
+      defendant_address_city: ['', [Validators.required, Validators.minLength(2)]],
+      defendant_address_state: ['', [Validators.required, Validators.minLength(2)]],
+      defendant_address_zip: ['', [Validators.required, Validators.pattern(/^\d{5}(-\d{4})?$/)]],
       defendant_date_of_birth: [''], // Optional - removed required validator
       defendant_birth_city: [''], // Optional - removed required validator
       defendant_birth_state: [''], // Optional - removed required validator
@@ -122,9 +130,11 @@ export class DefendantInfoComponent implements OnInit, OnDestroy {
         // Only populate the defendant-specific fields
         const defendantFields = [
           'defendant_first_name', 'defendant_middle_name', 'defendant_last_name',
-          'defendant_cell_phone', 'defendant_email', 'defendant_address', 'defendant_date_of_birth',
-          'defendant_birth_city', 'defendant_birth_state', 'defendant_arrest_location',
-          'defendant_nationality', 'defendant_probation', 'defendant_workplace'
+          'defendant_phone_area', 'defendant_phone_prefix', 'defendant_phone_line',
+          'defendant_email', 'defendant_address_house', 'defendant_address_street',
+          'defendant_address_city', 'defendant_address_state', 'defendant_address_zip',
+          'defendant_date_of_birth', 'defendant_birth_city', 'defendant_birth_state', 
+          'defendant_arrest_location', 'defendant_nationality', 'defendant_probation', 'defendant_workplace'
         ];
 
         defendantFields.forEach(field => {
@@ -178,18 +188,55 @@ export class DefendantInfoComponent implements OnInit, OnDestroy {
         return;
       }
       
+      // Combine phone number fields
+      const combinedPhone = this.combinePhoneNumber();
+      const combinedAddress = this.combineAddress();
+      
       // Get existing data from localStorage
       const existingRaw = localStorage.getItem('indemnitor_field_values') || '{}';
       const existingData = JSON.parse(existingRaw);
       
-      // Merge form values with existing data
-      const mergedData = { ...existingData, ...formValues };
+      // Merge form values with existing data, including combined fields
+      const mergedData = { 
+        ...existingData, 
+        ...formValues,
+        defendant_cell_phone: combinedPhone,
+        defendant_address: combinedAddress
+      };
       
       // Save back to localStorage
       localStorage.setItem('indemnitor_field_values', JSON.stringify(mergedData));
     } catch (error) {
       console.warn('Failed to save defendant data:', error);
     }
+  }
+
+  private combinePhoneNumber(): string {
+    const area = this.defendantForm.get('defendant_phone_area')?.value || '';
+    const prefix = this.defendantForm.get('defendant_phone_prefix')?.value || '';
+    const line = this.defendantForm.get('defendant_phone_line')?.value || '';
+    
+    if (area && prefix && line) {
+      return `(${area}) ${prefix}-${line}`;
+    }
+    return '';
+  }
+
+  private combineAddress(): string {
+    const house = this.defendantForm.get('defendant_address_house')?.value || '';
+    const street = this.defendantForm.get('defendant_address_street')?.value || '';
+    const city = this.defendantForm.get('defendant_address_city')?.value || '';
+    const state = this.defendantForm.get('defendant_address_state')?.value || '';
+    const zip = this.defendantForm.get('defendant_address_zip')?.value || '';
+    
+    const addressParts = [];
+    if (house) addressParts.push(house);
+    if (street) addressParts.push(street);
+    if (city) addressParts.push(city);
+    if (state) addressParts.push(state);
+    if (zip) addressParts.push(zip);
+    
+    return addressParts.join(' ');
   }
 
   onSubmit(): void {
@@ -327,9 +374,26 @@ export class DefendantInfoComponent implements OnInit, OnDestroy {
             ? 'Formato de fecha inválido. Use MM/DD/YYYY' 
             : 'Invalid date format. Use MM/DD/YYYY';
         }
+        if (fieldName.includes('phone')) {
+          if (fieldName.includes('area') || fieldName.includes('prefix')) {
+            return this.lang === 'es' 
+              ? 'Debe tener exactamente 3 dígitos' 
+              : 'Must be exactly 3 digits';
+          }
+          if (fieldName.includes('line')) {
+            return this.lang === 'es' 
+              ? 'Debe tener exactamente 4 dígitos' 
+              : 'Must be exactly 4 digits';
+          }
+        }
+        if (fieldName === 'defendant_address_zip') {
+          return this.lang === 'es' 
+            ? 'Formato de código postal inválido. Use 12345 o 12345-6789' 
+            : 'Invalid ZIP code format. Use 12345 or 12345-6789';
+        }
         return this.lang === 'es' 
-          ? 'Formato de teléfono inválido' 
-          : 'Invalid phone format';
+          ? 'Formato inválido' 
+          : 'Invalid format';
       }
       if (field.errors['email']) {
         return this.lang === 'es' 
@@ -359,6 +423,30 @@ export class DefendantInfoComponent implements OnInit, OnDestroy {
     
     // Update the form control
     this.defendantForm.get('defendant_date_of_birth')?.setValue(value);
+  }
+
+  formatPhoneArea(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    let value = input.value.replace(/\D/g, ''); // Remove non-digits
+    value = value.substring(0, 3); // Limit to 3 digits
+    input.value = value;
+    this.defendantForm.get('defendant_phone_area')?.setValue(value);
+  }
+
+  formatPhonePrefix(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    let value = input.value.replace(/\D/g, ''); // Remove non-digits
+    value = value.substring(0, 3); // Limit to 3 digits
+    input.value = value;
+    this.defendantForm.get('defendant_phone_prefix')?.setValue(value);
+  }
+
+  formatPhoneLine(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    let value = input.value.replace(/\D/g, ''); // Remove non-digits
+    value = value.substring(0, 4); // Limit to 4 digits
+    input.value = value;
+    this.defendantForm.get('defendant_phone_line')?.setValue(value);
   }
 
   private validateDateFormat(dateString: string): boolean {

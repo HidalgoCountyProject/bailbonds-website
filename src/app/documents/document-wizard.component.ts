@@ -315,17 +315,24 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
       }
     }
 
-    /* NEW: Validate that addresses don't conflict between defendant, indemnitor, and references
+    /* NEW: Validate that addresses don't conflict between defendant, indemnitor, and references*/
     if (this.isBrowser && this.role === 'indemnitor') {
       const addressConflict = this.validateAddressConflict();
       if (addressConflict) {
-        const msg = this.lang === 'es'
-          ? 'La dirección del acusado o del fiador no puede ser igual a la dirección de las referencias. Por favor, verifica que las direcciones sean diferentes.'
-          : 'The defendant or indemnitor address cannot be the same as any reference address. Please verify that the addresses are different.';
+        let msg = '';
+        if (addressConflict.type === 'defendant_reference') {
+          msg = this.lang === 'es'
+            ? `La dirección del acusado no puede ser igual a la dirección de la ${addressConflict.addresses[1].toLowerCase()}. Por favor, verifica que las direcciones sean diferentes.`
+            : `The defendant address cannot be the same as the ${addressConflict.addresses[1].toLowerCase()}. Please verify that the addresses are different.`;
+        } else if (addressConflict.type === 'indemnitor_reference') {
+          msg = this.lang === 'es'
+            ? `La dirección ${addressConflict.addresses[0].toLowerCase()} no puede ser igual a la dirección de la ${addressConflict.addresses[1].toLowerCase()}. Por favor, verifica que las direcciones sean diferentes.`
+            : `The ${addressConflict.addresses[0].toLowerCase()} cannot be the same as the ${addressConflict.addresses[1].toLowerCase()}. Please verify that the addresses are different.`;
+        }
         this.warningModal?.open(msg);
         return; // Abort navigation
       }
-    }*/
+    }
 
     // ------------------------------------------------------------------
     // Persist the field values of the PDF we are leaving (for ALL docs)
@@ -2075,58 +2082,189 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
 
   /**
    * Validates address conflicts between defendant, indemnitor, and reference addresses.
-   * Returns true if there are conflicts, false otherwise.
+   * Returns conflict details if there are conflicts, null otherwise.
    */
-  private validateAddressConflict(): boolean {
+  private validateAddressConflict(): { type: string, addresses: string[] } | null {
     try {
+      console.log('🔍 Starting address conflict validation...');
+      
       // Get defendant address from localStorage
       const defendantData = localStorage.getItem('indemnitor_field_values');
-      if (!defendantData) return false;
+      if (!defendantData) {
+        console.log('❌ No defendant data found in localStorage');
+        return null;
+      }
       
       const defendantValues = JSON.parse(defendantData);
-      const defendantAddress = this.normalizeAddress(defendantValues['defendant_address'] || '');
+      const defendantAddress = this.normalizeAddress(this.combineDefendantAddress(defendantValues));
+      console.log('👤 Defendant address:', defendantAddress);
       
       // Get current indemnitor form values
       const currentValues = this.captureCurrentFieldValues();
+      console.log('📋 Current form values keys:', Object.keys(currentValues).filter(key => key.includes('address') || key.includes('reference')));
       
       // Get indemnitor addresses (current and former)
-      const indemnitorCurrentAddress = this.normalizeAddress(currentValues['indemnitor_current_home_address'] || '');
-      const indemnitorFormerAddress = this.normalizeAddress(currentValues['indemnitor_former_home_address'] || '');
+      const indemnitorCurrentAddress = this.normalizeAddress(this.combineIndemnitorCurrentAddress(currentValues));
+      const indemnitorFormerAddress = this.normalizeAddress(this.combineIndemnitorFormerAddress(currentValues));
+      console.log('🏠 Indemnitor current address:', indemnitorCurrentAddress);
+      console.log('🏠 Indemnitor former address:', indemnitorFormerAddress);
       
       // Get reference addresses
-      const referenceAddress1 = this.normalizeAddress(currentValues['indemnitor_reference_address1'] || '');
-      const referenceAddress2 = this.normalizeAddress(currentValues['indemnitor_reference_address2'] || '');
-      const referenceAddress3 = this.normalizeAddress(currentValues['indemnitor_reference_address3'] || '');
+      const referenceAddress1 = this.normalizeAddress(this.combineReferenceAddress(currentValues, 1));
+      const referenceAddress2 = this.normalizeAddress(this.combineReferenceAddress(currentValues, 2));
+      const referenceAddress3 = this.normalizeAddress(this.combineReferenceAddress(currentValues, 3));
+      console.log('📞 Reference 1 address:', referenceAddress1);
+      console.log('📞 Reference 2 address:', referenceAddress2);
+      console.log('📞 Reference 3 address:', referenceAddress3);
       
-      const referenceAddresses = [referenceAddress1, referenceAddress2, referenceAddress3].filter(addr => addr.length > 0);
+      const referenceAddresses = [
+        { address: referenceAddress1, number: 1 },
+        { address: referenceAddress2, number: 2 },
+        { address: referenceAddress3, number: 3 }
+      ].filter(ref => ref.address.length > 0);
+      
+      console.log('📞 Valid reference addresses:', referenceAddresses.map(ref => `Ref ${ref.number}: "${ref.address}"`));
       
       // Check if defendant address conflicts with any reference address
       if (defendantAddress.length > 0) {
-        for (const refAddress of referenceAddresses) {
-          if (this.addressesMatch(defendantAddress, refAddress)) {
-            return true;
+        console.log('🔍 Checking defendant vs references...');
+        for (const ref of referenceAddresses) {
+          console.log(`🔍 Comparing defendant "${defendantAddress}" vs reference ${ref.number} "${ref.address}"`);
+          if (this.addressesMatch(defendantAddress, ref.address)) {
+            console.log('❌ CONFLICT FOUND: Defendant vs Reference', ref.number);
+            return {
+              type: 'defendant_reference',
+              addresses: [`Defendant address`, `Reference ${ref.number}`]
+            };
           }
         }
       }
       
       // Check if indemnitor addresses conflict with any reference address
-      const indemnitorAddresses = [indemnitorCurrentAddress, indemnitorFormerAddress].filter(addr => addr.length > 0);
+      const indemnitorAddresses = [
+        { address: indemnitorCurrentAddress, type: 'Current' },
+        { address: indemnitorFormerAddress, type: 'Former' }
+      ].filter(addr => addr.address.length > 0);
       
-      for (const indemnitorAddress of indemnitorAddresses) {
-        if (indemnitorAddress.length > 0) {
-          for (const refAddress of referenceAddresses) {
-            if (this.addressesMatch(indemnitorAddress, refAddress)) {
-              return true;
+      console.log('🔍 Checking indemnitor vs references...');
+      for (const indemnitorAddr of indemnitorAddresses) {
+        if (indemnitorAddr.address.length > 0) {
+          console.log(`🔍 Checking indemnitor ${indemnitorAddr.type} address: "${indemnitorAddr.address}"`);
+          for (const ref of referenceAddresses) {
+            console.log(`🔍 Comparing indemnitor ${indemnitorAddr.type} "${indemnitorAddr.address}" vs reference ${ref.number} "${ref.address}"`);
+            if (this.addressesMatch(indemnitorAddr.address, ref.address)) {
+              console.log('❌ CONFLICT FOUND: Indemnitor vs Reference', ref.number);
+              return {
+                type: 'indemnitor_reference',
+                addresses: [`Indemnitor ${indemnitorAddr.type} address`, `Reference ${ref.number}`]
+              };
             }
           }
         }
       }
       
-      return false;
+      console.log('✅ No address conflicts found');
+      return null;
     } catch (error) {
-      console.warn('Error validating address conflict:', error);
-      return false;
+      console.warn('❌ Error validating address conflict:', error);
+      return null;
     }
+  }
+
+  /**
+   * Combines defendant address fields into a single string
+   */
+  private combineDefendantAddress(defendantValues: any): string {
+    const house = defendantValues['defendant_address_house'] || '';
+    const street = defendantValues['defendant_address_street'] || '';
+    const city = defendantValues['defendant_address_city'] || '';
+    const state = defendantValues['defendant_address_state'] || '';
+    const zip = defendantValues['defendant_address_zip'] || '';
+    
+    console.log('🔧 Combining defendant address:', { house, street, city, state, zip });
+    
+    const addressParts = [];
+    if (house) addressParts.push(house);
+    if (street) addressParts.push(street);
+    if (city) addressParts.push(city);
+    if (state) addressParts.push(state);
+    if (zip) addressParts.push(zip);
+    
+    const combined = addressParts.join(' ');
+    console.log('🔧 Combined defendant address:', combined);
+    return combined;
+  }
+
+  /**
+   * Combines indemnitor current address fields into a single string
+   */
+  private combineIndemnitorCurrentAddress(values: any): string {
+    const house = values['indemnitor_current_house'] || '';
+    const street = values['indemnitor_current_street'] || '';
+    const city = values['indemnitor_current_city'] || '';
+    const state = values['indemnitor_current_state'] || '';
+    const zip = values['indemnitor_current_zip'] || '';
+    
+    console.log('🔧 Combining indemnitor current address:', { house, street, city, state, zip });
+    
+    const addressParts = [];
+    if (house) addressParts.push(house);
+    if (street) addressParts.push(street);
+    if (city) addressParts.push(city);
+    if (state) addressParts.push(state);
+    if (zip) addressParts.push(zip);
+    
+    const combined = addressParts.join(' ');
+    console.log('🔧 Combined indemnitor current address:', combined);
+    return combined;
+  }
+
+  /**
+   * Combines indemnitor former address fields into a single string
+   */
+  private combineIndemnitorFormerAddress(values: any): string {
+    const house = values['indemnitor_former_house'] || '';
+    const street = values['indemnitor_former_street'] || '';
+    const city = values['indemnitor_former_city'] || '';
+    const state = values['indemnitor_former_state'] || '';
+    const zip = values['indemnitor_former_zip'] || '';
+    
+    console.log('🔧 Combining indemnitor former address:', { house, street, city, state, zip });
+    
+    const addressParts = [];
+    if (house) addressParts.push(house);
+    if (street) addressParts.push(street);
+    if (city) addressParts.push(city);
+    if (state) addressParts.push(state);
+    if (zip) addressParts.push(zip);
+    
+    const combined = addressParts.join(' ');
+    console.log('🔧 Combined indemnitor former address:', combined);
+    return combined;
+  }
+
+  /**
+   * Combines reference address fields into a single string
+   */
+  private combineReferenceAddress(values: any, referenceNumber: number): string {
+    const house = values[`indemnitor_reference_house${referenceNumber}`] || '';
+    const street = values[`indemnitor_reference_street${referenceNumber}`] || '';
+    const city = values[`indemnitor_reference_city${referenceNumber}`] || '';
+    const state = values[`indemnitor_reference_state${referenceNumber}`] || '';
+    const zip = values[`indemnitor_reference_zip${referenceNumber}`] || '';
+    
+    console.log(`🔧 Combining reference ${referenceNumber} address:`, { house, street, city, state, zip });
+    
+    const addressParts = [];
+    if (house) addressParts.push(house);
+    if (street) addressParts.push(street);
+    if (city) addressParts.push(city);
+    if (state) addressParts.push(state);
+    if (zip) addressParts.push(zip);
+    
+    const combined = addressParts.join(' ');
+    console.log(`🔧 Combined reference ${referenceNumber} address:`, combined);
+    return combined;
   }
 
   /**
@@ -2136,30 +2274,7 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
   private normalizeAddress(address: string): string {
     if (!address || typeof address !== 'string') return '';
     
-    return address
-      .toLowerCase()
-      .trim()
-      .replace(/\s+/g, ' ') // Replace multiple spaces with single space
-      .replace(/\./g, '') // Remove periods
-      .replace(/,/g, '') // Remove commas
-      .replace(/street/g, 'st')
-      .replace(/avenue/g, 'ave')
-      .replace(/road/g, 'rd')
-      .replace(/boulevard/g, 'blvd')
-      .replace(/drive/g, 'dr')
-      .replace(/lane/g, 'ln')
-      .replace(/circle/g, 'cir')
-      .replace(/place/g, 'pl')
-      .replace(/court/g, 'ct')
-      .replace(/way/g, 'way')
-      .replace(/north/g, 'n')
-      .replace(/south/g, 's')
-      .replace(/east/g, 'e')
-      .replace(/west/g, 'w')
-      .replace(/northeast/g, 'ne')
-      .replace(/northwest/g, 'nw')
-      .replace(/southeast/g, 'se')
-      .replace(/southwest/g, 'sw');
+    return address.toLowerCase().trim();
   }
 
   /**
@@ -2167,141 +2282,15 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
    * Uses strict containment detection to prevent any address overlap.
    */
   private addressesMatch(address1: string, address2: string): boolean {
-    if (!address1 || !address2) return false;
+    if (!address1 || !address2) {
+      console.log('❌ One or both addresses are empty:', { address1, address2 });
+      return false;
+    }
     
-    // Exact match
-    if (address1 === address2) return true;
-    
-    // Split addresses into parts for component-based comparison
-    const parts1 = address1.split(' ').filter(part => part.length > 0);
-    const parts2 = address2.split(' ').filter(part => part.length > 0);
-    
-    // Check for containment in both directions
-    const address1ContainsAddress2 = this.addressContains(parts1, parts2);
-    const address2ContainsAddress1 = this.addressContains(parts2, parts1);
-    
-    // If either address contains the other, it's a conflict
-    return address1ContainsAddress2 || address2ContainsAddress1;
+    // Exact match (addresses are already normalized)
+    const match = address1 === address2;
+    console.log(`🔍 Address match: "${address1}" === "${address2}" = ${match}`);
+    return match;
   }
 
-  /**
-   * Checks if one address (parts1) contains another address (parts2).
-   * Uses flexible matching that allows for some unmatched parts.
-   */
-  private addressContains(parts1: string[], parts2: string[]): boolean {
-    if (parts2.length === 0) return false;
-    if (parts1.length < parts2.length) return false;
-    
-    // Create a map of available parts from the longer address
-    const availableParts = new Map<string, number>();
-    for (const part of parts1) {
-      availableParts.set(part, (availableParts.get(part) || 0) + 1);
-    }
-    
-    let matchedParts = 0;
-    const totalParts = parts2.length;
-    let criticalPartsMatched = 0;
-    let criticalPartsTotal = 0;
-    
-    // Check each part of the shorter address
-    for (const part2 of parts2) {
-      let found = false;
-      
-      // Check if this is a critical part (house number or street name)
-      const isCriticalPart = this.isCriticalAddressPart(part2);
-      if (isCriticalPart) criticalPartsTotal++;
-      
-      // Look for exact matches first
-      if (availableParts.has(part2) && availableParts.get(part2)! > 0) {
-        availableParts.set(part2, availableParts.get(part2)! - 1);
-        found = true;
-        matchedParts++;
-        if (isCriticalPart) criticalPartsMatched++;
-      } else {
-        // Look for abbreviation matches
-        for (const [part1, count] of availableParts.entries()) {
-          if (count > 0 && this.partsMatch(part1, part2)) {
-            availableParts.set(part1, count - 1);
-            found = true;
-            matchedParts++;
-            if (isCriticalPart) criticalPartsMatched++;
-            break;
-          }
-        }
-      }
-      
-      // If not found, continue (don't return false immediately)
-      // This allows for some unmatched parts
-    }
-    
-    // Calculate match percentage
-    const matchPercentage = matchedParts / totalParts;
-    
-    // Critical parts (house number, street name) must match at least 80%
-    const criticalMatchPercentage = criticalPartsTotal > 0 ? criticalPartsMatched / criticalPartsTotal : 1;
-    
-    // Consider it a match if:
-    // 1. At least 70% of all parts match, AND
-    // 2. At least 80% of critical parts match (if there are critical parts)
-    return matchPercentage >= 0.7 && criticalMatchPercentage >= 0.8;
-  }
-
-  /**
-   * Determines if an address part is critical for matching (house number or street name).
-   */
-  private isCriticalAddressPart(part: string): boolean {
-    // House numbers (numeric)
-    if (/^\d+$/.test(part)) return true;
-    
-    // Street names (common street types)
-    const streetTypes = ['street', 'st', 'avenue', 'ave', 'road', 'rd', 'boulevard', 'blvd', 'drive', 'dr', 'lane', 'ln', 'circle', 'cir', 'place', 'pl', 'court', 'ct'];
-    if (streetTypes.includes(part.toLowerCase())) return true;
-    
-    return false;
-  }
-
-  /**
-   * Compares two address parts for matching, handling abbreviations.
-   */
-  private partsMatch(part1: string, part2: string): boolean {
-    if (part1 === part2) return true;
-    
-    // Handle common abbreviations
-    const abbreviations: { [key: string]: string[] } = {
-      'st': ['street'],
-      'ave': ['avenue'],
-      'rd': ['road'],
-      'blvd': ['boulevard'],
-      'dr': ['drive'],
-      'ln': ['lane'],
-      'cir': ['circle'],
-      'pl': ['place'],
-      'ct': ['court'],
-      'n': ['north'],
-      's': ['south'],
-      'e': ['east'],
-      'w': ['west'],
-      'ne': ['northeast'],
-      'nw': ['northwest'],
-      'se': ['southeast'],
-      'sw': ['southwest']
-    };
-    
-    // Check if part1 is an abbreviation of part2
-    if (abbreviations[part1] && abbreviations[part1].includes(part2)) {
-      return true;
-    }
-    
-    // Check if part2 is an abbreviation of part1
-    if (abbreviations[part2] && abbreviations[part2].includes(part1)) {
-      return true;
-    }
-    
-    // For longer parts, check if one contains the other (but be more strict)
-    if (part1.length > 3 && part2.length > 3) {
-      return part1.includes(part2) || part2.includes(part1);
-    }
-    
-    return false;
-  }
 }

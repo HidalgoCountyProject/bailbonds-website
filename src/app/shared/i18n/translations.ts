@@ -269,7 +269,7 @@ export const translations: Record<Language, TranslationSet> = {
     'defendant.form.title': 'Arrested Person Information',
     'defendant.form.subtitle': 'Please provide the following information about the person who was arrested (defendant)',
     'defendant.form.info.title': 'Important Information About the Defendant',
-    'defendant.form.info.description': 'This information is about the defendant. It is crucial that you provide only real and accurate information, as this will be used to process the bail bond for the arrested person. <strong>Providing false information may delay or prevent the bail process.</strong>',
+    'defendant.form.info.description': 'Provide only real and accurate information about the defendant. <strong>False information may delay or prevent the bail process.</strong>',
     
 
     // Form sections
@@ -297,9 +297,19 @@ export const translations: Record<Language, TranslationSet> = {
     'defendant.form.email.placeholder': 'john.smith@email.com',
     'defendant.form.email.help': 'The defendant\'s email where court notifications will be sent',
     'defendant.form.address.label': 'Current Home Address',
-
-    'defendant.form.address.placeholder': '123 Main St McAllen TX 78501',
     'defendant.form.address.help': 'The defendant\'s address where they live and where court letters will be sent',
+    
+    // Address sub-fields
+    'defendant.form.address.house.label': 'Current House/Apt #',
+    'defendant.form.address.house.placeholder': '123A',
+    'defendant.form.address.street.label': 'Street',
+    'defendant.form.address.street.placeholder': 'Main Street',
+    'defendant.form.address.city.label': 'City',
+    'defendant.form.address.city.placeholder': 'McAllen',
+    'defendant.form.address.state.label': 'State',
+    'defendant.form.address.state.placeholder': 'TX',
+    'defendant.form.address.zip.label': 'ZIP',
+    'defendant.form.address.zip.placeholder': '78501',
 
     
     // Personal fields
@@ -609,7 +619,7 @@ export const translations: Record<Language, TranslationSet> = {
     'defendant.form.title': 'Información de la Persona Arrestada',
     'defendant.form.subtitle': 'Por favor proporcione la siguiente información sobre la persona que fue arrestada (acusado)',
     'defendant.form.info.title': 'Información Importante Sobre el Acusado',
-    'defendant.form.info.description': 'Esta información es sobre el acusado. Es crucial que proporcione únicamente información real y precisa, ya que será utilizada para procesar la fianza de la persona arrestada. <strong>Proporcionar información falsa puede retrasar o impedir el proceso de fianza.</strong>',
+    'defendant.form.info.description': 'Proporcione únicamente información real y precisa sobre el acusado. <strong>La información falsa puede retrasar o impedir el proceso de fianza.</strong>',
 
     // Form sections
     'defendant.form.name.legend': 'Nombre Completo de la Persona Arrestada',
@@ -636,9 +646,19 @@ export const translations: Record<Language, TranslationSet> = {
     'defendant.form.email.placeholder': 'juan.perez@email.com',
     'defendant.form.email.help': 'El correo del acusado donde llegarán las notificaciones de la corte',
     'defendant.form.address.label': 'Dirección Actual de Casa',
-
-    'defendant.form.address.placeholder': '123 Main St McAllen TX 78501',
     'defendant.form.address.help': 'Dirección del acusado donde vive el acusado y donde llegarán las cartas de corte',
+    
+    // Address sub-fields
+    'defendant.form.address.house.label': 'Casa/Apt # Actual',
+    'defendant.form.address.house.placeholder': '123A',
+    'defendant.form.address.street.label': 'Calle',
+    'defendant.form.address.street.placeholder': 'Calle Principal',
+    'defendant.form.address.city.label': 'Ciudad',
+    'defendant.form.address.city.placeholder': 'McAllen',
+    'defendant.form.address.state.label': 'Estado',
+    'defendant.form.address.state.placeholder': 'TX',
+    'defendant.form.address.zip.label': 'Código Postal',
+    'defendant.form.address.zip.placeholder': '78501',
 
     
     // Personal fields

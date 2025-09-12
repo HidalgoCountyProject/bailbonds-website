@@ -104,23 +104,47 @@
       <legend>{{ 'defendant.form.contact.legend' | translate }}</legend>
       
       <div class="form-group">
-        <label for="defendant_cell_phone" class="required">
+        <label class="required">
           {{ 'defendant.form.cell_phone.label' | translate }}
           <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.cell_phone.help' | translate">
             ?
             <span class="tooltip-content">{{ 'defendant.form.cell_phone.help' | translate }}</span>
           </button>
         </label>
-        <input
-          type="tel"
-          id="defendant_cell_phone"
-          formControlName="defendant_cell_phone"
-          [placeholder]="'defendant.form.cell_phone.placeholder' | translate"
-          [class.error]="isFieldInvalid('defendant_cell_phone')"
-          autocomplete="tel"
-        />
-        <div class="error-message" *ngIf="isFieldInvalid('defendant_cell_phone')">
-          {{ getFieldError('defendant_cell_phone') }}
+        <div class="phone-input-group">
+          <input
+            type="tel"
+            id="defendant_phone_area"
+            formControlName="defendant_phone_area"
+            placeholder="956"
+            [class.error]="isFieldInvalid('defendant_phone_area')"
+            autocomplete="tel-area-code"
+            (input)="formatPhoneArea($event)"
+            maxlength="3"
+          />
+          <input
+            type="tel"
+            id="defendant_phone_prefix"
+            formControlName="defendant_phone_prefix"
+            placeholder="123"
+            [class.error]="isFieldInvalid('defendant_phone_prefix')"
+            autocomplete="tel-local-prefix"
+            (input)="formatPhonePrefix($event)"
+            maxlength="3"
+          />
+          <input
+            type="tel"
+            id="defendant_phone_line"
+            formControlName="defendant_phone_line"
+            placeholder="4567"
+            [class.error]="isFieldInvalid('defendant_phone_line')"
+            autocomplete="tel-local-suffix"
+            (input)="formatPhoneLine($event)"
+            maxlength="4"
+          />
+        </div>
+        <div class="error-message" *ngIf="isFieldInvalid('defendant_phone_area') || isFieldInvalid('defendant_phone_prefix') || isFieldInvalid('defendant_phone_line')">
+          {{ getFieldError('defendant_phone_area') || getFieldError('defendant_phone_prefix') || getFieldError('defendant_phone_line') }}
         </div>
       </div>
 
@@ -146,23 +170,98 @@
       </div>
 
       <div class="form-group">
-        <label for="defendant_address" class="required">
+        <label class="required">
           {{ 'defendant.form.address.label' | translate }}
           <button type="button" class="help-tooltip" [attr.aria-label]="'defendant.form.address.help' | translate">
             ?
             <span class="tooltip-content">{{ 'defendant.form.address.help' | translate }}</span>
           </button>
         </label>
-        <textarea
-          id="defendant_address"
-          formControlName="defendant_address"
-          [placeholder]="'defendant.form.address.placeholder' | translate"
-          [class.error]="isFieldInvalid('defendant_address')"
-          rows="3"
-          autocomplete="street-address"
-        ></textarea>
-        <div class="error-message" *ngIf="isFieldInvalid('defendant_address')">
-          {{ getFieldError('defendant_address') }}
+        <div class="address-input-group">
+          <div class="address-row">
+            <div class="form-group address-field-small">
+              <label for="defendant_address_house" class="required">
+                {{ 'defendant.form.address.house.label' | translate }}
+              </label>
+              <input
+                type="text"
+                id="defendant_address_house"
+                formControlName="defendant_address_house"
+                [placeholder]="'defendant.form.address.house.placeholder' | translate"
+                [class.error]="isFieldInvalid('defendant_address_house')"
+                autocomplete="address-line1"
+              />
+              <div class="error-message" *ngIf="isFieldInvalid('defendant_address_house')">
+                {{ getFieldError('defendant_address_house') }}
+              </div>
+            </div>
+            <div class="form-group address-field-large">
+              <label for="defendant_address_street" class="required">
+                {{ 'defendant.form.address.street.label' | translate }}
+              </label>
+              <input
+                type="text"
+                id="defendant_address_street"
+                formControlName="defendant_address_street"
+                [placeholder]="'defendant.form.address.street.placeholder' | translate"
+                [class.error]="isFieldInvalid('defendant_address_street')"
+                autocomplete="address-line2"
+              />
+              <div class="error-message" *ngIf="isFieldInvalid('defendant_address_street')">
+                {{ getFieldError('defendant_address_street') }}
+              </div>
+            </div>
+          </div>
+          <div class="address-row">
+            <div class="form-group address-field-medium">
+              <label for="defendant_address_city" class="required">
+                {{ 'defendant.form.address.city.label' | translate }}
+              </label>
+              <input
+                type="text"
+                id="defendant_address_city"
+                formControlName="defendant_address_city"
+                [placeholder]="'defendant.form.address.city.placeholder' | translate"
+                [class.error]="isFieldInvalid('defendant_address_city')"
+                autocomplete="address-level2"
+              />
+              <div class="error-message" *ngIf="isFieldInvalid('defendant_address_city')">
+                {{ getFieldError('defendant_address_city') }}
+              </div>
+            </div>
+            <div class="form-group address-field-small">
+              <label for="defendant_address_state" class="required">
+                {{ 'defendant.form.address.state.label' | translate }}
+              </label>
+              <input
+                type="text"
+                id="defendant_address_state"
+                formControlName="defendant_address_state"
+                [placeholder]="'defendant.form.address.state.placeholder' | translate"
+                [class.error]="isFieldInvalid('defendant_address_state')"
+                autocomplete="address-level1"
+              />
+              <div class="error-message" *ngIf="isFieldInvalid('defendant_address_state')">
+                {{ getFieldError('defendant_address_state') }}
+              </div>
+            </div>
+            <div class="form-group address-field-small">
+              <label for="defendant_address_zip" class="required">
+                {{ 'defendant.form.address.zip.label' | translate }}
+              </label>
+              <input
+                type="text"
+                id="defendant_address_zip"
+                formControlName="defendant_address_zip"
+                [placeholder]="'defendant.form.address.zip.placeholder' | translate"
+                [class.error]="isFieldInvalid('defendant_address_zip')"
+                autocomplete="postal-code"
+              />
+              <div class="error-message" *ngIf="isFieldInvalid('defendant_address_zip')">
+                {{ getFieldError('defendant_address_zip') }}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

@@ -817,4 +817,100 @@
     padding: 14px 16px;
     font-size: 14px;
   }
+}
+
+/* Phone input group styles */
+.phone-input-group {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.phone-input-group input {
+  flex: 1;
+  text-align: center;
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+}
+
+/* Address input group styles */
+.address-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.address-row {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.address-row .form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.address-row .form-group label {
+  margin-bottom: 6px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  line-height: 1.2;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.address-field-small {
+  flex: 0 0 120px;
+}
+
+.address-field-medium {
+  flex: 1;
+  min-width: 150px;
+}
+
+.address-field-large {
+  flex: 2;
+  min-width: 200px;
+}
+
+.address-field-small input,
+.address-field-medium input,
+.address-field-large input {
+  width: 100%;
+}
+
+/* Responsive adjustments for address fields */
+@media (max-width: 768px) {
+  .address-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .address-field-small,
+  .address-field-medium,
+  .address-field-large {
+    flex: 1;
+    min-width: unset;
+  }
+  
+  /* Keep phone inputs in a single row on mobile */
+  .phone-input-group {
+    flex-direction: row;
+    gap: 6px;
+  }
+  
+  .phone-input-group input {
+    font-size: 14px;
+    padding: 10px 8px;
+  }
+  
+  /* Keep probation radio buttons in a single row on mobile */
+  .radio-group {
+    flex-direction: row;
+    gap: 20px;
+  }
 } 
