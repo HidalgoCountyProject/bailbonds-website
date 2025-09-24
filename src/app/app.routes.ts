@@ -17,14 +17,14 @@ export const routes: Routes = [
     title: 'Defendant Information - Affordable Bail Bonds'
   },
   { 
+    path: 'wizard/:role',
+    loadComponent: () => import('./documents/language-gate.component').then(m => m.LanguageGateComponent),
+    title: 'Choose Language - Affordable Bail Bonds'
+  },
+  { 
     path: 'wizard/:role/:lang', 
     loadComponent: () => import('./documents/document-wizard.component').then(m => m.DocumentWizardComponent),
     title: 'Complete Documents - Affordable Bail Bonds'
-  },
-  { 
-    path: 'wizard/:role',
-    redirectTo: 'wizard/:role/en',
-    pathMatch: 'full' 
   },
   { 
     path: 'download/:uploadId', 

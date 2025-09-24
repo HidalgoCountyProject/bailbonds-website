@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { TranslatePipe } from '../shared/pipes/translate.pipe';
 
 @Component({
@@ -11,60 +11,13 @@ import { TranslatePipe } from '../shared/pipes/translate.pipe';
   styleUrls: ['./role-selection.component.css']
 })
 export class RoleSelectionComponent implements OnInit, OnDestroy {
-  step: 'role' | 'language' = 'role';
-  selectedRole?: 'defendant' | 'indemnitor';
 
   // Detect browser environment (in case of SSR)
   isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined';
 
   private originalFooterDisplay: string | null = null;
 
-  constructor(private router: Router) {}
-
-  onRoleSelect(role: 'defendant' | 'indemnitor') {
-    this.selectedRole = role;
-    this.step = 'language';
-  }
-
-  onLanguageSelect(lang: 'en' | 'es') {
-    if (this.selectedRole) {
-      // Handle localStorage cleanup only in browser environment
-      if (this.isBrowser) {
-        // List all possible roles here
-        const roles = ['defendant', 'indemnitor'];
-        const roleKey = `${this.selectedRole}_field_values`;
-        let foundRoleKey = null;
-        // Check if any role key exists in localStorage
-        for (const role of roles) {
-          if (localStorage.getItem(`${role}_field_values`)) {
-            foundRoleKey = `${role}_field_values`;
-            break;
-          }
-        }
-        // If the stored role is different from the selected role, clear all role-related data
-        if (foundRoleKey && foundRoleKey !== roleKey) {
-          for (const role of roles) {
-            localStorage.removeItem(`${role}_field_values`);
-            localStorage.removeItem(`${role}_signature`);
-          }
-        }
-      }
-      
-      // Navigate to defendant info form for indemnitors, directly to document wizard for defendants
-      if (this.selectedRole === 'indemnitor') {
-        console.log('Navigating to defendant info form for indemnitor with language:', lang);
-        this.router.navigate(['/wizard/indemnitor', lang, 'defendant-info']);
-      } else {
-        console.log('Navigating to document wizard for role:', this.selectedRole, 'with language:', lang);
-        this.router.navigate(['/wizard', this.selectedRole, lang]);
-      }
-    }
-  }
-
-  backToRole() {
-    this.step = 'role';
-    this.selectedRole = undefined;
-  }
+  constructor() {}
 
   /* ------------------------------------------------------------------ */
   /* Hide global footer while this component is active                   */

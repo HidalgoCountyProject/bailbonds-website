@@ -1,43 +1,22 @@
-<div class="role-selection-container" *ngIf="step === 'role'">
+<div class="role-selection-container">
   <h2 class="title">{{ 'role.select.title' | translate }}</h2>
   <p class="subtitle">{{ 'role.select.subtitle' | translate }}</p>
 
   <div class="card-wrapper">
-    <button type="button" class="role-card" (click)="onRoleSelect('defendant')" aria-label="Defendant role">
+    <a class="role-card" [routerLink]="['/wizard','defendant']" aria-label="Defendant flow link">
       <div class="icon">👤</div>
       <div class="role-heading">
-        <strong class="friendly">{{ 'role.arrested.friendly' | translate }}</strong>
-        <small class="legal">{{ 'role.arrested.legal' | translate }}</small>
+        <strong class="friendly">{{ 'role.arrested.legal' | translate }}</strong>
       </div>
-      <p class="desc">{{ 'role.arrested.desc' | translate }}</p>
-    </button>
+      <span class="cta">{{ 'role.arrested.cta' | translate }} →</span>
+    </a>
 
-    <button type="button" class="role-card" (click)="onRoleSelect('indemnitor')" aria-label="Indemnitor role">
+    <a class="role-card" [routerLink]="['/wizard','indemnitor']" aria-label="Indemnitor flow link">
       <div class="icon">🤝</div>
       <div class="role-heading">
-        <strong class="friendly">{{ 'role.indemnitor.friendly' | translate }}</strong>
-        <small class="legal">{{ 'role.indemnitor.legal' | translate }}</small>
+        <strong class="friendly">{{ 'role.indemnitor.legal' | translate }}</strong>
       </div>
-      <p class="desc">{{ 'role.indemnitor.desc' | translate }}</p>
-    </button>
+      <span class="cta">{{ 'role.indemnitor.cta' | translate }} →</span>
+    </a>
   </div>
 </div>
-
-<!-- Language selection step -->
-<div class="role-selection-container" *ngIf="step === 'language'">
-  <button class="back-btn" type="button" (click)="backToRole()">✕ {{ 'role.language.back' | translate }}</button>
-  <h2 class="title">{{ 'role.language.title' | translate }}</h2>
-  <p class="subtitle">{{ 'role.language.subtitle' | translate }}</p>
-
-  <div class="card-wrapper">
-    <button type="button" class="role-card" (click)="onLanguageSelect('en')" aria-label="English documents">
-      <div class="icon">🇺🇸</div>
-      <h3>{{ 'role.language.english' | translate }}</h3>
-    </button>
-
-    <button type="button" class="role-card" (click)="onLanguageSelect('es')" aria-label="Spanish documents">
-      <div class="icon">🇲🇽</div>
-      <h3>{{ 'role.language.spanish' | translate }}</h3>
-    </button>
-  </div>
-</div> 
