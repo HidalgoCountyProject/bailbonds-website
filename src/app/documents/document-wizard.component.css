@@ -241,6 +241,70 @@
   opacity: 1 !important;
 }
 
+/* ------------------------------------------------------------------ */
+/* Yellow callout inside PDF page                                      */
+/* The callout is appended INSIDE .textLayer so it scrolls/zooms       */
+/* with the PDF and stays at the top-left corner of the page.          */
+/* ------------------------------------------------------------------ */
+::ng-deep .indemnitor-callout {
+  position: absolute;               /* set inline as well; here for defaults */
+  z-index: 50;                      /* above text & widgets */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 8px 8px 12px;
+  background: #FFCC00;
+  color: #000;
+  border: 1.5px solid #FFB700;
+  border-radius: 6px 0 0 6px;      /* rounded left corners only */
+  font-weight: 700;
+  font-size: 10px;
+  line-height: 1;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  white-space: nowrap;
+  min-width: 60px;
+}
+
+/* Arrow pointer on the right side */
+::ng-deep .indemnitor-callout::after {
+  content: '';
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid #FFCC00;
+  border-top: 14.5px solid transparent;
+  border-bottom: 14.5px solid transparent;
+  filter: drop-shadow(2px 0 2px rgba(0,0,0,0.2));
+}
+
+/* Arrow border */
+::ng-deep .indemnitor-callout::before {
+  content: '';
+  position: absolute;
+  right: -11px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 11px solid #FFB700;
+  border-top: 15.5px solid transparent;
+  border-bottom: 15.5px solid transparent;
+  z-index: -1;
+}
+
+::ng-deep .indemnitor-callout:hover { filter: brightness(0.95); }
+
+/* Mobile and responsive sizing is now handled dynamically via JavaScript 
+   based on the actual rendered PDF page width, ensuring consistent proportions
+   across all screen sizes and zoom levels. No media queries needed. */
+
+
 /* Overlay to hide reload flash */
 .pdf-overlay {
   position: fixed;

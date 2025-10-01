@@ -158,6 +158,9 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
   // Add state for flattened English docs
   flattenedEnglishDocs: Array<{ name: string; url: string; bytes: Uint8Array }> = [];
 
+  /** Retry counter for callout injection */
+  private calloutRetryCount = 0;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -241,6 +244,17 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
     
     // Hide any active tooltips when changing documents
     this.hideActiveTooltip();
+    
+    // Force tooltip application after document change with multiple retries
+    if (this.isBrowser) {
+      setTimeout(() => {
+        this.applyTooltips();
+      }, 1000);
+      
+      setTimeout(() => {
+        this.applyTooltips();
+      }, 2000);
+    }
   }
 
   get isFirstDoc() {
@@ -401,6 +415,13 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
       const footerEl = document.querySelector('footer.footer') as HTMLElement | null;
       if (footerEl) {
         footerEl.style.display = this.originalFooterDisplay ?? '';
+      }
+      
+      // Clean up resize event listener
+      const resizeHandler = (window as any).__calloutResizeHandler;
+      if (resizeHandler) {
+        window.removeEventListener('resize', resizeHandler);
+        delete (window as any).__calloutResizeHandler;
       }
     }
   }
@@ -752,7 +773,7 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
       const modifiedBytes = await pdfDoc.save();
 
       // 6) Reload viewer with the updated PDF
-      const blob = new Blob([modifiedBytes], { type: 'application/pdf' });
+      const blob = new Blob([this.u8ToArrayBuffer(modifiedBytes)], { type: 'application/pdf' });
       const objectUrl = URL.createObjectURL(blob);
 
       // Revoke old object URL if we generated one previously
@@ -831,6 +852,14 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
     return bytes;
   }
 
+  /** Utility: convert Uint8Array to ArrayBuffer for Blob construction */
+  private u8ToArrayBuffer(u8: Uint8Array): ArrayBuffer {
+    const ab = new ArrayBuffer(u8.byteLength);
+    const view = new Uint8Array(ab);
+    view.set(u8);
+    return ab;
+  }
+
   /**
    * Downloads the current pdfSrc (either the remote URL or the previously generated object URL)
    * and keeps the bytes in memory so we can re-save the document later.
@@ -844,8 +873,10 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
     const fetchUrl = this.pdfSrc.startsWith('blob:') ? this.docs[this.currentIndex] : this.pdfSrc;
 
     const response = await fetch(fetchUrl);
-    const arrayBuffer = await response.arrayBuffer();
-    this.originalPdfBytes = new Uint8Array(arrayBuffer);
+    const ab = await response.arrayBuffer();
+    // Force to regular ArrayBuffer (not SharedArrayBuffer) by copying
+    const cloned = ab.slice(0);
+    this.originalPdfBytes = new Uint8Array(cloned);
     return this.originalPdfBytes;
   }
 
@@ -1160,7 +1191,7 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
 
       // 4) Save modified PDF & load it in the viewer
       const modifiedBytes = await pdfDoc.save();
-      const blob = new Blob([modifiedBytes], { type: 'application/pdf' });
+      const blob = new Blob([this.u8ToArrayBuffer(modifiedBytes)], { type: 'application/pdf' });
       const objectUrl = URL.createObjectURL(blob);
 
       // Revoke previous object URL if present to avoid leaks
@@ -1434,7 +1465,7 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
           try { pdfDoc.catalog.delete(PDFName.of('AcroForm')); } catch {}
         } catch {}
         const outBytes = await pdfDoc.save();
-        const url = URL.createObjectURL(new Blob([outBytes], { type: 'application/pdf' }));
+        const url = URL.createObjectURL(new Blob([this.u8ToArrayBuffer(outBytes as unknown as Uint8Array)], { type: 'application/pdf' }));
         const name = docPath.split('/').pop() ?? `document-${results.length + 1}.pdf`;
         results.push({ name, bytes: outBytes, url });
       } catch (err) {
@@ -1495,12 +1526,12 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
     // Buscar en PDFs (Spanish)
     const pdf = this.flattenedDocs.find(doc => doc.name === filename);
     if (pdf) {
-      return new Blob([pdf.bytes], { type: 'application/pdf' });
+      return new Blob([this.u8ToArrayBuffer(pdf.bytes as unknown as Uint8Array)], { type: 'application/pdf' });
     }
     // Buscar en PDFs (English, if present)
     const pdfEn = this.flattenedEnglishDocs.find(doc => doc.name === filename);
     if (pdfEn) {
-      return new Blob([pdfEn.bytes], { type: 'application/pdf' });
+      return new Blob([this.u8ToArrayBuffer(pdfEn.bytes as unknown as Uint8Array)], { type: 'application/pdf' });
     }
     // Buscar en fotos
     const photoControl = this.idPhotoControl?.value;
@@ -1712,17 +1743,66 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
     // Apply tooltips to form fields after PDF loads
     if (this.isBrowser) {
       this.applyTooltips();
+      // Force retry tooltips multiple times with different delays to ensure they work in English
+      setTimeout(() => {
+        this.applyTooltips();
+      }, 500);
+      
+      setTimeout(() => {
+        this.applyTooltips();
+      }, 1000);
+      
+      setTimeout(() => {
+        this.applyTooltips();
+      }, 2000);
+      
+      // Ensure the yellow callout appears inside the PDF text layer on page 1
+      this.ensureIndemnitorCallout();
+      // Add zoom change listener to update button position
+      this.addZoomChangeListener();
+    }
+  }
+
+  /** Adds a listener for zoom changes to update button position */
+  private addZoomChangeListener(): void {
+    // Listen for zoom changes in the PDF viewer
+    const pdfViewer = document.querySelector('ngx-extended-pdf-viewer');
+    if (pdfViewer) {
+      // Use MutationObserver to detect changes in the PDF viewer's zoom
+      const observer = new MutationObserver(() => {
+        // Re-ensure the callout is positioned correctly after zoom changes
+        setTimeout(() => this.ensureIndemnitorCallout(), 100);
+      });
+      
+      observer.observe(pdfViewer, {
+        attributes: true,
+        attributeFilter: ['style', 'class'],
+        subtree: true
+      });
+    }
+    
+    // Also listen for window resize events to reposition the button
+    // This ensures the button stays correctly positioned when the window is resized
+    if (this.isBrowser) {
+      const resizeHandler = () => {
+        setTimeout(() => this.ensureIndemnitorCallout(), 100);
+      };
+      window.addEventListener('resize', resizeHandler);
+      
+      // Store the handler to clean up later if needed
+      (window as any).__calloutResizeHandler = resizeHandler;
     }
   }
 
   /** Applies tooltips to PDF form fields to help users understand what to enter */
   private applyTooltips(): void {
-    console.log('applyTooltips');
     const selector = '.textWidgetAnnotation input, .textWidgetAnnotation textarea';
     const personInJailFields = ['defendant_first_name', 'defendant_middle_name', 'defendant_last_name'];
     const excludeFields = ['number_day', 'month_name', 'two_last_year_digits'];
 
-    document.querySelectorAll(selector).forEach((el) => {
+    const elements = document.querySelectorAll(selector);
+
+    elements.forEach((el) => {
       const input = el as HTMLInputElement | HTMLTextAreaElement;
       const fieldName = input.name || '';
       if (!fieldName) { return; }
@@ -1734,8 +1814,16 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
       
       if (excludeFields.includes(fieldName)) { return; }
 
+      // Check if tooltip is already attached to avoid duplicates
+      if (input.hasAttribute('data-tooltip-attached')) {
+        return;
+      }
+
       // Add tooltip behavior directly to the input
       this.addTooltipBehavior(input, personInJailFields.includes(fieldName));
+      
+      // Mark as having tooltip attached
+      input.setAttribute('data-tooltip-attached', 'true');
     });
   }
 
@@ -1753,7 +1841,7 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
       const tooltipType = isPersonInJail ? 'person-in-jail' : 'person-bailing-out';
       const tooltipText = isPersonInJail 
         ? (this.lang === 'es' ? 'Persona en la cárcel' : 'Person in Jail')
-        : (this.lang === 'es' ? 'Persona que paga la fianza' : 'Person paying bond');
+        : (this.lang === 'es' ? 'Persona que paga la fianza' : 'Person paying the bond');
       const tooltipIcon = isPersonInJail ? '🔒' : '👤';
       
       const tooltipElement = document.createElement('div');
@@ -1867,6 +1955,11 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
     }
   }
 
+  /** Public method to manually trigger tooltip application for debugging */
+  public forceApplyTooltips(): void {
+    this.applyTooltips();
+  }
+
   /** Adds tooltip CSS styles to the document */
   private addTooltipStyles(): void {
     if (document.getElementById('pdf-tooltip-styles')) return;
@@ -1875,16 +1968,16 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
     style.id = 'pdf-tooltip-styles';
     style.textContent = `
       .pdf-tooltip {
-        padding: 12px 16px;
-        border-radius: 12px;
-        font-size: 14px;
-        font-weight: 600;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
         white-space: nowrap;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         animation: pdfTooltipSlideIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
         pointer-events: none;
         user-select: none;
       }
@@ -1892,43 +1985,43 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
       .pdf-tooltip-content {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
       }
       
       .pdf-tooltip-icon {
-        font-size: 18px;
+        font-size: 16px;
         line-height: 1;
       }
       
       .pdf-tooltip-text {
-        font-size: 14px;
+        font-size: 13px;
         line-height: 1.2;
       }
       
       .pdf-tooltip-arrow {
         position: absolute;
-        bottom: -8px;
+        bottom: -6px;
         left: 50%;
         transform: translateX(-50%);
         width: 0;
         height: 0;
-        border-left: 8px solid transparent;
-        border-right: 8px solid transparent;
-        border-top: 8px solid currentColor;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 6px solid currentColor;
       }
       
       .pdf-tooltip-person-in-jail {
-        background: linear-gradient(135deg, #000000, #1a1a1a);
-        color: #ffcc00;
-        border-color: rgba(255, 204, 0, 0.3);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 204, 0, 0.1);
+        background: linear-gradient(135deg, #2d3748, #4a5568);
+        color: #f7fafc;
+        border-color: rgba(247, 250, 252, 0.2);
+        box-shadow: 0 4px 12px rgba(45, 55, 72, 0.3), 0 0 0 1px rgba(247, 250, 252, 0.1);
       }
       
       .pdf-tooltip-person-bailing-out {
-        background: linear-gradient(135deg, #ffcc00, #ffd633);
-        color: #000000;
-        border-color: rgba(0, 0, 0, 0.1);
-        box-shadow: 0 8px 25px rgba(255, 204, 0, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.1);
+        background: linear-gradient(135deg, #4299e1, #63b3ed);
+        color: #ffffff;
+        border-color: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 4px 12px rgba(66, 153, 225, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
       }
       
       @keyframes pdfTooltipSlideIn {
@@ -1944,17 +2037,25 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
       
       @media (max-width: 768px) {
         .pdf-tooltip {
-          font-size: 16px;
-          padding: 14px 18px;
-          min-width: 220px;
+          font-size: 14px;
+          padding: 10px 14px;
+          min-width: 180px;
           text-align: center;
-          top: -45px !important;
+          top: -40px !important;
           animation-duration: 0.15s !important;
           pointer-events: none !important;
         }
         
         .pdf-tooltip-content {
           justify-content: center;
+        }
+        
+        .pdf-tooltip-icon {
+          font-size: 18px;
+        }
+        
+        .pdf-tooltip-text {
+          font-size: 14px;
         }
         
         /* Faster animation on mobile for better responsiveness */
@@ -1988,18 +2089,135 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
     document.head.appendChild(style);
   }
 
+  /** ------------------------------------------------------------------ */
+  /** Inline callout inside PDF text layer (top-left)                     */
+  /** ------------------------------------------------------------------ */
+  private ensureIndemnitorCallout(): void {
+    try {
+      // Only show on interactive PDF step, on the first document of the role, and only for indemnitor role
+      if (this.inIdPhotoStep || this.inReviewStep || !this.isFirstDoc || this.role !== 'indemnitor') { return; }
+
+      // Choose the page container itself so we are above text and below widgets
+      const page = document.querySelector('.pdfViewer .page[data-page-number="1"]') as HTMLElement | null;
+      if (!page) {
+        if (this.calloutRetryCount < 10) {
+          this.calloutRetryCount++;
+          setTimeout(() => this.ensureIndemnitorCallout(), 150);
+        }
+        return;
+      }
+
+      // Remove existing callout if it exists (for repositioning after zoom)
+      const existingCallout = page.querySelector('.indemnitor-callout');
+      if (existingCallout) {
+        existingCallout.remove();
+      }
+
+      // Get the actual rendered dimensions of the PDF page
+      const pageRect = page.getBoundingClientRect();
+      const pageWidth = pageRect.width;
+      const pageHeight = pageRect.height;
+      
+      // Check if we have valid dimensions
+      if (pageWidth === 0 || pageHeight === 0) {
+        if (this.calloutRetryCount < 10) {
+          this.calloutRetryCount++;
+          setTimeout(() => this.ensureIndemnitorCallout(), 150);
+        }
+        return;
+      }
+
+      // Create callout container
+      const callout = document.createElement('button');
+      callout.type = 'button';
+      callout.className = 'indemnitor-callout';
+      
+      // Calculate position as percentage of page width/height
+      // This ensures the button scales with the PDF regardless of zoom or screen size
+      // Detect mobile vs desktop based on rendered PDF width
+      const isMobileSize = pageWidth < 600; // Mobile PDFs typically render narrower
+      
+      // Position the button - mobile needs to be more to the left
+      const leftPercent = isMobileSize ? 7.5 : 9.5;
+      const topPercent = isMobileSize ? 0.1 :0.5;
+      
+      // Adjust slightly for Spanish (move slightly left and down)
+      const adjustedLeftPercent = this.lang === 'es' ? leftPercent - 0.3 : leftPercent;
+      const adjustedTopPercent = this.lang === 'es' ? topPercent + 0.2 : topPercent;
+      
+      // Calculate dynamic scale based on page width
+      // Use a base reference of 800px width (typical PDF render width for good readability)
+      // Scale factor ensures the button size is proportional to the PDF size
+      const baseWidth = 800; // reference width for "normal" size
+      const scaleFactor = pageWidth / baseWidth;
+      
+      // Clamp scale factor to reasonable bounds
+      // Mobile gets smaller sizing (0.5-0.75), desktop gets normal sizing (0.65-1.15)
+      const minScale = isMobileSize ? 0.5 : 0.65;
+      const maxScale = isMobileSize ? 0.75 : 1.15;
+      const clampedScale = Math.max(minScale, Math.min(maxScale, scaleFactor));
+      
+      // Use transform-origin at top-left so scaling doesn't affect position
+      callout.setAttribute('style', [
+        'position:absolute',
+        `left: ${adjustedLeftPercent}%`,
+        `top: ${adjustedTopPercent}%`,
+        'z-index: 1',
+        `transform: scale(${clampedScale})`,
+        'transform-origin: top left'
+      ].join(';'));
+
+      // Localised label
+      const labelEs = '¿Qué es? haz click aquí ';
+      const labelEn = 'What is it? click here';
+      callout.textContent = this.lang === 'es' ? labelEs : labelEn;
+
+      // Click opens the info modal with an explanation of "Indemnitor"
+      callout.addEventListener('click', () => {
+        const msg = this.lang === 'es'
+          ? '<strong>Indemnizador/Indemnitor:</strong> la persona que garantiza y paga la fianza del <strong>acusado</strong> (<strong>persona arrestada</strong>) y es responsable hasta que termine su proceso judicial.<br><br>Es decir, completa esta sección con la información del <strong>indemnizador</strong> (indemnitor).'
+          : '<strong>Indemnitor:</strong> the person who guarantees and pays the defendant\'s bond (<strong>arrested person bond</strong>) and is held responsible until the court process is completed.<br><br>That is, fill this section with the <strong>guarantor\'s</strong> (indemnitor) information.';
+        this.infoModal?.open(msg);
+      });
+
+      // Append inside the page so it scrolls/zooms with the PDF
+      page.appendChild(callout);
+    } catch {
+      /* best-effort UI hint; ignore failures */
+    }
+  }
+
   ngAfterViewInit(): void {
     // Show introductory modal when the wizard loads
     const roleLabel = this.role === 'defendant'
       ? (this.lang === 'es' ? 'acusado' : 'defendant')
-      : (this.lang === 'es' ? 'fiador' : 'indemnitor');
+      : (this.lang === 'es' ? 'indemnizador' : 'indemnitor');
 
     const msgIntro = this.lang === 'es'
-      ? `Estás a punto de empezar el proceso de llenado para el ${roleLabel}. Utiliza los botones de la barra superior para firmar y navegar. Los campos con borde rojo son obligatorios y debes completarlos para continuar.`
-      : `You are about to start the filling process for the ${roleLabel}. Use the top bar buttons to sign and navigate. Fields with a red border are required and must be completed before you can proceed.`;
+      ? `Vas a comenzar el formulario de ${roleLabel}. Los campos obligatorios tienen bordes rojos. Usa los botones superiores para firmar y navegar.`
+      : `You are about to start the ${roleLabel} form. Required fields have red borders. Use the top buttons to sign and navigate.`;
 
     // Use setTimeout to ensure the modal is opened after view initialisation
     setTimeout(() => this.introModal?.open(msgIntro));
+    
+    // Additional tooltip application after view init with longer delays
+    if (this.isBrowser) {
+      setTimeout(() => {
+        this.applyTooltips();
+      }, 3000);
+      
+      setTimeout(() => {
+        this.applyTooltips();
+      }, 5000);
+      
+      // Expose tooltip functionality globally for debugging
+      (window as any).forceTooltips = () => this.forceApplyTooltips();
+      (window as any).debugTooltips = () => {
+        console.log('Current language:', this.lang);
+        console.log('Form elements found:', document.querySelectorAll('.textWidgetAnnotation input, .textWidgetAnnotation textarea').length);
+        this.forceApplyTooltips();
+      };
+    }
   }
 
   /** Helper: Get the photo keys/filenames based on the selected role and available sides */
