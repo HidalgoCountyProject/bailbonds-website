@@ -38,6 +38,8 @@ export class SignatureModalComponent {
   @ViewChild('canvas', { static: false }) private canvasRef?: ElementRef<HTMLCanvasElement>;
   private ctx?: CanvasRenderingContext2D;
   private drawing = false;
+  private strokeCount = 0; // Contador de trazos completos
+  private moveCount = 0;   // Contador de movimientos durante un trazo
 
   /** Language passed by the parent wizard (defaults to English) */
   @Input() lang: 'en' | 'es' = 'en';
@@ -56,7 +58,12 @@ export class SignatureModalComponent {
       chooseFont: 'CHOOSE FONT:',
       typeHere: 'TYPE SIGNATURE',
       placeholderName: 'Your Name',
-      save: 'SAVE'
+      save: 'SAVE',
+      // Mensajes de validación
+      signatureTooSmall: 'Please draw a complete signature. The signature is too small or incomplete.',
+      noSignature: 'Please draw or type your signature before saving.',
+      nameTooShort: 'Please enter your full name.',
+      signatureIncomplete: 'Please draw a more complete signature with longer strokes.'
     },
     es: {
       drawTab: 'DIBUJAR',
@@ -70,7 +77,12 @@ export class SignatureModalComponent {
       chooseFont: 'ELEGIR FUENTE:',
       typeHere: 'ESCRIBIR FIRMA',
       placeholderName: 'Tu Nombre',
-      save: 'GUARDAR'
+      save: 'GUARDAR',
+      // Mensajes de validación
+      signatureTooSmall: 'Por favor dibuja una firma completa. La firma es demasiado pequeña o incompleta.',
+      noSignature: 'Por favor dibuja o escribe tu firma antes de guardar.',
+      nameTooShort: 'Por favor ingresa tu nombre completo.',
+      signatureIncomplete: 'Por favor dibuja una firma más completa con trazos más largos.'
     }
   };
 
@@ -95,6 +107,8 @@ export class SignatureModalComponent {
   clear(): void {
     if (this.activeTab === 'draw' && this.canvasRef && this.ctx) {
       this.ctx.clearRect(0, 0, this.canvasRef.nativeElement.width, this.canvasRef.nativeElement.height);
+      this.strokeCount = 0; // Resetear contador de trazos
+      this.moveCount = 0;   // Resetear contador de movimientos
     }
     if (this.activeTab === 'type') {
       this.typedName = '';
@@ -105,6 +119,21 @@ export class SignatureModalComponent {
     let dataUrl = '';
 
     if (this.activeTab === 'draw' && this.canvasRef) {
+      // SOLUCIÓN 3: Validar que hubo trazos significativos
+      const MIN_STROKES = 1;     // Al menos un trazo
+      const MIN_MOVES = 5;       // Al menos 5 movimientos acumulados (más estricto)
+      
+      if (this.strokeCount < MIN_STROKES) {
+        alert(this.t('noSignature'));
+        return;
+      }
+      
+      // Si solo hay un tap (un trazo sin movimientos), rechazar
+      if (this.strokeCount === 1 && this.moveCount < MIN_MOVES) {
+        alert(this.t('signatureIncomplete'));
+        return;
+      }
+
       const canvas = this.canvasRef.nativeElement;
       const ctx = canvas.getContext('2d')!;
       const width = canvas.width;
@@ -113,12 +142,15 @@ export class SignatureModalComponent {
       const data = imageData.data;
       let minY = height, maxY = 0, minX = width, maxX = 0;
       let found = false;
+      let pixelCount = 0; // SOLUCIÓN 1: Contar píxeles con tinta
+      
       // Buscar el bounding box de la tinta
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
           const idx = (y * width + x) * 4;
           if (data[idx + 3] > 0) { // alpha > 0
             found = true;
+            pixelCount++; // SOLUCIÓN 1: Incrementar contador
             if (x < minX) minX = x;
             if (x > maxX) maxX = x;
             if (y < minY) minY = y;
@@ -126,9 +158,25 @@ export class SignatureModalComponent {
           }
         }
       }
-      if (found) {
-        const signWidth = maxX - minX + 1;
-        const signHeight = maxY - minY + 1;
+      
+        // SOLUCIÓN 1: Validaciones de firma válida
+        if (found) {
+          const signWidth = maxX - minX + 1;
+          const signHeight = maxY - minY + 1;
+          const MIN_WIDTH = 45;   // Ancho mínimo en píxeles (más estricto)
+          const MIN_HEIGHT = 25;  // Alto mínimo en píxeles (más estricto)
+          const MIN_PIXELS = 80;  // Mínimo de píxeles con tinta (más estricto)
+          
+          // Validar que la firma tenga dimensiones razonables (AMBAS dimensiones deben ser válidas)
+          const isWidthValid = signWidth >= MIN_WIDTH;
+          const isHeightValid = signHeight >= MIN_HEIGHT;
+          const isPixelCountValid = pixelCount >= MIN_PIXELS;
+          
+          if (!isWidthValid || !isHeightValid || !isPixelCountValid) {
+            alert(this.t('signatureTooSmall'));
+            return; // No guardar
+          }
+        
         // Nuevo canvas del mismo ancho, pero solo tan alto como la firma
         const out = document.createElement('canvas');
         out.width = width;
@@ -147,12 +195,19 @@ export class SignatureModalComponent {
         finalCtx.drawImage(out, 0, height - signHeight);
         dataUrl = final.toDataURL('image/png');
       } else {
-        // Si no hay tinta, exportar el canvas normal
-        dataUrl = canvas.toDataURL('image/png');
+        // SOLUCIÓN 1: Mostrar error si no hay nada dibujado
+        alert(this.t('noSignature'));
+        return;
       }
     }
 
     if (this.activeTab === 'type' && this.typedName.trim()) {
+      // SOLUCIÓN 1: Validar longitud mínima del nombre
+      if (this.typedName.trim().length < 2) {
+        alert(this.t('nameTooShort'));
+        return;
+      }
+      
       // Render the typed name to an off-screen canvas so we always return an image
       const off = document.createElement('canvas');
       off.width = 600;
@@ -164,6 +219,12 @@ export class SignatureModalComponent {
       offCtx.font = `140px '${this.fontFamily}', sans-serif`;
       offCtx.fillText(this.typedName.trim(), off.width / 2, off.height);
       dataUrl = off.toDataURL('image/png');
+    }
+    
+    // SOLUCIÓN 1: Validar que haya un dataUrl antes de emitir
+    if (!dataUrl) {
+      alert(this.t('noSignature'));
+      return;
     }
 
     this.saved.emit(dataUrl);
@@ -197,10 +258,15 @@ export class SignatureModalComponent {
     this.ctx.lineWidth = 2;
     this.ctx.lineCap = 'round';
     this.ctx.strokeStyle = '#000';
+    
+    // SOLUCIÓN 3: Resetear contadores al inicializar
+    this.strokeCount = 0;
+    this.moveCount = 0;
   }
 
   onPointerDown(evt: MouseEvent | TouchEvent): void {
     this.drawing = true;
+    this.moveCount = 0; // SOLUCIÓN 3: Resetear contador de movimientos para este trazo
     const { x, y } = this.getPointerPos(evt);
     this.ctx?.beginPath();
     this.ctx?.moveTo(x, y);
@@ -209,6 +275,7 @@ export class SignatureModalComponent {
 
   onPointerMove(evt: MouseEvent | TouchEvent): void {
     if (!this.drawing) return;
+    this.moveCount++; // SOLUCIÓN 3: Incrementar contador de movimientos
     const { x, y } = this.getPointerPos(evt);
     this.ctx?.lineTo(x, y);
     this.ctx?.stroke();
@@ -216,6 +283,9 @@ export class SignatureModalComponent {
   }
 
   onPointerUp(evt: MouseEvent | TouchEvent): void {
+    if (this.drawing && this.moveCount > 0) {
+      this.strokeCount++; // SOLUCIÓN 3: Solo incrementar si hubo movimiento
+    }
     this.drawing = false;
     evt.preventDefault();
   }
