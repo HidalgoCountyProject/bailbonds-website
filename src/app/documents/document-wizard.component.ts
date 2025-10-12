@@ -1457,13 +1457,41 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
             });
           });
         }
+        // Robust appearance regeneration and flattening
         try {
           const form = pdfDoc.getForm();
-          const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
-          form.updateFieldAppearances(helvetica);
+          try {
+            const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
+            // Ensure consistent font/size on text fields before regenerating appearances
+            form.getFields().forEach((fld: any) => {
+              try {
+                if (typeof (fld as any).setFont === 'function') { (fld as any).setFont(helvetica); }
+                if (typeof (fld as any).setFontSize === 'function') { (fld as any).setFontSize(desiredFontSize); }
+              } catch { /* ignore individual field errors */ }
+            });
+            form.updateFieldAppearances(helvetica);
+          } catch {
+            // Retry once – helps on mobile where memory/timing can cause a first failure
+            await new Promise(r => setTimeout(r, 0));
+            try {
+              const helvetica2 = await pdfDoc.embedFont(StandardFonts.Helvetica);
+              form.updateFieldAppearances(helvetica2);
+            } catch {
+              // If this also fails, proceed to flatten but do not force-delete AcroForm later
+            }
+          }
+
+          // Flatten after appearances are (re)generated
           this.safeFlattenForm(form);
-          try { pdfDoc.catalog.delete(PDFName.of('AcroForm')); } catch {}
-        } catch {}
+
+          // Only remove AcroForm if there are no fields left (i.e., flatten succeeded)
+          try {
+            const remaining = form.getFields?.() ?? [];
+            if (remaining.length === 0) {
+              try { pdfDoc.catalog.delete(PDFName.of('AcroForm')); } catch {}
+            }
+          } catch { /* ignore */ }
+        } catch { /* outer guard – never fail whole doc for appearance issues */ }
         const outBytes = await pdfDoc.save();
         const url = URL.createObjectURL(new Blob([this.u8ToArrayBuffer(outBytes as unknown as Uint8Array)], { type: 'application/pdf' }));
         const name = docPath.split('/').pop() ?? `document-${results.length + 1}.pdf`;
