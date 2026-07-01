@@ -3,6 +3,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { AboutComponent } from './pages/about/about.component';
 import { ServicesComponent } from './pages/services/services.component';
 import { ContactComponent } from './pages/contact/contact.component';
+import { defendantInfoCompletedGuard } from './documents/guards/defendant-info-completed.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent, title: 'Affordable Bail Bonds' },
@@ -24,6 +25,7 @@ export const routes: Routes = [
   { 
     path: 'wizard/:role/:lang', 
     loadComponent: () => import('./documents/document-wizard.component').then(m => m.DocumentWizardComponent),
+    canActivate: [defendantInfoCompletedGuard],
     title: 'Complete Documents - Affordable Bail Bonds'
   },
   { 

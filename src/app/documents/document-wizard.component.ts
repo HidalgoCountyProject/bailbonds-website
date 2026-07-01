@@ -12,6 +12,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { PDFDocument, StandardFonts, PDFName } from 'pdf-lib';
 import { LoadingModalComponent } from '../shared/loading-modal/loading-modal.component';
 import { ApiService } from '../services/api.service';
+import { hasCompletedDefendantInfo } from './guards/defendant-info-completed.guard';
 
 
 // --- PDF Manifest Constants ---
@@ -1580,6 +1581,27 @@ export class DocumentWizardComponent implements OnInit, OnDestroy, AfterViewInit
 
   /** Sends the flattened documents to the backend (calls initProcess first, then uploads files, then completes submission) */
   sendDocuments(): void {
+    // Safety net: if this indemnitor session somehow reached the wizard without
+    // completing the dedicated Defendant Information step (e.g. a direct/bookmarked/
+    // restored URL that bypassed the route guard), block submission here instead of
+    // sending an incomplete payload to the backend.
+    if (this.role === 'indemnitor' && !hasCompletedDefendantInfo()) {
+      const msg = this.lang === 'es'
+        ? 'Falta información del acusado (teléfono, dirección o trabajo). Serás redirigido para completarla antes de enviar los documentos.'
+        : 'Some defendant information is missing (phone, address, or workplace). You will be redirected to complete it before sending the documents.';
+
+      if (this.warningModal) {
+        const sub = this.warningModal.closed.subscribe(() => {
+          sub.unsubscribe();
+          this.router.navigate(['/wizard/indemnitor', this.lang, 'defendant-info']);
+        });
+        this.warningModal.open(msg);
+      } else {
+        this.router.navigate(['/wizard/indemnitor', this.lang, 'defendant-info']);
+      }
+      return;
+    }
+
     this.isLoading = true;
     const pdfFilenames = this.getPdfFilenames();
     const photoKeys = this.getPhotoKeys();
