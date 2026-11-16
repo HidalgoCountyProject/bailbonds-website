@@ -1,0 +1,22 @@
+<div class="role-selection-container">
+  <h2 class="title">{{ 'role.select.title' | translate }}</h2>
+  <p class="subtitle">{{ 'role.select.subtitle' | translate }}</p>
+
+  <div class="card-wrapper">
+    <a class="role-card" [routerLink]="['/wizard','defendant']" aria-label="Defendant flow link">
+      <div class="icon">👤</div>
+      <div class="role-heading">
+        <strong class="friendly">{{ 'role.arrested.legal' | translate }}</strong>
+      </div>
+      <span class="cta">{{ 'role.arrested.cta' | translate }} →</span>
+    </a>
+
+    <a class="role-card" [routerLink]="['/wizard','indemnitor']" aria-label="Indemnitor flow link">
+      <div class="icon">🤝</div>
+      <div class="role-heading">
+        <strong class="friendly">{{ 'role.indemnitor.legal' | translate }}</strong>
+      </div>
+      <span class="cta">{{ 'role.indemnitor.cta' | translate }} →</span>
+    </a>
+  </div>
+</div>

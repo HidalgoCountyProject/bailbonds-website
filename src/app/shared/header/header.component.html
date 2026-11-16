@@ -1,22 +1,104 @@
+<!-- Compact unified header -->
 <header class="header">
-  <div class="container">
-    <div class="header-content">
-      <div class="logo">
-        <a routerLink="/">Hidalgo Bail Bonds</a>
+  <!-- Top bar with only language switcher -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="secondary-nav">
+        <!-- Enhanced language switcher (only item in top bar) -->
+        <div class="language-switcher-container">
+          <ng-container *ngIf="currentLanguage === 'en'; else spanishLabel">
+            <span class="language-label">Change your language:</span>
+          </ng-container>
+          <ng-template #spanishLabel>
+            <span class="language-label">Cambiar idioma:</span>
+          </ng-template>
+          <button class="language-switcher" (click)="toggleLanguage($event)">
+            <div class="language-flag" [ngClass]="{'active': currentLanguage === 'en'}">EN</div>
+            <div class="language-slider" [ngClass]="{'spanish': currentLanguage === 'es'}"></div>
+            <div class="language-flag" [ngClass]="{'active': currentLanguage === 'es'}">ES</div>
+          </button>
+        </div>
       </div>
-      <nav class="nav-menu" [ngClass]="{'open': isMobileMenuOpen}">
-        <ul>
-          <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a></li>
-          <li><a routerLink="/about" routerLinkActive="active">About Us</a></li>
-          <li><a routerLink="/services" routerLinkActive="active">Services</a></li>
-          <li><a routerLink="/contact" routerLinkActive="active">Contact</a></li>
-        </ul>
-      </nav>
-      <button class="mobile-menu-toggle" (click)="toggleMobileMenu()">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
+    </div>
+  </div>
+  
+  <!-- Main header area with logo, navigation and call info -->
+  <div class="main-header">
+    <div class="container main-header-container">
+      <!-- Logo and mobile phone in one row for mobile -->
+      <div class="navbar-brand">
+        <a href="/">
+          <!-- Simple logo animation container starting with closed bars -->
+          <figure class="animated-logo-container">
+            <img src="assets/images/first.png" alt="Affordable Bail Bonds" class="logo-image" id="logo-image">
+            <figcaption style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;">
+              affordable bail bonds in McAllen 24/7 – how to bail someone out in McAllen fast – cheap bail bonds Hidalgo County – hidalgo county bail bond companies – bail bonds near me – fianzas económicas en McAllen
+            </figcaption>
+          </figure>
+        </a>
+        
+        <!-- Mobile phone button (only visible in mobile) -->
+        <div class="mobile-header-top">
+          <div class="phone-button mobile-only">
+            <div class="phone-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16" fill="currentColor">
+                <path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/>
+              </svg>
+            </div>
+            <div class="phone-content">
+              <span class="call-text">{{ 'call_now' | translate }}</span>
+              <a href="tel:9568679269" class="phone-number">956-867-9269</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Ultra-compact content wrapper -->
+      <div class="header-content">
+        <!-- Navigation menu with call info directly beside it -->
+        <nav class="navbar">
+          <div class="navbar-items">
+            <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="navbar-item" title="affordable bail bonds in McAllen 24/7">{{ 'home' | translate }}</a>
+            <a href="/#servicios" class="navbar-item" title="how to bail someone out in McAllen fast">{{ 'services' | translate }}</a>
+            <a href="/#ubicacion" class="navbar-item" title="cheap bail bonds Hidalgo County">{{ 'location' | translate }}</a>
+            <a href="/#testimonios" class="navbar-item">{{ 'testimonials' | translate }}</a>
+            <a href="/#preguntas-frecuentes" class="navbar-item">{{ 'faq' | translate }}</a>
+            <a href="/wizard" class="navbar-item" title="Complete documents online">{{ 'documents' | translate }}</a>
+            <a routerLink="/information" routerLinkActive="active" ariaCurrentWhenActive="page" class="navbar-item" [title]="currentLanguage === 'es' ? 'Información de la cárcel y el juzgado del Condado de Hidalgo' : 'Hidalgo County jail and courthouse information'">{{ 'information' | translate }}</a>
+            <a href="javascript:void(0)" (click)="openCallbackPopup()" class="navbar-item" title="fianzas económicas en McAllen">{{ 'contact' | translate }}</a>
+          </div>
+        </nav>
+        
+        <!-- Call button for desktop only -->
+        <div class="phone-button desktop-only">
+          <div class="phone-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16" fill="currentColor">
+              <path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/>
+            </svg>
+          </div>
+          <div class="phone-content">
+            <span class="call-text">{{ 'call_now' | translate }}</span>
+            <a href="tel:9568679269" class="phone-number">956-867-9269</a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </header>
+
+<!-- First-time visitor language prompt - moved outside header -->
+<div *ngIf="showLanguagePrompt" class="language-prompt">
+  <div class="prompt-content">
+    <p *ngIf="currentLanguage === 'en'">
+      ¿Prefieres ver esta página en español?
+    </p>
+    <p *ngIf="currentLanguage === 'es'">
+      Would you prefer to view this page in English?
+    </p>
+    <button (click)="toggleLanguage($event)" class="prompt-button">
+      {{ currentLanguage === 'en' ? 'Español' : 'English' }}
+    </button>
+    <button (click)="dismissLanguagePrompt()" class="prompt-dismiss">×</button>
+  </div>
+</div>
+

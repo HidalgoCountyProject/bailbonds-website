@@ -1,0 +1,175 @@
+<div class="information-page" [attr.lang]="lang">
+  <div class="choices" [attr.aria-label]="'info.aria.choose' | translate">
+    <button type="button" class="choice" [class.selected]="section === 'courthouse'" [attr.aria-pressed]="section === 'courthouse'" (click)="selectSection('courthouse')">
+      <span><strong>{{ 'info.choice.courthouse' | translate }}</strong></span>
+    </button>
+    <button type="button" class="choice" [class.selected]="section === 'jail'" [attr.aria-pressed]="section === 'jail'" (click)="selectSection('jail')">
+      <span><strong>{{ 'info.choice.jail' | translate }}</strong></span>
+    </button>
+  </div>
+
+  <div id="courthouse-view" [hidden]="section !== 'courthouse'">
+    <section class="card summary" [attr.aria-label]="'info.aria.courthouse_contact' | translate">
+      <div>
+        <div class="details">
+          <div class="detail"><div><small>{{ 'info.label.physical_address' | translate }}</small><strong>100 N. Closner Blvd.</strong><span>Edinburg, TX 78539</span></div></div>
+          <div class="detail"><div><small>{{ 'info.label.courthouse_phone' | translate }}</small><a href="tel:+19562927090"><strong>(956) 292-7090</strong></a></div></div>
+        </div>
+      </div>
+      <div class="buttons">
+        <a class="btn btn-primary" href="tel:+19562927090">{{ 'info.call.courthouse' | translate }}</a>
+        <a class="btn info-secondary" [href]="directions('100 N. Closner Blvd., Edinburg, TX 78539')" target="_blank" rel="noopener noreferrer">{{ 'info.directions' | translate }}</a>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="directory-heading">
+      <div class="directory-header">
+        <div><h2 id="directory-heading">{{ 'info.directory.title' | translate }}</h2></div>
+        <a class="source-link" [href]="directoryUrl" target="_blank" rel="noopener noreferrer">{{ 'info.directory.official' | translate }}</a>
+      </div>
+      <label class="search-label" for="court-search">{{ 'info.directory.search_label' | translate }}</label>
+      <div class="search">
+        <input id="court-search" #courtSearch type="search" [attr.aria-label]="'info.directory.search_aria' | translate" aria-describedby="search-hint" [placeholder]="'info.directory.placeholder' | translate" [value]="query" (input)="search(courtSearch.value)">
+        <small role="status" aria-live="polite">{{ filteredCourts.length }} {{ 'info.directory.results' | translate }}</small>
+      </div>
+      <p id="search-hint" class="search-hint">{{ 'info.directory.hint' | translate }}</p>
+      <div class="court-list">
+        <div class="court-row" *ngFor="let row of courtRows">
+          <button *ngFor="let court of row; let position = index" [style.--court-position]="position" type="button" class="court-title" [class.expanded]="expandedCourt === court" [attr.aria-expanded]="expandedCourt === court" [attr.aria-controls]="'court-details-' + courtId(court)" (click)="toggleCourt(court)">
+            <span>{{ court.name }}</span>
+            <span class="details-label">{{ expandedCourt === court ? ('info.court.hide_details' | translate) : ('info.court.view_details' | translate) }}</span>
+          </button>
+          <ng-container *ngFor="let court of row; let position = index">
+            <section class="court-drawer" [style.--court-position]="position" [id]="'court-details-' + courtId(court)" [hidden]="expandedCourt !== court" [attr.aria-label]="court.name + ' details'">
+              <h3>{{ court.name }}</h3>
+              <dl class="court-info">
+                <div *ngIf="court.name !== 'District Clerk’s Office' && court.name !== 'County Court #5'">
+                  <dt>{{ 'info.court.hours' | translate }}</dt>
+                  <dd>{{ court.hours ? localizeOfficeHours(lang, court.hours) : ('info.court.hours_missing' | translate) }}</dd>
+                </div>
+                <div>
+                  <dt>{{ 'info.court.physical_address' | translate }}</dt>
+                  <dd>100 N. Closner Blvd.<ng-container *ngIf="court.floor !== 'Not listed'">, {{ localizeFloor(lang, court.floor) }}</ng-container><br>Edinburg, TX 78539</dd>
+                </div>
+                <div><dt>{{ 'info.court.phone' | translate }}</dt><dd><a [href]="phoneLink(court.phone)">{{ formatPhone(court.phone) }}</a></dd></div>
+                <div *ngIf="court.tollFree"><dt>{{ 'info.court.toll_free' | translate }}</dt><dd><a [href]="phoneLink(court.tollFree)">{{ formatPhone(court.tollFree) }}</a></dd></div>
+                <div *ngIf="court.fax"><dt>{{ 'info.court.fax' | translate }}</dt><dd><a [href]="phoneLink(court.fax)">{{ formatPhone(court.fax) }}</a></dd></div>
+                <div *ngIf="court.mailing"><dt>{{ 'info.court.mailing' | translate }}</dt><dd>{{ court.mailing }}</dd></div>
+                <div *ngIf="court.email"><dt>{{ 'info.court.email_us' | translate }}</dt><dd><a class="office-email" [href]="'mailto:' + court.email">{{ 'info.court.email_district' | translate }}</a></dd></div>
+              </dl>
+              <div class="buttons court-links">
+                <a class="btn btn-primary" [href]="phoneLink(court.phone)">{{ 'info.call.court' | translate }} {{ court.name }}</a>
+                <a class="btn info-secondary" [href]="directions('100 N. Closner Blvd., Edinburg, TX 78539')" target="_blank" rel="noopener noreferrer">{{ 'info.directions' | translate }}</a>
+                <a class="btn info-secondary" [href]="directoryUrl" target="_blank" rel="noopener noreferrer">{{ 'info.court.official_listing' | translate }}</a>
+              </div>
+              <p class="notice" *ngIf="court.notes">{{ court.notes }}</p>
+              <ng-container *ngIf="court.staff.length">
+                <h4 class="staff-heading" *ngIf="!court.hideStaffHeading">{{ 'info.court.staff_heading' | translate }}</h4>
+                <ul class="staff-list">
+                  <li class="staff" *ngFor="let staff of court.staff">
+                    <div class="staff-identity">
+                      <img *ngIf="court.staffPhotos?.[staff[0]] as photo" class="staff-photo" [src]="photo" [alt]="staff[0]" width="56" height="56" loading="lazy">
+                      <span *ngIf="court.staffInitials?.[staff[0]] as initials" class="staff-initials" aria-hidden="true">{{ initials }}</span>
+                      <div><strong class="staff-name">{{ staff[0] }}</strong><span class="staff-role">{{ localizeStaffRole(lang, staff[1]) }}</span></div>
+                    </div>
+                    <div class="staff-contact" [class.staff-contact-inline]="!!staff[4]">
+                      <a *ngIf="staff[3]" [class.staff-email-label]="!!staff[4]" [href]="'mailto:' + staff[3]">{{ staff[4] || staff[3] }}</a>
+                      <a *ngIf="staff[2]" [href]="phoneLink(staff[2], court.phone)">{{ formatPhone(staff[2]) }}</a>
+                    </div>
+                  </li>
+                </ul>
+              </ng-container>
+            </section>
+          </ng-container>
+        </div>
+        <div class="empty" *ngIf="!filteredCourts.length">
+          <p>{{ 'info.search.empty' | translate }}</p>
+          <button class="btn info-secondary" type="button" (click)="search('')">{{ 'info.search.clear' | translate }}</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="jail-view" [hidden]="section !== 'jail'">
+    <section class="card summary" [attr.aria-label]="'info.aria.jail_contact' | translate">
+      <div>
+        <div class="details">
+          <div class="detail"><div><small>{{ 'info.label.physical_address' | translate }}</small><strong>701 E. El Cibolo Rd.</strong><span>Edinburg, TX 78541</span></div></div>
+          <div class="detail"><div><small>{{ 'info.label.detention_phone' | translate }}</small><a href="tel:+19563817900"><strong>(956) 381-7900</strong></a></div></div>
+        </div>
+      </div>
+      <div class="buttons">
+        <a class="btn btn-primary" href="tel:+19563817900">{{ 'info.call.jail' | translate }}</a>
+        <a class="btn info-secondary" [href]="directions('701 E. El Cibolo Rd., Edinburg, TX 78541')" target="_blank" rel="noopener noreferrer">{{ 'info.directions' | translate }}</a>
+      </div>
+    </section>
+    <section class="card inmate-services" [attr.aria-label]="'info.aria.inmate_services' | translate">
+      <div class="inmate-service" aria-labelledby="inmate-search-heading">
+        <h3 id="inmate-search-heading">{{ 'info.inmate.search.title' | translate }}</h3>
+        <p>{{ 'info.inmate.search.before_link' | translate }} <a href="https://portal-txhidalgo.tylertech.cloud/HidalgoPA/default.aspx" target="_blank" rel="noopener noreferrer">{{ 'info.inmate.search.link' | translate }}</a>.</p>
+      </div>
+      <div class="inmate-service" aria-labelledby="inmate-commissary-heading">
+        <h3 id="inmate-commissary-heading">{{ 'info.inmate.commissary.title' | translate }}</h3>
+        <p>{{ 'info.inmate.commissary.before_link1' | translate }} <a href="https://www.accesscatalog.com/downloads/Marketing/AC_SecureDep-Poster_P-W-CashWI_v3.pdf" target="_blank" rel="noopener noreferrer">{{ 'info.inmate.search.link' | translate }}</a>.</p>
+        <p>{{ 'info.inmate.commissary.before_link2' | translate }} <a href="https://www.accesscorrections.com/home" target="_blank" rel="noopener noreferrer">{{ 'info.inmate.search.link' | translate }}</a>.</p>
+      </div>
+      <div class="inmate-service" aria-labelledby="inmate-communication-heading">
+        <h3 id="inmate-communication-heading">{{ 'info.inmate.communication.title' | translate }}</h3>
+        <p>{{ 'info.inmate.communication.before_link' | translate }} <a [href]="inmateCommunicationUrl" target="_blank" rel="noopener noreferrer">{{ 'info.inmate.search.link' | translate }}</a>.</p>
+      </div>
+    </section>
+    <section class="card visits" aria-labelledby="visits-heading">
+      <h2 id="visits-heading">{{ 'info.visits.title' | translate }}</h2>
+      <label class="visit-day-picker" id="visit-day-select-label" for="visit-day-select">{{ 'info.visits.select_day' | translate }}</label>
+      <select
+        id="visit-day-select"
+        class="visit-day-select"
+        [value]="day"
+        (change)="selectVisitDay(+$any($event.target).value)"
+        aria-labelledby="visit-day-select-label"
+        [attr.aria-controls]="'visit-panel-' + day"
+      >
+        <option *ngFor="let key of dayKeys; let index = index" [value]="index">{{ key | translate }}</option>
+      </select>
+      <div class="visit-days" role="tablist" [attr.aria-label]="'info.visits.aria.days' | translate">
+        <button
+          *ngFor="let key of dayKeys; let index = index"
+          type="button"
+          role="tab"
+          class="visit-day"
+          [class.active]="day === index"
+          [attr.aria-selected]="day === index"
+          [attr.id]="'visit-day-' + index"
+          [attr.aria-controls]="'visit-panel-' + index"
+          (click)="selectVisitDay(index)"
+        >{{ key | translate }}</button>
+      </div>
+      <div
+        class="slots"
+        [class.slots-single]="visitationSlotsForDay(day) === 1"
+        [id]="'visit-panel-' + day"
+        role="tabpanel"
+        [attr.aria-labelledby]="'visit-day-select-label visit-day-' + day"
+        aria-live="polite"
+      >
+        <ng-container *ngFor="let slot of visitation[day]; let index = index">
+          <article class="slot" *ngIf="slot">
+            <h3 class="slot-time">{{ dayKeys[day] | translate }} ({{ visitationSlotHours[index] }})</h3>
+            <div *ngFor="let area of slot" class="visit-area">
+              <h4 *ngIf="area.location">{{ localizeVisitLocationHeading(lang, area.location) }}</h4>
+              <ol class="visit-list" [attr.start]="area.listStart ?? null">
+                <li *ngFor="let item of area.items">{{ localizeVisitItem(lang, item) }}</li>
+              </ol>
+            </div>
+          </article>
+        </ng-container>
+      </div>
+      <p class="notice">
+        {{ 'info.visits.notice_before' | translate }}
+        <a [href]="detentionUrl" target="_blank" rel="noopener noreferrer">{{ 'info.visits.official_schedule' | translate }}</a>
+      </p>
+    </section>
+  </div>
+
+  <p class="fine-print">{{ 'info.fine_print' | translate }}</p>
+</div>

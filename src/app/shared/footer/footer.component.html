@@ -1,36 +1,42 @@
 <footer class="footer">
   <div class="container">
     <div class="footer-content">
-      <div class="footer-section about">
-        <h3>Hidalgo Bail Bonds</h3>
-        <p>We provide reliable bail bond services 24/7 throughout the state.</p>
-        <div class="contact">
-          <p><i class="fas fa-phone"></i> (555) 123-4567</p>
-          <p><i class="fas fa-envelope"></i> info&#64;hidalgobailbonds.com</p>
-          <p><i class="fas fa-map-marker-alt"></i> 123 Main St, Suite 100, Your City, ST 12345</p>
-        </div>
-      </div>
-      <div class="footer-section links">
-        <h3>Quick Links</h3>
-        <ul>
-          <li><a routerLink="/">Home</a></li>
-          <li><a routerLink="/about">About Us</a></li>
-          <li><a routerLink="/services">Services</a></li>
-          <li><a routerLink="/contact">Contact</a></li>
+      <!-- Quick Links -->
+      <div class="footer-section">
+        <h3>{{ translations['footer.quick_links'] || 'Enlaces Rápidos' }}</h3>
+        <ul class="footer-links">
+          <li><a href="/">{{ translations['home'] || 'Inicio' }}</a></li>
+          <li><a href="/services">{{ translations['services'] || 'Nuestros Servicios' }}</a></li>
+          <li><a href="#preguntas-frecuentes">{{ translations['faq'] || 'Preguntas Frecuentes' }}</a></li>
+          <li><a href="#ubicacion">{{ translations['location'] || 'Ubicación' }}</a></li>
+          <li><a href="#testimonios">{{ translations['testimonials'] || 'Testimonios' }}</a></li>
         </ul>
       </div>
-      <div class="footer-section social">
-        <h3>Connect With Us</h3>
-        <div class="social-links">
-          <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
-          <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
-          <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+
+      <!-- Contact Information -->
+      <div class="footer-section">
+        <h3>{{ translations['contact'] || 'Contáctenos' }}</h3>
+        <div class="contact-info">
+          <p><strong>Affordable Bail Bonds</strong></p>
+          <p>1506 Pecan Blvd, McAllen, TX 78501, United States</p>
+          <p class="phone"><a href="tel:9568679269">956-867-9269</a></p>
+          <p>{{ translations['location_hours'] || 'Disponible 24/7' }}</p>
         </div>
-        <p class="disclaimer">Licensed, Bonded, and Insured</p>
+      </div>
+
+      <!-- Social Links -->
+      <div class="footer-section">
+        <h3>{{ translations['footer.social'] || 'Redes Sociales' }}</h3>
+        <div class="social-links">
+          <p>{{ translations['footer.coming_soon'] || 'Proximamente' }}</p>
+        </div>
       </div>
     </div>
+
+    <!-- Bottom copyright bar -->
     <div class="footer-bottom">
-      <p>&copy; {{ currentYear }} Hidalgo Bail Bonds. All rights reserved.</p>
+      <p>&copy; {{ currentYear }} Affordable Bail Bonds. {{ translations['footer.rights'] || 'Todos los derechos reservados.' }}</p>
+      <p>{{ translations['footer.license'] || 'Licencia' }} #800107</p>
     </div>
   </div>
 </footer>

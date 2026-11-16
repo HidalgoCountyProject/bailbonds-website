@@ -1,0 +1,205 @@
+<div class="wizard-view">
+  <!-- Minimal header toolbar for document filling -->
+  <header class="document-toolbar">
+    <button class="toolbar-btn close-btn" (click)="close()" aria-label="Close form">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    
+    <!-- Document counter -->
+    <div *ngIf="!inReviewStep && !inIdPhotoStep" class="document-counter">
+      <span class="counter-text">{{ currentIndex + 1 }}/{{ docs.length }}</span>
+    </div>
+
+    <!-- Toolbar controls -->
+    <div *ngIf="!inReviewStep" class="toolbar-nav-group">
+      <button *ngIf="(role === 'indemnitor' && isFirstDoc) || (!isFirstDoc || inIdPhotoStep)" class="toolbar-btn prev-btn nav-btn" (click)="prevDoc()" aria-label="Previous document">
+        <div class="nav-icon">◀</div>
+        <div class="nav-label">{{ lang==='es' ? 'Anterior' : 'Prev' }}</div>
+      </button>
+
+      <!-- Sign button visible on every PDF step (first and subsequent docs) -->
+      <button *ngIf="!inIdPhotoStep" class="toolbar-btn sign-toolbar-btn" (click)="openSignature()" aria-label="Sign document">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 20h9"></path>
+          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"></path>
+        </svg>
+        <span>{{ lang==='es' ? 'Firmar' : 'Sign' }}</span>
+      </button>
+
+      <button *ngIf="!inIdPhotoStep" class="toolbar-btn next-btn nav-btn" (click)="nextDoc()" aria-label="Next document">
+        <div class="nav-icon">▶</div>
+        <div class="nav-label">{{ lang==='es' ? 'Siguiente' : 'Next' }}</div>
+      </button>
+    </div>
+
+    <!-- Review step toolbar -->
+    <div *ngIf="inReviewStep" class="toolbar-nav-group review-group">
+      <button *ngIf="!isFirstReview" class="toolbar-btn prev-btn nav-btn" (click)="prevFlattened()" aria-label="Previous document">
+        <div class="nav-icon">◀</div>
+        <div class="nav-label">{{ lang==='es' ? 'Ant.' : 'Prev' }}</div>
+      </button>
+
+      <button class="toolbar-btn back-btn edit-info-btn" (click)="goBackToEdit()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+        <span class="edit-info-label">{{ lang==='es' ? 'Editar información' : 'Edit information' }}</span>
+      </button>
+      <button class="toolbar-btn send-toolbar-btn" (click)="sendDocuments()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+        <span class="send-docs-label">{{ lang==='es' ? 'Enviar documentos' : 'Send Documents' }}</span>
+      </button>
+
+      <button *ngIf="!isLastReview" class="toolbar-btn next-btn nav-btn" (click)="nextFlattened()" aria-label="Next document">
+        <div class="nav-icon">▶</div>
+        <div class="nav-label">{{ lang==='es' ? 'Sig.' : 'Next' }}</div>
+      </button>
+    </div>
+  </header>
+
+  <!-- PDF Viewer Step -->
+  <div *ngIf="!inIdPhotoStep && !inReviewStep" class="pdf-step">
+    <div class="pdf-overlay" [class.show]="isLoading"></div>
+    <div class="pdf-container">
+      <ngx-extended-pdf-viewer
+        (pagesLoaded)="onPagesLoaded()"
+        [src]="pdfSrc"
+        [height]="'calc(100vh - 60px)'"
+        [zoom]="'page-fit'"
+        [maxZoom]="3"
+        [pageViewMode]="'multiple'"
+        [showToolbar]="false"
+        [showSidebarButton]="false"
+        [showFindButton]="false"
+        [showPagingButtons]="true"
+        [showPresentationModeButton]="false"
+        [showOpenFileButton]="false"
+        [showPrintButton]="false"
+        [showDownloadButton]="false"
+        [showSecondaryToolbarButton]="false"
+        [showRotateButton]="false"
+        [showHandToolButton]="false"
+        [showSpreadButton]="false"
+        [showPropertiesButton]="false"
+        [textLayer]="true"
+        [showBorders]="false"
+       >
+      </ngx-extended-pdf-viewer>
+    </div>
+
+    <!-- Signature modal instance -->
+    <app-signature-modal #signatureModal [lang]="lang" (saved)="onSignatureSaved($event)"></app-signature-modal>
+  </div>
+
+  <!-- ID Photo Step -->
+  <div *ngIf="inIdPhotoStep" class="id-photo-container">
+    <!-- Guidance & tips -->
+    <section class="photo-guidelines">
+      <h2 class="guidelines-title">
+        {{ lang==='es' ? 'Por favor sube una foto clara de tu identificación' : 'Please add a clear photo of your ID' }}
+      </h2>
+      <p class="accepted-ids">
+        <ng-container *ngIf="lang==='es'; else enIDs">Identificaciones recomendadas: <strong>Pasaporte estadounidense</strong>, <strong>Licencia de conducir</strong> o <strong>ID gubernamental</strong></ng-container>
+        <ng-template #enIDs>Recommended IDs: <strong>U.S. Passport</strong>, <strong>Driver's License</strong>, or <strong>State-issued ID</strong></ng-template>
+      </p>
+      <ul class="tips">
+        <li>{{ lang==='es' ? 'Usa buena iluminación para evitar reflejos o sombras' : 'Use good lighting to avoid glare or shadows' }}</li>
+        <li>{{ lang==='es' ? 'Mantén la imagen nítida; evita fotos borrosas' : 'Keep the picture sharp—avoid blurry photos' }}</li>
+        <li>{{ lang==='es' ? 'Procura que los cuatro bordes sean visibles y el texto legible' : 'Try to keep all four edges visible and text readable' }}</li>
+        <li>{{ lang==='es' ? 'Tamaño máximo: 10MB por foto' : 'Maximum size: 10MB per photo' }}</li>
+        <li>{{ lang==='es' ? 'Formatos aceptados: JPG, PNG, GIF' : 'Accepted formats: JPG, PNG, GIF' }}</li>
+      </ul>
+    </section>
+
+    <form [formGroup]="currentForm" novalidate>
+      <div class="photo-upload">
+        <div class="uploader-sides">
+          <!-- Front side -->
+          <div class="side" [class.uploaded]="idPhotoControl?.value?.frontPreview">
+            <span class="side-label">{{ lang==='es' ? 'Frente' : 'Front' }}</span>
+            <!-- Opciones de subida (solo si aún no hay imagen) -->
+            <div *ngIf="!idPhotoControl?.value?.frontPreview" class="upload-options">
+              <button type="button" class="upload-btn" (click)="frontGalleryInput.click()">
+                {{ lang==='es' ? 'Galería' : 'Photo library' }}
+              </button>
+              <button type="button" class="upload-btn" (click)="frontCameraInput.click()">
+                {{ lang==='es' ? 'Cámara' : 'Camera' }}
+              </button>
+            </div>
+            <img *ngIf="idPhotoControl?.value?.frontPreview" [src]="idPhotoControl?.value?.frontPreview" class="preview-img" alt="Front preview" />
+            <!-- Inputs ocultos -->
+            <input #frontGalleryInput type="file" accept="image/*" (change)="onPhotoSelected($event, 'front', 'idPhoto')" hidden />
+            <input #frontCameraInput type="file" accept="image/*" capture="environment" (change)="onPhotoSelected($event, 'front', 'idPhoto')" hidden />
+            <a *ngIf="idPhotoControl?.value?.frontPreview" class="reset-link" (click)="resetPhoto('front', 'idPhoto')">{{ lang==='es' ? 'Eliminar' : 'Remove' }}</a>
+          </div>
+
+          <!-- Back side -->
+          <div class="side" [class.uploaded]="idPhotoControl?.value?.backPreview">
+            <span class="side-label">{{ lang==='es' ? 'Reverso' : 'Back' }}</span>
+            <!-- Opciones de subida (solo si aún no hay imagen) -->
+            <div *ngIf="!idPhotoControl?.value?.backPreview" class="upload-options">
+              <button type="button" class="upload-btn" (click)="backGalleryInput.click()">
+                {{ lang==='es' ? 'Galería' : 'Photo library' }}
+              </button>
+              <button type="button" class="upload-btn" (click)="backCameraInput.click()">
+                {{ lang==='es' ? 'Cámara' : 'Camera' }}
+              </button>
+            </div>
+            <img *ngIf="idPhotoControl?.value?.backPreview" [src]="idPhotoControl?.value?.backPreview" class="preview-img" alt="Back preview" />
+            <!-- Inputs ocultos -->
+            <input #backGalleryInput type="file" accept="image/*" (change)="onPhotoSelected($event, 'back', 'idPhoto')" hidden />
+            <input #backCameraInput type="file" accept="image/*" capture="environment" (change)="onPhotoSelected($event, 'back', 'idPhoto')" hidden />
+            <a *ngIf="idPhotoControl?.value?.backPreview" class="reset-link" (click)="resetPhoto('back', 'idPhoto')">{{ lang==='es' ? 'Eliminar' : 'Remove' }}</a>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="save-btn main-save" (click)="saveIdPhoto()" [disabled]="currentForm.invalid || idPhotoControl?.invalid">
+        {{ lang==='es' ? 'Guardar y continuar' : 'Save and continue' }}
+      </button>
+    </form>
+  </div>
+
+  <!-- Review Step (flattened PDFs) -->
+  <div *ngIf="inReviewStep" class="review-step" class="pdf-step">
+    <div class="pdf-overlay" [class.show]="isLoading"></div>
+    <div class="pdf-container" *ngIf="flattenedDocs.length">
+      <ngx-extended-pdf-viewer
+        [src]="flattenedDocs[reviewIndex].url"
+        [height]="'calc(100vh - 60px)'"
+        [zoom]="'page-fit'"
+        [pageViewMode]="'multiple'"
+        [showToolbar]="false"
+        [showSidebarButton]="false"
+        [showFindButton]="false"
+        [showPagingButtons]="true"
+        [showPrintButton]="false"
+        [showDownloadButton]="false"
+        [showSecondaryToolbarButton]="false"
+        [showRotateButton]="false"
+        [showHandToolButton]="false"
+        [showSpreadButton]="false"
+        [showPropertiesButton]="false"
+        [showBorders]="false">
+      </ngx-extended-pdf-viewer>
+    </div>
+  </div>
+</div>
+
+<!-- Intro & success modals (always present) -->
+<app-alert-modal #infoModal></app-alert-modal>
+<app-confirm-modal #successModal></app-confirm-modal>
+<app-intro-modal #introModal [lang]="lang"></app-intro-modal>
+
+<!-- Global loading modal -->
+<app-loading-modal [show]="isLoading" [lang]="lang"></app-loading-modal>
+
+<!-- Mueve el modal aquí, fuera del div condicional -->
+<app-alert-modal #warningModal></app-alert-modal>

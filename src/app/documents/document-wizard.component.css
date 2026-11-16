@@ -1,0 +1,992 @@
+.wizard-view {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-color: #f5f5f5;
+}
+
+/* Minimal document toolbar */
+.document-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 60px;
+  background: #ffffff;
+  border-bottom: 1px solid #e1e5e9;
+  padding: 0 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  width: 100%;
+  overflow: hidden;
+}
+
+.document-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+  text-align: center;
+  flex: 1;
+  padding: 0 16px;
+}
+
+.toolbar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #4a5568;
+  padding: 0;
+}
+
+.toolbar-btn:hover {
+  background-color: #f7fafc;
+  color: #2d3748;
+}
+
+
+.close-btn:hover {
+  background-color: #fed7d7;
+  color: #e53e3e;
+}
+
+.download-btn:hover {
+  background-color: #bee3f8;
+  color: #3182ce;
+}
+
+/* PDF container */
+.pdf-container {
+  flex: 1 1 auto;
+  width: 100%;
+  margin-top: 60px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  background: #f5f5f5;
+  touch-action: pan-y pinch-zoom;
+}
+
+/* Floating sign button */
+.sign-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  padding: 0.9rem 1.3rem;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  border: 2px solid var(--secondary-color);
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+  z-index: 1100;
+}
+
+.sign-btn:hover {
+  background-color: #e6b800;
+  transform: translateY(-2px);
+}
+
+/* Override ngx-extended-pdf-viewer styles for better mobile experience */
+::ng-deep .pdf-viewer {
+  width: 100% !important;
+  height: 100% !important;
+  overflow-x: hidden !important;
+}
+
+::ng-deep .pdfViewer {
+  padding: 0 !important;
+}
+
+::ng-deep .page {
+  margin: 0 auto !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 4px !important;
+}
+
+/* iOS-style compact form fields */
+::ng-deep .annotationLayer .textWidgetAnnotation input,
+::ng-deep .annotationLayer .textWidgetAnnotation textarea,
+::ng-deep .annotationLayer .choiceWidgetAnnotation select {
+  border: 1.5px solid #cbd5e1 !important;  /* slightly thicker, modern border */
+  border-radius: 4px !important;           /* gentle rounded corners */
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
+  /*font-size: 0.6em !important;           
+  line-height: 1.25 !important;*/
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  /*transition: all 0.15s ease !important;  */
+}
+
+/* Focus state colours */
+::ng-deep .annotationLayer .textWidgetAnnotation input:focus,
+::ng-deep .annotationLayer .textWidgetAnnotation textarea:focus,
+::ng-deep .annotationLayer .choiceWidgetAnnotation select:focus {
+  border-color: #007aff !important;          /* iOS blue */
+  background-color: #ffffff !important;
+  box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2) !important;
+}
+
+/* Checkbox / radio colours */
+::ng-deep .annotationLayer .buttonWidgetAnnotation.checkBox input,
+::ng-deep .annotationLayer .buttonWidgetAnnotation.radioButton input {
+  border-color: #d1d5db !important;
+  transition: all 0.15s ease !important;
+}
+
+/* Hide unnecessary PDF.js UI elements */
+::ng-deep .toolbar {
+  display: none !important;
+}
+
+::ng-deep .loadingBar {
+  background-color: #3182ce !important;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .document-toolbar {
+    min-height: 56px;
+    padding: 0 12px;
+  }
+  
+  .document-title {
+    font-size: 1rem;
+    padding: 0 12px;
+  }
+  
+  .toolbar-btn {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .pdf-container {
+    margin-top: 56px;
+  }
+  
+  ::ng-deep .pdfViewer {
+    padding: 4px !important;
+  }
+  
+  ::ng-deep .page {
+    margin: 4px auto !important;
+  }
+  
+  /* Prevent Safari/iOS auto-zoom on form fields while keeping compact look */
+  /* (rules moved to touch-only query below) */
+  
+  /* Mobile form fields - ultra compact */
+  /* (block fully removed) */
+  
+  /* Removed textarea and checkbox/radio size overrides */
+  .id-photo-container {
+    margin-top: 56px;
+  }
+}
+
+@media (max-width: 480px) {
+  .document-toolbar {
+    min-height: 52px;
+    padding: 0 8px;
+  }
+  
+  .document-title {
+    font-size: 0.9rem;
+    padding: 0 8px;
+  }
+  
+  .toolbar-btn {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .pdf-container {
+    margin-top: 52px;
+  }
+  
+  .sign-btn {
+    bottom: 15px;
+    right: 15px;
+    padding: 0.75rem 1rem;
+  }
+}
+
+/* Loading state */
+::ng-deep .ng-pdf-viewer-container {
+  background: #f5f5f5;
+}
+
+/* Ensure smooth scrolling */
+::ng-deep .pdf-viewer {
+  scroll-behavior: smooth;
+}
+
+/* Additional iOS-style improvements */
+::ng-deep .annotationLayer .textWidgetAnnotation input::placeholder,
+::ng-deep .annotationLayer .textWidgetAnnotation textarea::placeholder {
+  color: #374151 !important; /* even darker gray */
+  opacity: 1 !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* Yellow callout inside PDF page                                      */
+/* The callout is appended INSIDE .textLayer so it scrolls/zooms       */
+/* with the PDF and stays at the top-left corner of the page.          */
+/* ------------------------------------------------------------------ */
+::ng-deep .indemnitor-callout {
+  position: absolute;               /* set inline as well; here for defaults */
+  z-index: 50;                      /* above text & widgets */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 8px 8px 12px;
+  background: #FFCC00;
+  color: #000;
+  border: 1.5px solid #FFB700;
+  border-radius: 6px 0 0 6px;      /* rounded left corners only */
+  font-weight: 700;
+  font-size: 10px;
+  line-height: 1;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  white-space: nowrap;
+  min-width: 60px;
+}
+
+/* Arrow pointer on the right side */
+::ng-deep .indemnitor-callout::after {
+  content: '';
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid #FFCC00;
+  border-top: 14.5px solid transparent;
+  border-bottom: 14.5px solid transparent;
+  filter: drop-shadow(2px 0 2px rgba(0,0,0,0.2));
+}
+
+/* Arrow border */
+::ng-deep .indemnitor-callout::before {
+  content: '';
+  position: absolute;
+  right: -11px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 11px solid #FFB700;
+  border-top: 15.5px solid transparent;
+  border-bottom: 15.5px solid transparent;
+  z-index: -1;
+}
+
+::ng-deep .indemnitor-callout:hover { filter: brightness(0.95); }
+
+/* Mobile and responsive sizing is now handled dynamically via JavaScript 
+   based on the actual rendered PDF page width, ensuring consistent proportions
+   across all screen sizes and zoom levels. No media queries needed. */
+
+
+/* Overlay to hide reload flash */
+.pdf-overlay {
+  position: fixed;
+  inset: 0;
+  background: #ffffff;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 1200;
+}
+.pdf-overlay.show {
+  opacity: 0.9; /* slightly transparent white */
+}
+
+/* ------------------------------------------------------------------ */
+/* ID Photo step styles                                               */
+/* ------------------------------------------------------------------ */
+
+/* Photo upload */
+.id-photo-container {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 24px 16px;
+  overflow-y: auto;
+  background: #f9fafb;
+  margin-top: 60px;
+}
+
+.photo-upload {
+  .uploader-sides {
+    display: flex;
+    gap: 16px;
+    flex-wrap: nowrap;
+    justify-content: center;
+  }
+
+  .side {
+    flex: 1 1 0;
+    min-width: 140px;
+    border: 2px dashed #d0d0d0;
+    border-radius: 6px;
+    padding: 16px;
+    text-align: center;
+    position: relative;
+
+    &.uploaded {
+      border-style: solid;
+      border-color: var(--secondary-color, #ffd369);
+    }
+  }
+
+  .upload-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Espaciado vertical entre los dos botones (Galería / Cámara) */
+  .upload-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* separación visible */
+    margin-top: 24px; /* deja espacio para la etiqueta FRONT/BACK */
+  }
+
+  .preview-img {
+    width: 100%;
+    max-height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+
+  .reset-link {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    color: #d32f2f;
+  }
+
+  .upload-options .upload-btn {
+    width: 100%;
+    height: 40px;
+    background: #f5f5f5;
+    border: none;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #1a202c;
+  }
+  .upload-options .upload-btn:hover {
+    background: #e0e0e0;
+  }
+}
+
+/* keep save-btn styling */
+.save-btn.main-save {
+  width: 100%;            /* take full width of central column */
+  max-width: 600px;       /* equals .photo-guidelines */
+  display: block;
+  margin: 32px auto 0 auto; /* keep vertical spacing, centered */
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  padding: 0.9rem 1.6rem;
+  border-radius: 8px;
+  font-weight: 600;
+  border: 2px solid var(--secondary-color);
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.save-btn.main-save[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Guidelines section */
+.photo-guidelines {
+  max-width: 600px;
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+}
+
+.guidelines-title {
+  margin: 0 0 2px 0;
+  line-height: 1.25;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1a202c;
+  text-align: center;
+}
+
+.title-es {
+  margin-top: 2px;
+}
+
+.accepted-ids {
+  font-size: 0.95rem;
+  text-align: left;
+  margin: 12px 0 16px 0;
+  color: #4a5568;
+  line-height: 1.3;
+}
+
+.text-es {
+  margin-top: 4px;
+  display: block;
+}
+
+.tips {
+  padding-left: 18px;
+  list-style: disc;
+  color: #2d3748;
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.tips li {
+  margin-bottom: 6px;
+}
+
+/* side label */
+.photo-upload .side-label {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(0,0,0,0.65);
+  color: #ffffff;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  pointer-events: none;
+  user-select: none;
+  text-transform: uppercase;
+}
+
+.photo-upload .side.uploaded .side-label {
+  background: var(--secondary-color, #ffcc00);
+  color: #000;
+}
+
+/* bilingual text styling */
+.title-es, .text-es, .tip-es {
+  display: block;
+  font-size: 0.8rem;
+  color: #6b7280; /* softer gray */
+}
+
+.tip-es {
+  margin-top: 2px;
+}
+
+.upload-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-en {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #222;
+}
+
+.upload-es {
+  font-size: 0.75rem;
+  color: #4a5568;
+}
+
+/* ----- Full-width PDF, no horizontal pan (mobile & desktop) ----- */
+.pdf-container {
+  overflow-x: hidden;                 /* Hide horizontal scroll */
+  touch-action: pan-y pinch-zoom;     /* Only vertical pan + pinch */
+}
+
+::ng-deep .pdfViewer {
+  padding: 0 !important;              /* Remove side gutters */
+}
+
+::ng-deep .page {
+  margin: 0 auto !important;          /* Center page, no side space */
+}
+
+::ng-deep .pdf-viewer {
+  width: 100% !important;             /* Ensure viewer never exceeds viewport */
+  touch-action: pan-y pinch-zoom !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* Desktop / medium-large screens – improve readability              */
+/* ------------------------------------------------------------------ */
+@media (min-width: 992px) {
+  /* Bigger toolbar title */
+  .document-title {
+    font-size: 1.3rem;
+  }
+
+  /* Larger text inside PDF form widgets 
+  ::ng-deep .annotationLayer .textWidgetAnnotation input,
+  ::ng-deep .annotationLayer .textWidgetAnnotation textarea,
+  ::ng-deep .annotationLayer .choiceWidgetAnnotation select {
+    font-size: 0.75rem !important; 
+  }*/
+}
+
+/* Botón de cerrar con estilos similares al botón de sign */
+.document-toolbar .close-btn {
+  background-color: var(--secondary-color, #FFCC00);
+  color: var(--primary-color, #000000);
+  border: 2px solid var(--secondary-color, #FFCC00);
+  min-width: 44px;
+  height: 44px;
+  padding: 0;
+  font-weight: 600;
+  border-radius: 8px;
+  margin-right: 20px;
+  z-index: 2;
+  transition: all 0.2s ease;
+}
+
+.document-toolbar .close-btn:hover {
+  background-color: #e6b800;
+  transform: scale(1.05);
+}
+
+.document-toolbar .close-btn:active {
+  transform: scale(0.95);
+}
+
+/* Document counter */
+.document-counter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--secondary-color, #FFCC00);
+  color: var(--primary-color, #000000);
+  border-radius: 20px;
+  padding: 6px 16px;
+  margin: 0 16px;
+  font-weight: 600;
+  font-size: 14px;
+  min-width: 60px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 2px solid var(--secondary-color, #FFCC00);
+  animation: gentleBounce 3s ease-in-out infinite;
+}
+
+.counter-text {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  user-select: none;
+}
+
+/* Centered group for prev/next/sign */
+.toolbar-nav-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  justify-content: center;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 8px;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.toolbar-nav-group::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+.sign-toolbar-btn {
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  color: var(--primary-color, #000000);
+  border: 2px solid #FF8C00;
+  min-width: 110px;
+  padding: 0 14px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(255, 165, 0, 0.4);
+  animation: gentleBounce 3s ease-in-out infinite, sendButtonGlow 2s ease-in-out infinite alternate;
+  position: relative;
+  overflow: hidden;
+}
+
+.sign-toolbar-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: sendButtonShine 3s ease-in-out infinite;
+}
+
+.sign-toolbar-btn:hover {
+  background: linear-gradient(135deg, #FFA500, #FF8C00);
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(255, 165, 0, 0.6);
+}
+
+/* Highlight for required fields not filled */
+::ng-deep .missing-required {
+  outline: 2px solid var(--secondary-color, #FFCC00) !important;
+}
+
+/* Removed custom yellow required outline – default red will apply */
+
+.review-group .toolbar-btn {
+  width: auto;
+  padding: 0 10px;
+}
+
+/* NAVIGATION BUTTONS (prev/next) - Mejorado */
+.nav-btn {
+  flex-direction: column;
+  width: 52px;
+  height: auto;
+  min-height: 48px;
+  padding: 6px 0 4px 0;
+  background: transparent;
+  border: none;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  animation: gentleBounce 3s ease-in-out infinite;
+}
+
+.nav-btn:hover {
+  background-color: #f7fafc;
+  transform: scale(1.05);
+}
+
+.nav-btn:active {
+  transform: scale(0.95);
+}
+
+.nav-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+  color: #4a5568;
+  margin-bottom: 2px;
+}
+
+.nav-label {
+  font-size: 9px;
+  color: #666;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-align: center;
+  user-select: none;
+  pointer-events: none;
+  white-space: nowrap;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* SEND DOCUMENTS & EDIT INFO BUTTONS */
+.send-toolbar-btn, .edit-info-btn {
+  background-color: var(--secondary-color, #FFCC00);
+  color: var(--primary-color, #000000);
+  border: 2px solid var(--secondary-color, #FFCC00);
+  min-width: 90px;
+  padding: 0 10px;
+  font-weight: 600;
+  border-radius: 8px;
+  font-size: 13px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+/* Send Documents button - Special styling for importance */
+.send-toolbar-btn {
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  border: 2px solid #FF8C00;
+  box-shadow: 0 4px 12px rgba(255, 165, 0, 0.4);
+  animation: gentleBounce 3s ease-in-out infinite, sendButtonGlow 2s ease-in-out infinite alternate;
+  position: relative;
+  overflow: hidden;
+}
+
+.send-toolbar-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: sendButtonShine 3s ease-in-out infinite;
+}
+
+.send-toolbar-btn:hover {
+  background: linear-gradient(135deg, #FFA500, #FF8C00);
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(255, 165, 0, 0.6);
+}
+
+.edit-info-btn:hover {
+  background-color: #e6b800;
+  transform: scale(1.05);
+}
+
+.send-toolbar-btn:active, .edit-info-btn:active {
+  transform: scale(0.95);
+}
+
+.send-docs-label, .edit-info-label {
+  font-size: 12px;
+  color: #333;
+  font-weight: 600;
+  margin-left: 4px;
+  white-space: nowrap;
+}
+
+/* SEPARACIÓN ENTRE GRUPOS DE BOTONES Y CLOSE */
+.document-toolbar {
+  gap: 0;
+}
+
+.toolbar-nav-group {
+  gap: 16px;
+}
+
+.review-group .toolbar-btn {
+  min-width: 44px;
+  padding: 0 8px;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .document-toolbar {
+    min-height: 56px;
+    padding: 0 12px;
+  }
+  
+  .document-toolbar .close-btn {
+    min-width: 40px;
+    height: 40px;
+    margin-right: 16px;
+  }
+  
+  .document-counter {
+    padding: 4px 12px;
+    margin: 0 8px;
+    font-size: 12px;
+    min-width: 50px;
+  }
+  
+  .counter-text {
+    font-size: 12px;
+  }
+  
+  .nav-btn {
+    width: 44px;
+    min-height: 40px;
+    padding: 4px 0 2px 0;
+  }
+  
+  .nav-icon {
+    font-size: 1.2rem;
+  }
+  
+  .nav-label {
+    font-size: 8px;
+  }
+  
+  .send-toolbar-btn, .edit-info-btn {
+    min-width: 70px;
+    font-size: 11px;
+    height: 32px;
+    padding: 0 6px;
+  }
+  
+  .send-docs-label, .edit-info-label {
+    font-size: 10px;
+    margin-left: 2px;
+  }
+  
+  .toolbar-nav-group {
+    gap: 12px;
+  }
+  
+  .sign-toolbar-btn {
+    min-width: 90px;
+    padding: 0 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .document-toolbar {
+    min-height: 52px;
+    padding: 0 8px;
+  }
+  
+  .document-toolbar .close-btn {
+    min-width: 36px;
+    height: 36px;
+    margin-right: 12px;
+  }
+  
+  .document-counter {
+    padding: 3px 10px;
+    margin: 0 6px;
+    font-size: 11px;
+    min-width: 45px;
+  }
+  
+  .counter-text {
+    font-size: 11px;
+  }
+  
+  .nav-btn {
+    width: 40px;
+    min-height: 36px;
+    padding: 3px 0 1px 0;
+  }
+  
+  .nav-icon {
+    font-size: 1.1rem;
+  }
+  
+  .nav-label {
+    font-size: 7px;
+  }
+  
+  .send-toolbar-btn, .edit-info-btn {
+    min-width: 60px;
+    font-size: 10px;
+    height: 28px;
+    padding: 0 4px;
+  }
+  
+  .send-docs-label, .edit-info-label {
+    font-size: 9px;
+    margin-left: 1px;
+  }
+  
+  .toolbar-nav-group {
+    gap: 8px;
+  }
+  
+  .sign-toolbar-btn {
+    min-width: 80px;
+    padding: 0 8px;
+  }
+}
+
+/* Review Step (flattened PDFs) */
+.review-step {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 60px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  background: #f5f5f5;
+}
+
+.review-step .pdf-container {
+  flex: 1;
+  min-width: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: #f5f5f5;
+  touch-action: pan-x pan-y pinch-zoom;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .review-step {
+    margin-top: 56px;
+  }
+}
+
+@media (max-width: 480px) {
+  .review-step {
+    margin-top: 52px;
+  }
+}
+
+/* Animación suave de bounce para mejorar visibilidad de botones */
+@keyframes gentleBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(2px);
+  }
+}
+
+/* Pausar animación en hover para mejor UX */
+.nav-btn:hover {
+  animation-play-state: paused;
+}
+
+.sign-toolbar-btn:hover,
+.send-toolbar-btn:hover {
+  animation-play-state: paused;
+}
+
+/* Animaciones especiales para los botones brillantes */
+@keyframes sendButtonGlow {
+  0% {
+    box-shadow: 0 4px 12px rgba(255, 165, 0, 0.4);
+  }
+  100% {
+    box-shadow: 0 4px 20px rgba(255, 165, 0, 0.8), 0 0 30px rgba(255, 215, 0, 0.3);
+  }
+}
+
+@keyframes sendButtonShine {
+  0% {
+    left: -100%;
+  }
+  50% {
+    left: 100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+

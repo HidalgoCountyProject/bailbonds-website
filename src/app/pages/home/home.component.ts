@@ -1,13 +1,495 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, PLATFORM_ID, Inject, Renderer2, ElementRef } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { Subject, fromEvent, Subscription } from 'rxjs';
+import { takeUntil, debounceTime } from 'rxjs/operators';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
+import { GoogleReviewsComponent } from '../../shared/google-reviews/google-reviews.component';
+import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { ApiService, PopupService } from '../../services';
+import { LanguageService } from '../../shared/services/language.service';
+
+interface FormStatus {
+  type: 'success' | 'error';
+  message: string;
+}
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink],
+  imports: [
+    CommonModule, 
+    RouterLink, 
+    TranslatePipe, 
+    GoogleReviewsComponent, 
+    ReactiveFormsModule,
+    HttpClientModule
+  ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
+  private autoScrollInterval: any;
+  private isPaused: boolean = false;
+  private currentIndex: number = 0;
+  private totalSlides: number = 0;
+  private slidesPerView: number = 4;
+  private isBrowser: boolean;
+  private destroy$ = new Subject<void>();
+  private resumeTimeoutId: any = null;
+  
+  // Callback Request Properties
+  isCallbackOpen: boolean = false;
+  callbackForm: FormGroup;
+  isSubmitting: boolean = false;
+  isFormSubmitted: boolean = false;
+  formStatus: FormStatus | null = null;
+  messageCharsLeft: number = 200;
+  
+  private popupSubscription: Subscription;
+  private languageSubscription: Subscription;
+  
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object, 
+    private renderer: Renderer2, 
+    private el: ElementRef,
+    private fb: FormBuilder,
+    private http: HttpClient,
+    private apiService: ApiService,
+    private popupService: PopupService,
+    public languageService: LanguageService
+  ) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+    
+    // Initialize the form
+    this.callbackForm = this.fb.group({
+      fullName: ['', Validators.required],
+      arrestedPerson: [''],
+      dob: [''],
+      phone: ['', Validators.required],
+      message: [''],
+      consentChecked: [false, Validators.requiredTrue]
+    });
+    
+    // Track message character count
+    this.callbackForm.get('message')?.valueChanges.subscribe(val => {
+      const text = val || '';
+      this.messageCharsLeft = 200 - text.length;
+    });
+
+    // Inicializar las suscripciones
+    this.popupSubscription = new Subscription();
+    this.languageSubscription = new Subscription();
+  }
+
+  ngOnInit(): void {
+    if (this.isBrowser) {
+      setTimeout(() => this.initAccordion(), 0);
+      
+      // Suscribirse a cambios de idioma para forzar la detección de cambios
+      this.languageSubscription = this.languageService.currentLanguage$.subscribe(() => {
+        // La suscripción asegura que Angular detecte cambios al cambiar el idioma
+      });
+    }
+    
+    // Suscribirse al servicio de popup
+    this.popupSubscription = this.popupService.callbackPopup$.subscribe(isOpen => {
+      this.isCallbackOpen = isOpen;
+    });
+  }
+
+  ngAfterViewInit(): void {
+    if (this.isBrowser) {
+      setTimeout(() => {
+        this.initializeCarousel();
+        this.handleResize();
+      }, 0);
+
+      fromEvent(window, 'resize')
+        .pipe(
+          debounceTime(150),
+          takeUntil(this.destroy$)
+        )
+        .subscribe(() => {
+          this.handleResize();
+        });
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    if (this.isBrowser && this.autoScrollInterval) {
+      clearInterval(this.autoScrollInterval);
+    }
+    if (this.resumeTimeoutId) {
+      clearTimeout(this.resumeTimeoutId);
+    }
+    
+    // Limpiar suscripciones
+    if (this.popupSubscription) {
+      this.popupSubscription.unsubscribe();
+    }
+    if (this.languageSubscription) {
+      this.languageSubscription.unsubscribe();
+    }
+  }
+
+  initAccordion(): void {
+    const accordionHeaders = this.el.nativeElement.querySelectorAll('.accordion-header');
+    accordionHeaders.forEach((header: HTMLElement) => {
+      this.renderer.listen(header, 'click', () => {
+        const accordionItem = header.parentElement;
+        if (!accordionItem) return;
+        const currentlyActive = accordionItem.classList.contains('active');
+        
+        this.el.nativeElement.querySelectorAll('.accordion-item.active').forEach((item: HTMLElement) => {
+          if (item !== accordionItem) {
+            item.classList.remove('active');
+          }
+        });
+        
+        if (!currentlyActive) {
+          accordionItem.classList.add('active');
+        } else {
+          accordionItem.classList.remove('active');
+        }
+      });
+    });
+    
+    // Initialize FAQ show more/less toggle
+    this.initFaqToggle();
+  }
+  
+  initFaqToggle(): void {
+    const showMoreBtn = this.el.nativeElement.querySelector('.show-more-btn');
+    const showLessBtn = this.el.nativeElement.querySelector('.show-less-btn');
+    const hiddenFaqs = this.el.nativeElement.querySelectorAll('.hidden-faq');
+    
+    if (!showMoreBtn || !showLessBtn) return;
+    
+    this.renderer.listen(showMoreBtn, 'click', () => {
+      hiddenFaqs.forEach((faq: HTMLElement) => {
+        this.renderer.removeClass(faq, 'hidden-faq');
+        this.renderer.addClass(faq, 'visible-faq');
+      });
+      this.renderer.setStyle(showMoreBtn, 'display', 'none');
+      this.renderer.setStyle(showLessBtn, 'display', 'flex');
+    });
+    
+    this.renderer.listen(showLessBtn, 'click', () => {
+      hiddenFaqs.forEach((faq: HTMLElement) => {
+        this.renderer.removeClass(faq, 'visible-faq');
+        this.renderer.addClass(faq, 'hidden-faq');
+        // Also remove active state when hiding
+        if (faq.classList.contains('active')) {
+          faq.classList.remove('active');
+        }
+      });
+      this.renderer.setStyle(showLessBtn, 'display', 'none');
+      this.renderer.setStyle(showMoreBtn, 'display', 'flex');
+      
+      // Scroll back to the top of the FAQ section to see the visible questions
+      this.el.nativeElement.querySelector('#preguntas-frecuentes').scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    });
+  }
+
+  private initializeCarousel(): void {
+    const carousel = this.el.nativeElement.querySelector('.services-carousel') as HTMLElement;
+    const dotsContainer = this.el.nativeElement.querySelector('.carousel-dots') as HTMLElement;
+    const prevButton = this.el.nativeElement.querySelector('.carousel-control.prev') as HTMLElement;
+    const nextButton = this.el.nativeElement.querySelector('.carousel-control.next') as HTMLElement;
+    
+    if (!carousel || !dotsContainer || !prevButton || !nextButton) {
+      console.error("Carousel elements not found");
+      return;
+    }
+
+    const cards = carousel.querySelectorAll('.service-card');
+    this.totalSlides = cards.length;
+    
+    if(this.totalSlides === 0) {
+      console.error("No service cards found in carousel");
+      return;
+    }
+
+    this.updateSlidesPerView();
+    this.createDots(dotsContainer);
+    this.equalizeCardHeights();
+    this.setupDesktopInteractions(carousel, prevButton, nextButton);
+    this.updateScrollableState();
+    this.startAutoScroll();
+  }
+
+  private handleResize(): void {
+    if (!this.isBrowser) return;
+    
+    this.updateSlidesPerView();
+    this.moveToSlide(this.currentIndex, false);
+    setTimeout(() => this.equalizeCardHeights(), 50);
+    this.updateScrollableState();
+    this.startAutoScroll();
+  }
+
+  private setupDesktopInteractions(carousel: HTMLElement, prevButton: HTMLElement, nextButton: HTMLElement): void {
+    if (!this.isBrowser) return;
+    
+    if (window.innerWidth < 768) return;
+    const container = carousel.parentElement as HTMLElement;
+    if (!container) return;
+
+    this.renderer.listen(container, 'mouseenter', () => this.pauseCarousel());
+    this.renderer.listen(container, 'mouseleave', () => this.resumeCarousel(1500));
+    
+    this.renderer.listen(prevButton, 'click', () => {
+      this.pauseCarousel();
+      this.moveToSlide(this.currentIndex - 1);
+      this.resumeCarousel(8000);
+    });
+    this.renderer.listen(nextButton, 'click', () => {
+      this.pauseCarousel();
+      this.moveToSlide(this.currentIndex + 1);
+      this.resumeCarousel(8000);
+    });
+  }
+
+  private createDots(container: HTMLElement): void {
+    if (!this.isBrowser) return;
+    
+    container.innerHTML = '';
+    const isMobile = window.innerWidth < 768;
+    const requiredDots = this.totalSlides > this.slidesPerView;
+    
+    if (isMobile || !requiredDots) {
+       this.renderer.setStyle(container, 'display', 'none');
+       return;
+    }
+    this.renderer.setStyle(container, 'display', 'flex');
+
+    const dotCount = Math.max(0, this.totalSlides - this.slidesPerView + 1);
+    
+    for (let i = 0; i < dotCount; i++) {
+      const dot = this.renderer.createElement('div');
+      this.renderer.addClass(dot, 'carousel-dot');
+      if (i === this.currentIndex) this.renderer.addClass(dot, 'active');
+      this.renderer.setAttribute(dot, 'data-index', i.toString());
+      this.renderer.listen(dot, 'click', () => {
+        this.pauseCarousel();
+        this.moveToSlide(i);
+        this.resumeCarousel(8000);
+      });
+      this.renderer.appendChild(container, dot);
+    }
+  }
+
+  private updateSlidesPerView(): void {
+    if (!this.isBrowser) return;
+    
+    const width = window.innerWidth;
+    let previousSlidesPerView = this.slidesPerView;
+    
+    if (width >= 1200) {
+      this.slidesPerView = 4;
+    } else if (width >= 992) {
+      this.slidesPerView = 3;
+    } else if (width >= 768) {
+      this.slidesPerView = 2;
+    } else {
+      this.slidesPerView = 1;
+    }
+    
+    if (previousSlidesPerView !== this.slidesPerView) {
+        const dotsContainer = this.el.nativeElement.querySelector('.carousel-dots') as HTMLElement;
+        if (dotsContainer) {
+            this.createDots(dotsContainer);
+        }
+    }
+  }
+
+  private getSlideWidth(): number {
+    const firstCard = this.el.nativeElement.querySelector('.services-carousel .service-card') as HTMLElement;
+    if (!firstCard) return 0;
+    const cardStyle = window.getComputedStyle(firstCard);
+    const marginLeft = parseFloat(cardStyle.marginLeft || '0');
+    const marginRight = parseFloat(cardStyle.marginRight || '0');
+    return firstCard.offsetWidth + marginLeft + marginRight;
+  }
+
+  private moveToSlide(index: number, animate: boolean = true): void {
+    const carousel = this.el.nativeElement.querySelector('.services-carousel') as HTMLElement;
+    if (!carousel || window.innerWidth < 768) return;
+
+    const maxIndex = Math.max(0, this.totalSlides - this.slidesPerView);
+    
+    if (index < 0) {
+        this.currentIndex = maxIndex;
+    } else if (index > maxIndex) {
+        this.currentIndex = 0;
+    } else {
+        this.currentIndex = index;
+    }
+    
+    const slideWidth = this.getSlideWidth();
+    const translateX = -(this.currentIndex * slideWidth);
+    
+    this.renderer.setStyle(carousel, 'transition', animate ? 'transform 0.6s cubic-bezier(0.65, 0, 0.35, 1)' : 'none');
+    this.renderer.setStyle(carousel, 'transform', `translateX(${translateX}px)`);
+    
+    this.updateActiveDot();
+    this.updateScrollableState();
+  }
+
+  private updateActiveDot(): void {
+    const dots = this.el.nativeElement.querySelectorAll('.carousel-dots .carousel-dot');
+    if (!dots || dots.length === 0) return;
+    
+    dots.forEach((dot: HTMLElement, index: number) => {
+      if (index === this.currentIndex) {
+        this.renderer.addClass(dot, 'active');
+      } else {
+        this.renderer.removeClass(dot, 'active');
+      }
+    });
+  }
+
+  private updateScrollableState(): void {
+    const container = this.el.nativeElement.querySelector('.carousel-container') as HTMLElement;
+    if (!container || window.innerWidth < 768) return;
+
+    const maxIndex = Math.max(0, this.totalSlides - this.slidesPerView);
+    const canScrollLeft = this.currentIndex > 0;
+    const canScrollRight = this.currentIndex < maxIndex;
+
+    if (canScrollLeft) {
+        this.renderer.addClass(container, 'is-scrollable-left');
+    } else {
+        this.renderer.removeClass(container, 'is-scrollable-left');
+    }
+
+    if (canScrollRight) {
+        this.renderer.addClass(container, 'is-scrollable-right');
+    } else {
+        this.renderer.removeClass(container, 'is-scrollable-right');
+    }
+  }
+
+  private startAutoScroll(): void {
+    if (!this.isBrowser || window.innerWidth < 768) {
+       if (this.autoScrollInterval) clearInterval(this.autoScrollInterval);
+       return;
+    }
+    
+    if (this.totalSlides <= this.slidesPerView) {
+        if (this.autoScrollInterval) clearInterval(this.autoScrollInterval);
+        return;
+    }
+    
+    this.pauseCarousel();
+    if (this.autoScrollInterval) clearInterval(this.autoScrollInterval);
+    
+    this.autoScrollInterval = setInterval(() => {
+      if (!this.isPaused) {
+        this.moveToSlide(this.currentIndex + 1);
+      }
+    }, 6000);
+    this.resumeCarousel(1000);
+  }
+
+  private pauseCarousel(): void {
+    this.isPaused = true;
+    if (this.resumeTimeoutId) {
+      clearTimeout(this.resumeTimeoutId);
+      this.resumeTimeoutId = null;
+    }
+  }
+
+  private resumeCarousel(delay: number = 0): void {
+    if (this.resumeTimeoutId) {
+      clearTimeout(this.resumeTimeoutId);
+      this.resumeTimeoutId = null;
+    }
+    
+    if (this.totalSlides <= this.slidesPerView) return;
+    
+    if (delay > 0) {
+      this.resumeTimeoutId = setTimeout(() => {
+        if (this.isPaused) {
+          this.isPaused = false;
+        }
+        this.resumeTimeoutId = null;
+      }, delay);
+    } else {
+      this.isPaused = false;
+    }
+  }
+
+  private equalizeCardHeights(): void {
+    if (!this.isBrowser) return;
+    const cards = this.el.nativeElement.querySelectorAll('.services-carousel .service-card') as NodeListOf<HTMLElement>;
+    if (!cards.length) return;
+    
+    let maxHeight = 0;
+    cards.forEach(card => this.renderer.setStyle(card, 'height', 'auto'));
+    
+    requestAnimationFrame(() => {
+       cards.forEach(card => {
+         maxHeight = Math.max(maxHeight, card.offsetHeight);
+       });
+       if (maxHeight > 0) {
+         cards.forEach(card => this.renderer.setStyle(card, 'height', `${maxHeight}px`));
+       }
+    });
+  }
+
+  // Callback Form Functions
+  toggleCallback(): void {
+    this.popupService.toggleCallbackPopup();
+  }
+  
+  hasError(field: string): boolean {
+    const control = this.callbackForm.get(field);
+    return !!(control && control.invalid && (control.dirty || control.touched || this.isFormSubmitted));
+  }
+  
+  submitCallbackForm(): void {
+    this.isFormSubmitted = true;
+    
+    if (this.callbackForm.invalid) {
+      return;
+    }
+    
+    this.isSubmitting = true;
+    
+    // Prepare the data to send
+    const formData = {
+      ...this.callbackForm.value
+    };
+    
+    this.apiService.sendContactForm(formData).subscribe({
+      next: (response: {success: boolean}) => {
+        this.formStatus = {
+          type: 'success',
+          message: 'callback.success'
+        };
+        this.isSubmitting = false;
+        
+        // Auto-close the form after success
+        setTimeout(() => {
+          this.toggleCallback();
+        }, 3000);
+      },
+      error: (error: any) => {
+        this.formStatus = {
+          type: 'error',
+          message: 'callback.error'
+        };
+        this.isSubmitting = false;
+      }
+    });
+  }
 }

@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
-import { ContactFormComponent } from '../../components/contact-form/contact-form.component';
+
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
+
 
 @Component({
   selector: 'app-contact',
   standalone: true,
-  imports: [ContactFormComponent],
+  imports: [TranslatePipe],
   templateUrl: './contact.component.html',
   styleUrl: './contact.component.css'
 })

@@ -1,0 +1,327 @@
+/* Base styles */
+:root {
+  --primary-color: #003478;
+  --secondary-color: #FFCC00;
+  --accent-color: #E74C3C;
+  --background-light: #F8F9FA;
+  --text-light: #FFFFFF;
+  --text-dark: #212529;
+  --text-muted: #6c757d;
+  --gray-light: #dee2e6;
+  --gray-dark: #343a40;
+}
+
+/* Download Container */
+.download-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  min-height: 100vh;
+  background-color: var(--background-light);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+/* Header */
+.download-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.download-header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.uploader-info {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  padding: 0.3rem 0;
+  display: inline-block;
+  text-align: center;
+  opacity: 0.9;
+}
+
+.uploader-name {
+  margin-right: 0.3rem;
+  font-weight: 600;
+  font-size: 1.1em;
+  color: var(--primary-color);
+}
+
+.uploader-role {
+  color: var(--text-muted);
+  font-size: 0.9em;
+  font-weight: 400;
+  font-style: italic;
+}
+
+/* Loading State */
+.loading-container {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.spinner {
+  width: 30px;
+  height: 30px;
+  border: 2px solid var(--gray-light);
+  border-top: 2px solid var(--secondary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 0.5rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-container p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* Error State */
+.error-container {
+  text-align: center;
+  padding: 2rem 0;
+  background-color: var(--text-light);
+  border-radius: 8px;
+  border: 1px solid var(--gray-light);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.error-message {
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  color: var(--text-dark);
+}
+
+.retry-button {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.retry-button:hover {
+  background-color: #e6b800;
+  transform: translateY(-2px);
+}
+
+/* Files Container */
+.files-container {
+  background-color: transparent;
+  border-radius: 8px;
+  padding: 0.8rem;
+  box-shadow: none;
+  border: 1px solid transparent;
+}
+
+.no-files {
+  text-align: center;
+  padding: 1.5rem 0;
+  color: var(--text-muted);
+}
+
+.files-header {
+  margin-bottom: 0.8rem;
+  text-align: center;
+}
+
+.files-header h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin: 0;
+}
+
+/* File Items */
+.file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.6rem;
+  margin-bottom: 0.3rem;
+  background-color: transparent;
+  border-radius: 4px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.file-item:hover {
+  transform: translateY(-1px);
+  box-shadow: none;
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  margin-right: 0.5rem;
+}
+
+.file-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  word-break: break-word;
+  line-height: 1.2;
+}
+
+/* File Actions Container */
+.file-actions {
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* View Button */
+.view-button {
+  background-color: var(--primary-color);
+  color: var(--text-light);
+  border: none;
+  padding: 0.35rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 70px;
+  justify-content: center;
+}
+
+.view-button:hover:not(:disabled) {
+  background-color: #002a5e;
+  transform: translateY(-1px);
+}
+
+.view-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.view-button.viewing {
+  background-color: var(--accent-color);
+  color: var(--text-light);
+}
+
+/* Download Button */
+.download-button {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  border: none;
+  padding: 0.35rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 80px;
+  justify-content: center;
+}
+
+.download-button:hover:not(:disabled) {
+  background-color: #e6b800;
+  transform: translateY(-1px);
+}
+
+.download-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.download-button.downloading {
+  background-color: var(--accent-color);
+  color: var(--text-light);
+}
+
+/* Icons */
+.eye-icon,
+.download-icon {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .download-container {
+    padding: 1rem 0.5rem;
+  }
+  
+  .download-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .file-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .file-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .view-button,
+  .download-button {
+    flex: 1;
+    min-width: auto;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.75rem;
+  }
+  
+  .eye-icon,
+  .download-icon {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .download-header h1 {
+    font-size: 1.3rem;
+  }
+  
+  .files-container {
+    padding: 0.8rem;
+  }
+  
+  .file-item {
+    padding: 0.5rem 0.6rem;
+    margin-bottom: 0.3rem;
+  }
+  
+  .file-name {
+    font-size: 0.85rem;
+  }
+  
+  .view-button,
+  .download-button {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    min-width: 70px;
+  }
+} 
