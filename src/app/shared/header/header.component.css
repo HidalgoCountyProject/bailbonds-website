@@ -188,6 +188,12 @@ body {
   background-color: #ffcc00;
 }
 
+@media (min-width: 1100px) {
+  .header-content .navbar { max-width: none; }
+  .navbar-items { gap: 0.65rem; }
+  .navbar-item { font-size: 1rem; padding-inline: 0.15rem; }
+}
+
 /* Phone button styling */
 .phone-button {
   display: flex;

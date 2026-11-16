@@ -10,6 +10,7 @@ export const routes: Routes = [
   { path: 'about', component: AboutComponent, title: 'About - Affordable Bail Bonds' },
   { path: 'services', component: ServicesComponent, title: 'Services - Affordable Bail Bonds' },
   { path: 'contact', component: ContactComponent, title: 'Contact - Affordable Bail Bonds' },
+  { path: 'information', loadComponent: () => import('./pages/information/information.component').then(m => m.InformationComponent), title: 'Jail & Courthouse Information - Affordable Bail Bonds' },
   { path: 'documents', redirectTo: 'wizard', pathMatch: 'full' },
   { path: 'wizard', loadComponent: () => import('./documents/role-selection.component').then(m => m.RoleSelectionComponent), title: 'Select Role - Affordable Bail Bonds' },
   { 

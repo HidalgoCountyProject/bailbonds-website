@@ -58,12 +58,13 @@
         <!-- Navigation menu with call info directly beside it -->
         <nav class="navbar">
           <div class="navbar-items">
-            <a href="/" class="navbar-item active" title="affordable bail bonds in McAllen 24/7">{{ 'home' | translate }}</a>
+            <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="navbar-item" title="affordable bail bonds in McAllen 24/7">{{ 'home' | translate }}</a>
             <a href="/#servicios" class="navbar-item" title="how to bail someone out in McAllen fast">{{ 'services' | translate }}</a>
             <a href="/#ubicacion" class="navbar-item" title="cheap bail bonds Hidalgo County">{{ 'location' | translate }}</a>
             <a href="/#testimonios" class="navbar-item">{{ 'testimonials' | translate }}</a>
             <a href="/#preguntas-frecuentes" class="navbar-item">{{ 'faq' | translate }}</a>
             <a href="/wizard" class="navbar-item" title="Complete documents online">{{ 'documents' | translate }}</a>
+            <a routerLink="/information" routerLinkActive="active" ariaCurrentWhenActive="page" class="navbar-item" [title]="currentLanguage === 'es' ? 'Información de la cárcel y el juzgado del Condado de Hidalgo' : 'Hidalgo County jail and courthouse information'">{{ 'information' | translate }}</a>
             <a href="javascript:void(0)" (click)="openCallbackPopup()" class="navbar-item" title="fianzas económicas en McAllen">{{ 'contact' | translate }}</a>
           </div>
         </nav>

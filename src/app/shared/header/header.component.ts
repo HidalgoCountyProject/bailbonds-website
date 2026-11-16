@@ -7,6 +7,7 @@ import { LanguageService, Language } from '../services/language.service';
 import { TranslatePipe } from '../pipes/translate.pipe';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { PopupService } from '../../services/popup.service';
+import { AutomaticScrollService } from '../services/automatic-scroll.service';
 
 @Component({
   selector: 'app-header',
@@ -47,7 +48,8 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     @Inject(PLATFORM_ID) private platformId: Object,
     private languageService: LanguageService,
     private popupService: PopupService,
-    private router: Router
+    private router: Router,
+    private automaticScroll: AutomaticScrollService
   ) { 
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
@@ -189,6 +191,15 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     if (!this.isBrowser) return;
     
     const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+
+    // Keep the menu in its current state while a directory detail scrolls into view.
+    // Track the new position so the next manual gesture uses the correct baseline.
+    if (this.automaticScroll.active) {
+      this.lastScrollTop = Math.max(0, currentScroll);
+      this.scrollDistance = 0;
+      this.upScrollDistance = 0;
+      return;
+    }
     
     // Don't hide header until user has scrolled past threshold
     if (currentScroll < this.scrollThreshold) {
