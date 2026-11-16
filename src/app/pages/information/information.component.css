@@ -97,7 +97,21 @@ dd { font-size: 1rem; overflow-wrap: anywhere; }
 .visit-list li + li { margin-top: .25rem; }
 .notice { background: #fff9e9; border: 1px solid #f2e1af; border-radius: 7px; font-size: .95rem; color: #6e581c; padding: .75rem .85rem; margin: 1rem 0 0; }
 .notice a { text-decoration: underline; font-weight: 700; }
-.fine-print { font-size: .95rem; color: #505b65; text-align: center; margin: 1.1rem 0 0; }
+.fine-print {
+  font-size: .88rem;
+  color: #505b65;
+  text-align: center;
+  margin: 1.1rem auto 0;
+  line-height: 1.45;
+  padding: 0 .75rem;
+}
+@media (min-width: 901px) {
+  .fine-print { font-size: .8rem; max-width: 100%; padding: 0 1rem; }
+  .information-page[lang="es"] .fine-print { font-size: .73rem; line-height: 1.4; }
+}
+@media (max-width: 900px) {
+  .fine-print { font-size: clamp(0.84rem, 2.5vw, 0.92rem); max-width: 22rem; }
+}
 @media (max-width: 900px) {
   .summary { align-items: flex-start; flex-direction: column; gap: 1.25rem; }
   .summary .details { max-width: none; gap: 1.5rem; }

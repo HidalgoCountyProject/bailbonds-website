@@ -406,8 +406,9 @@ export const translations: Record<Language, TranslationSet> = {
     'info.visits.aria.days': 'Day of week',
     'info.visits.notice_before': 'Schedules can change. Confirm visitation rules before traveling.',
     'info.visits.official_schedule': 'View official county schedule ↗',
-    'info.fine_print':
-      'Independent resource guide by Affordable Bail Bonds. Not an official Hidalgo County government website. Confirm county information on the linked official pages.',
+    'info.fine_print.line1':
+      'Independent resource guide by Affordable Bail Bonds. Not an official Hidalgo County government website.',
+    'info.fine_print.line2': 'Confirm county information on the linked official pages.',
     'info.day.monday': 'Monday',
     'info.day.tuesday': 'Tuesday',
     'info.day.wednesday': 'Wednesday',
@@ -820,8 +821,9 @@ export const translations: Record<Language, TranslationSet> = {
     'info.visits.aria.days': 'Día de la semana',
     'info.visits.notice_before': 'Los horarios pueden cambiar. Confirme las reglas de visita antes de viajar.',
     'info.visits.official_schedule': 'Ver horario oficial del condado ↗',
-    'info.fine_print':
-      'Guía independiente de Affordable Bail Bonds. No es un sitio oficial del gobierno del Condado de Hidalgo. Confirme la información del condado en las páginas oficiales enlazadas.',
+    'info.fine_print.line1': 'Guía independiente de Affordable Bail Bonds.',
+    'info.fine_print.line2':
+      'No es un sitio oficial del Condado de Hidalgo. Confirme la información en enlaces oficiales.',
     'info.day.monday': 'Lunes',
     'info.day.tuesday': 'Martes',
     'info.day.wednesday': 'Miércoles',
