@@ -359,6 +359,8 @@ export const translations: Record<Language, TranslationSet> = {
 
     // Information page
     'info.aria.choose': 'Choose information category',
+    'info.choice.intro': 'Tap an option below to open contact information.',
+    'info.choice.tap': 'Tap here',
     'info.choice.courthouse': 'Hidalgo County Courthouse Contact Information',
     'info.choice.jail': 'Hidalgo County Jail Contact Information',
     'info.aria.courthouse_contact': 'Courthouse contact',
@@ -369,7 +371,7 @@ export const translations: Record<Language, TranslationSet> = {
     'info.call.courthouse': 'Call Courthouse',
     'info.call.jail': 'Call Jail',
     'info.call.court': 'Call',
-    'info.directions': '↗ Directions',
+    'info.directions': 'Directions',
     'info.directory.title': 'Hidalgo County Court House Directory',
     'info.directory.official': 'Official directory ↗',
     'info.directory.search_label': 'Search the court directory',
@@ -387,7 +389,9 @@ export const translations: Record<Language, TranslationSet> = {
     'info.court.mailing': 'Mailing address',
     'info.court.email_us': 'Email Us',
     'info.court.email_district': 'Email the District Clerk',
-    'info.court.official_listing': '↗ Official listing',
+    'info.court.official_notice_before':
+      'Contact details can change. Confirm court information on the county site before visiting.',
+    'info.court.official_listing': 'View official county directory ↗',
     'info.court.staff_heading': 'Judge & Court Staff',
     'info.court.hours_missing': 'Not provided in county directory',
     'info.search.empty': 'No matching courts. Try a court number or a staff name.',
@@ -772,6 +776,8 @@ export const translations: Record<Language, TranslationSet> = {
 
     // Information page
     'info.aria.choose': 'Elija una categoría de información',
+    'info.choice.intro': 'Toque una opción abajo para ver la información de contacto.',
+    'info.choice.tap': 'Toque aquí',
     'info.choice.courthouse':
       'Información de contacto del juzgado del Condado de Hidalgo (Hidalgo County Courthouse)',
     'info.choice.jail': 'Información de contacto de la cárcel del Condado de Hidalgo (Hidalgo County Jail)',
@@ -783,7 +789,7 @@ export const translations: Record<Language, TranslationSet> = {
     'info.call.courthouse': 'Llamar al juzgado',
     'info.call.jail': 'Llamar a la cárcel',
     'info.call.court': 'Llamar',
-    'info.directions': '↗ Cómo llegar',
+    'info.directions': 'Cómo llegar',
     'info.directory.title': 'Directorio del juzgado del Condado de Hidalgo (Hidalgo County Court House Directory)',
     'info.directory.official': 'Directorio oficial ↗',
     'info.directory.search_label': 'Buscar en el directorio de cortes',
@@ -801,7 +807,9 @@ export const translations: Record<Language, TranslationSet> = {
     'info.court.mailing': 'Dirección postal',
     'info.court.email_us': 'Correo electrónico',
     'info.court.email_district': 'Correo al secretario distrital (District Clerk)',
-    'info.court.official_listing': '↗ Ficha oficial',
+    'info.court.official_notice_before':
+      'Los datos de contacto pueden cambiar. Confirme la información en el sitio del condado antes de visitar.',
+    'info.court.official_listing': 'Ver directorio oficial del condado ↗',
     'info.court.staff_heading': 'Juez y personal de la corte (Judge & Court Staff)',
     'info.court.hours_missing': 'No figura en el directorio del condado',
     'info.search.empty': 'No hay cortes que coincidan. Pruebe un número de corte o el nombre de una persona.',

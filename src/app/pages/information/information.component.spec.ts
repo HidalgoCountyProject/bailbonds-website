@@ -25,13 +25,6 @@ describe('InformationComponent', () => {
     fixture.detectChanges();
   });
 
-  it('finds staff despite accents and phones without formatting', () => {
-    component.search('castaneda');
-    expect(component.filteredCourts.map(court => court.name)).toEqual(['County Court #9']);
-    component.search('(956) 292 7740');
-    expect(component.filteredCourts.map(court => court.name)).toEqual(['County Court #8']);
-  });
-
   it('opens one court detail panel at a time and lets it close', () => {
     const buttons: HTMLButtonElement[] = Array.from(fixture.nativeElement.querySelectorAll('.court-title'));
     buttons[0].click();
@@ -47,21 +40,11 @@ describe('InformationComponent', () => {
     expect(fixture.nativeElement.querySelectorAll('.court-drawer:not([hidden])').length).toBe(0);
   });
 
-  it('shows a recoverable empty search state', () => {
-    component.search('no such court');
-    fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('.empty').textContent).toContain('No matching courts');
-    fixture.nativeElement.querySelector('.empty button').click();
-    fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('.empty')).toBeNull();
-    expect(component.filteredCourts.length).toBe(14);
-  });
-
   it('supports direct jail links and displays only the published weekend time slot', () => {
     params.next(convertToParamMap({ section: 'jail' }));
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('#jail-view').hidden).toBeFalse();
-    expect(fixture.nativeElement.querySelector('#courthouse-view').hidden).toBeTrue();
+    expect(fixture.nativeElement.querySelector('#jail-view')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('#courthouse-view')).toBeFalsy();
     const day: HTMLSelectElement = fixture.nativeElement.querySelector('select');
     day.value = '5';
     day.dispatchEvent(new Event('change'));
@@ -85,6 +68,7 @@ describe('InformationComponent', () => {
     fixture.nativeElement.querySelectorAll('.choice')[1].click();
     fixture.detectChanges();
     expect(component.section).toBe('jail');
+    expect(component.contentVisible).toBeTrue();
     expect(router.navigate).toHaveBeenCalledWith([], jasmine.objectContaining({ queryParams: { section: 'jail' } }));
   });
 });

@@ -1,5 +1,5 @@
-import { afterNextRender, Component, DestroyRef, ElementRef, inject, Injector } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { afterNextRender, Component, DestroyRef, ElementRef, inject, Injector, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { COURTS, Court, VISITATION, VISITATION_SLOT_HOURS } from './information.data';
@@ -37,43 +37,68 @@ export class InformationComponent {
   readonly localizeStaffRole = localizeStaffRole;
   readonly localizeVisitItem = localizeVisitItem;
   readonly localizeVisitLocationHeading = localizeVisitLocationHeading;
-  section: Section = 'courthouse';
-  query = '';
+  section: Section | null = 'courthouse';
+  contentVisible = true;
+  sectionEnter: 'left' | 'right' | null = null;
   day = 0;
   expandedCourt: Court | null = null;
-  filteredCourts = COURTS;
-  courtRows = this.groupCourts(COURTS);
+  readonly courtRows = this.groupCourts(COURTS);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly injector = inject(Injector);
   private readonly automaticScroll = inject(AutomaticScrollService);
+  private readonly platformId = inject(PLATFORM_ID);
   readonly languageService = inject(LanguageService);
+
+  private static readonly mobileMedia = '(max-width: 740px)';
 
   constructor() {
     this.destroyRef.onDestroy(() => this.automaticScroll.stop());
+    if (isPlatformBrowser(this.platformId)) {
+      this.applySectionFromRoute(this.route.snapshot?.queryParamMap.get('section') ?? null);
+    }
     this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
-      this.section = params.get('section') === 'jail' ? 'jail' : 'courthouse';
+      this.applySectionFromRoute(params.get('section'));
     });
+  }
+
+  get awaitingSectionChoice(): boolean {
+    return !this.contentVisible;
   }
 
   selectSection(section: Section): void {
+    if (this.section !== section) {
+      this.sectionEnter = section === 'courthouse' ? 'left' : 'right';
+    }
     this.section = section;
+    this.contentVisible = true;
     void this.router.navigate([], { relativeTo: this.route, queryParams: { section }, queryParamsHandling: 'merge', replaceUrl: true });
   }
 
-  search(value: string): void {
-    this.query = value;
-    const query = this.normalize(value.trim());
-    const digits = value.replace(/\D/g, '');
-    this.filteredCourts = COURTS.filter(court => {
-      const content = [court.name, court.phone, court.tollFree, court.fax, court.floor, court.hours, court.mailing, court.email, ...court.staff.flat()].join(' ');
-      return this.normalize(content).includes(query) ||
-        (digits.length >= 3 && /^[\d\s()+.\-]+$/.test(value.trim()) && content.replace(/\D/g, '').includes(digits));
-    });
-    this.courtRows = this.groupCourts(this.filteredCourts);
-    this.expandedCourt = null;
+  private applySectionFromRoute(param: string | null): void {
+    if (param === 'jail') {
+      this.section = 'jail';
+      this.contentVisible = true;
+      return;
+    }
+    if (param === 'courthouse') {
+      this.section = 'courthouse';
+      this.contentVisible = true;
+      return;
+    }
+    if (!this.isMobileViewport()) {
+      this.section = 'courthouse';
+      this.contentVisible = true;
+      return;
+    }
+    this.contentVisible = false;
+    this.section = null;
+  }
+
+  private isMobileViewport(): boolean {
+    return typeof window !== 'undefined' && window.matchMedia(InformationComponent.mobileMedia).matches;
   }
 
   toggleCourt(court: Court): void {
@@ -119,11 +144,6 @@ export class InformationComponent {
 
   get lang() {
     return this.languageService.getCurrentLanguage();
-  }
-
-
-  private normalize(value: string): string {
-    return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[’‘]/g, "'").toLowerCase();
   }
 
   private groupCourts(courts: Court[]): Court[][] {
